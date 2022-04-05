@@ -4,6 +4,7 @@ const path = require("path");
 const app = express();
 require("./config")(app);
 const PORT = process.env.PORT;
+const HOST = process.env.HOST;
 const routes = require('./routes');
 
 // serve client bundle
@@ -18,6 +19,6 @@ app.get("*", (_, res) => {
 });
 
 // start server
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Server listening on ${HOST} port ${PORT}`);
 });
