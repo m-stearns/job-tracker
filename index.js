@@ -3,7 +3,7 @@ const path = require("path");
 
 const app = express();
 require("./config")(app);
-require("./db")
+require("./models")
 const PORT = process.env.PORT;
 const HOST = process.env.HOST;
 const routes = require('./routes');
