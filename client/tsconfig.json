@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-            "target": "es5", // Specify ECMAScript target version
+    "target": "es5", // Specify ECMAScript target version
     "lib": [
       "es6",
       "dom",
@@ -32,5 +32,5 @@
   "exclude": [ // *** The files to not type check ***
     "node_modules",
     "build"
-  ] 
+  ]
 }
