@@ -1,8 +1,12 @@
 import './App.css';
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material';
+
 import { LoginPage } from './pages/login-page';
 import { HomePage } from './pages/home-page';
+
+const theme = createTheme();
 
 export const App = () => {
   useEffect(() => {
@@ -26,25 +30,27 @@ export const App = () => {
   }, []);
 
   return (
-    <div className="App">
-      <BrowserRouter>
-        <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-            </ul>
-          </nav>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <BrowserRouter>
+          <div>
+            <nav>
+              <ul>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/login">Login</Link>
+                </li>
+              </ul>
+            </nav>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </div>
+    </ThemeProvider>
   );
 };
