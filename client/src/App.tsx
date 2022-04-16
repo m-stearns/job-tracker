@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
 
-import { LoginPage } from './pages/login-page';
-import { HomePage } from './pages/home-page';
+import { LoginPage } from './pages/LoginPage';
+import { HomePage } from './pages/HomePage';
 
 const theme = createTheme();
 
