@@ -14,15 +14,20 @@ class UserController {
   }
 
   static async login(req, res) {
-    const { email, password } = req.body;
+    try {
+      const { email, password } = req.body;
 
-    const user = await User.authenticate(email, password);
-    
-    if (!user) {
-      return res.status(401).send();
+      const user = await User.authenticate(email, password);
+
+      if (!user) {
+        return res.status(401).send();
+      }
+
+      res.json({ user, auth_token: user.genAuthToken() });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send();
     }
-
-    res.json({ user, auth_token: user.genAuthToken() });
   }
 
   static async currentUser(req, res) {
