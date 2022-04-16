@@ -1,7 +1,7 @@
 const { User } = require("../models");
 
 class UserController {
-  static async create(req, res) {
+  static async register(req, res) {
     try {
       const { name, email, password } = req.body;
 
