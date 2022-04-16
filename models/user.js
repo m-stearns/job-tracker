@@ -2,6 +2,7 @@
 
 const bcrypt = require("bcrypt");
 const uuid = require("uuid");
+const jwt = require("jsonwebtoken");
 
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
@@ -15,9 +16,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
+    genAuthToken() {
+      const userId = this.get("id");
+      const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+        expiresIn: 60 * 60 * 24 * 14, // 2 weeks
+      });
+      return token;
+    }
+
     toJSON() {
       // filter out password when returning on create
-      const userObj = {...this.get()};
+      const userObj = { ...this.get() };
       delete userObj.password;
       return userObj;
     }

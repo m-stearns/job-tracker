@@ -1,4 +1,4 @@
-const { User, Sequelize } = require("../models/");
+const { User } = require("../models");
 
 class UserController {
   static async create(req, res) {
@@ -6,7 +6,7 @@ class UserController {
 
     const user = await User.create({ name, email, password });
 
-    res.json({ user });
+    res.json({ user, auth_token: user.genAuthToken() });
   }
 }
 
