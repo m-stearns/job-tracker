@@ -5,7 +5,7 @@ module.exports = async (req, res, next) => {
     const token = req.headers["x-auth-token"];
     const user = await User.findByToken(token);
     if (!user) {
-      res.redirect("/login");
+      res.status(401).send();
     }
     req.user = user;
     next();
