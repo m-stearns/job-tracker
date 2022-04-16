@@ -24,6 +24,15 @@ module.exports = (sequelize, DataTypes) => {
       return token;
     }
 
+    static findByToken(token) {
+      try {
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        return this.findByPk(decodedToken.userId);
+      } catch (error) {
+        throw new Error(error);
+      }
+    }
+
     toJSON() {
       // filter out password when returning on create
       const userObj = { ...this.get() };
