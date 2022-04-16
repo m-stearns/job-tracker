@@ -12,6 +12,23 @@ class UserController {
       res.status(400).send({ error });
     }
   }
+
+  static async currentUser(req, res) {
+    try {
+      const token = req.headers["x-auth-token"];
+      const user = await User.findByToken(token);
+      res.json({ user });
+    } catch (error) {
+      console.error(error);
+      res.status(400).send({ error: error.message });
+    }
+  }
+
+  // TODO: Remove. Dummy method to test auth middleware
+  static protectedResource(req, res) {
+    console.log(req.user);
+    res.status(200).send(req.user);
+  }
 }
 
 module.exports = { UserController };
