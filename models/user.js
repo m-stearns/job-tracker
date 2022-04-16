@@ -1,6 +1,7 @@
 "use strict";
 
 const bcrypt = require("bcrypt");
+const uuid = require("uuid");
 
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
@@ -13,23 +14,43 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
+    toJSON() {
+      // filter out password when returning on create
+      const userObj = {...this.get()};
+      delete userObj.password;
+      return userObj;
+    }
   }
   User.init(
     {
-      name: DataTypes.STRING,
-      email: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
       password: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: "User",
       timestamps: true,
+      defaultScope: {
+        attributes: {
+          exclude: ["password"],
+        },
+      },
     }
   );
   User.beforeCreate(async (user) => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(user.password, salt);
     user.password = hash;
+    user.id = uuid.v4();
   });
 
   return User;
