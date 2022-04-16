@@ -5,6 +5,7 @@ const { UserController } = require("../controllers");
 const requireAuth = require('../middlewares/requireAuth.middleware')
 
 router.post("/new", UserController.create);
+router.post("/login", UserController.login);
 router.get("/current_user", UserController.currentUser);
 router.get("/protected", requireAuth, UserController.protectedResource);
 

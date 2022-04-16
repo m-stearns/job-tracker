@@ -13,6 +13,18 @@ class UserController {
     }
   }
 
+  static async login(req, res) {
+    const { email, password } = req.body;
+
+    const user = await User.authenticate(email, password);
+    
+    if (!user) {
+      return res.status(401).send();
+    }
+
+    res.json({ user, auth_token: user.genAuthToken() });
+  }
+
   static async currentUser(req, res) {
     try {
       const token = req.headers["x-auth-token"];

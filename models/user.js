@@ -24,6 +24,15 @@ module.exports = (sequelize, DataTypes) => {
       return token;
     }
 
+    static async authenticate(email, password) {
+      const user = await User.findOne({ where: { email } });
+      const match = await bcrypt.compare(password, user.password);
+      
+      if (match) {
+        return user;
+      }
+    }
+
     static findByToken(token) {
       try {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -57,11 +66,6 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "User",
       timestamps: true,
-      defaultScope: {
-        attributes: {
-          exclude: ["password"],
-        },
-      },
     }
   );
   User.beforeCreate(async (user) => {
