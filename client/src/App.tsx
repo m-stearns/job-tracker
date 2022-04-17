@@ -1,5 +1,12 @@
-import './App.css';
 import { useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material';
+
+import { AuthProvider } from './common/AuthContext';
+import { PageRoutes } from './common/Routes';
+import { Layout } from './common/Layout';
+
+const theme = createTheme();
 
 export const App = () => {
   useEffect(() => {
@@ -23,15 +30,14 @@ export const App = () => {
   }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <AuthProvider>
+        <BrowserRouter>
+          <Layout>
+            <PageRoutes />
+          </Layout>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
