@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
 
-import { Login } from './pages/LoginPage';
-import { Home } from './pages/HomePage';
+import { AuthProvider } from './common/AuthContext';
+import { PageRoutes } from './common/Routes';
+import { Layout } from './common/Layout';
 
 const theme = createTheme();
 
@@ -30,24 +31,13 @@ export const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-            </ul>
-          </nav>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Layout>
+            <PageRoutes />
+          </Layout>
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   );
 };
