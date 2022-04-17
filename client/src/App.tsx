@@ -1,10 +1,9 @@
-import './App.css';
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
 
-import { LoginPage } from './pages/LoginPage';
-import { HomePage } from './pages/HomePage';
+import { Login } from './pages/LoginPage';
+import { Home } from './pages/HomePage';
 
 const theme = createTheme();
 
@@ -31,26 +30,24 @@ export const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
-        <BrowserRouter>
-          <div>
-            <nav>
-              <ul>
-                <li>
-                  <Link to="/">Home</Link>
-                </li>
-                <li>
-                  <Link to="/login">Login</Link>
-                </li>
-              </ul>
-            </nav>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        <div>
+          <nav>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+            </ul>
+          </nav>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
     </ThemeProvider>
   );
 };
