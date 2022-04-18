@@ -11,6 +11,7 @@ module.exports = {
       internship: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
       },
       title: {
         type: Sequelize.STRING
@@ -20,17 +21,6 @@ module.exports = {
       },
       description: {
         type: Sequelize.TEXT
-      },
-      userId: {
-        type: Sequelize.UUID,
-        references: {
-          model: {
-            tableName: 'Users',
-            schema: 'public'
-          },
-          key: 'id'
-        },
-        allowNull: false,
       },
       link: {
         type: Sequelize.TEXT
