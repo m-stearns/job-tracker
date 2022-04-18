@@ -44,7 +44,6 @@ export const Login = () => {
           <Avatar sx={{ bgcolor: 'error.main' }}>
             <LockOutlinedIcon />
           </Avatar>
-
           <Typography component="h1">Sign in</Typography>
           <TextField
             id="username"

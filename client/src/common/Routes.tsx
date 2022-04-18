@@ -1,8 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import type React from 'react';
 
-import { Login } from '../pages/LoginPage';
-import { Home } from '../pages/HomePage';
+import { Home } from '../pages/Home';
+import { Login } from '../pages/Login';
+import { Signup } from '../pages/Signup';
 import { useAuth } from './AuthContext';
 
 export const PageRoutes = () => {
@@ -22,6 +23,14 @@ export const PageRoutes = () => {
         element={
           <PublicRoute>
             <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <PublicRoute>
+            <Signup />
           </PublicRoute>
         }
       />
