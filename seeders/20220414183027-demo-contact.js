@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.bulkInsert("Contacts", [{
       name: "MyDemo Contact",
       email: "mydemo.contact@email.com",
-      phone_no: "555-555-5555",
+      phoneNo: "555-555-5555",
       company: "Jobby JobSpot",
       createdAt: new Date(),
       updatedAt: new Date(),
