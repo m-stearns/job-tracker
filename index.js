@@ -11,6 +11,9 @@ const routes = require('./routes');
 // serve client bundle
 app.use(express.static(path.resolve(__dirname, "./client/build")));
 
+// parse json
+app.use(express.json());
+
 // prefixes all routes with /api
 app.use("/api", [...routes]);
 
