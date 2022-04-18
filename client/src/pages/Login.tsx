@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Avatar, Container, Button, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Avatar, Button, Container, Link, Paper, Stack, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAuth } from '../common/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -68,6 +68,9 @@ export const Login = () => {
           <Button variant="contained" onClick={handleLogin}>
             Sign in
           </Button>
+          <Link href="/signup" variant="body2">
+            Don&apos;t have an account? Sign up
+          </Link>
         </Stack>
       </Paper>
     </Container>
