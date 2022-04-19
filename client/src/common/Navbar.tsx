@@ -1,19 +1,27 @@
-import { Link } from 'react-router-dom';
+import { AppBar, Toolbar, Button, ButtonGroup, Link } from '@mui/material';
 
 export const Navbar = () => {
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/login">Login</Link>
-        </li>
-        <li>
-          <Link to="/signup">Signup</Link>
-        </li>
-      </ul>
-    </nav>
+    <AppBar position="static" elevation={0} color="primary">
+      <Toolbar>
+        <ButtonGroup variant="contained" color="inherit">
+          <Button>
+            <Link href="/" underline="none" variant="button">
+              Home
+            </Link>
+          </Button>
+          <Button>
+            <Link href="/login" underline="none" variant="button">
+              Login
+            </Link>
+          </Button>
+          <Button>
+            <Link href="/signup" underline="none" variant="button">
+              Signup
+            </Link>
+          </Button>
+        </ButtonGroup>
+      </Toolbar>
+    </AppBar>
   );
 };
