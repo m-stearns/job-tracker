@@ -10,6 +10,7 @@ module.exports = {
       link: "https://www.google.com/",
       createdAt: new Date(),
       updatedAt: new Date(),
+      status: "Applied",
     }]);
   },
 
