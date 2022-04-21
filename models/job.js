@@ -14,11 +14,28 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Job.init({
-    internship: DataTypes.BOOLEAN,
-    title: DataTypes.STRING,
-    company: DataTypes.STRING,
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    company: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     description: DataTypes.TEXT,
-    link: DataTypes.TEXT
+    internship: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    link: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    status: {
+      type: DataTypes.ENUM("Applied", "Interview Scheduled", "Decision Pending", "Accepted", "Rejected"),
+      defaultValue: "Applied",
+    },
   }, {
     sequelize,
     modelName: 'Job',
