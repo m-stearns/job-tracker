@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.Job, {
+        foreignKey: "userId",
+      });
     }
 
     genAuthToken() {
@@ -27,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     static async authenticate(email, password) {
       const user = await User.findOne({ where: { email } });
       const match = await bcrypt.compare(password, user.password);
-      
+
       if (match) {
         return user;
       }
