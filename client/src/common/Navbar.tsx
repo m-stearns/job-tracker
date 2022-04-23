@@ -13,7 +13,7 @@ export const Navbar = () => {
               Home
             </Link>
           </Button>
-          <Button onClick={() => (auth.isSignedIn ? auth.signOut() : auth.signIn())}>
+          <Button onClick={() => auth.isSignedIn && auth.signOut()}>
             {auth.isSignedIn ? (
               <Link to="/login" style={{ textDecoration: 'none' }}>
                 Logout
