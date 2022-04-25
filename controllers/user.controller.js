@@ -33,6 +33,9 @@ class UserController {
   static async currentUser(req, res) {
     try {
       const token = req.headers["x-auth-token"];
+      if (!token) {
+        return res.send({ user: null });
+      }
       const user = await User.findByToken(token);
       res.json({ user });
     } catch (error) {
