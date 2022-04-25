@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   JobSkills.init({
-    skillId: DataTypes.UUID,
-    jobId: DataTypes.UUID
+    skillId: { type: DataTypes.INTEGER, primaryKey: true },
+    jobId: { type: DataTypes.INTEGER, primaryKey: true }
   }, {
     sequelize,
     modelName: 'JobSkills',
