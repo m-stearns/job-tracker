@@ -37,13 +37,11 @@ apiClient.interceptors.response.use(
 // Users
 
 export const register = ({ name, email, password }: { name: string; email: string; password: string }) => {
-  return apiClient
-    .post('/users/register', {
-      name,
-      email,
-      password,
-    })
-    .then((response: AxiosResponse) => response.data);
+  return apiClient.post('/users/register', {
+    name,
+    email,
+    password,
+  });
 };
 
 export const login = async ({ email, password }: { email: string; password: string }) => {
