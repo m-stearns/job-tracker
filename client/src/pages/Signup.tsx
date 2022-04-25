@@ -16,7 +16,7 @@ export const Signup = () => {
   const [isPasswordError, setIsPasswordError] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
+  const { user } = useAuth();
 
   const handleFirstnameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFirstName(event.target.value);
@@ -56,7 +56,7 @@ export const Signup = () => {
     }
   };
 
-  if (isSignedIn) {
+  if (user) {
     return <Navigate to="/" />;
   }
 

@@ -6,18 +6,10 @@ import { AuthProvider } from './common/AuthContext';
 import { PageRoutes } from './common/Routes';
 import { Layout } from './common/Layout';
 
-import { getCurrentUser } from './repository';
-
 const theme = createTheme();
 
 export const App = () => {
   useEffect(() => {
-    const getUser = async () => {
-      return await getCurrentUser();
-    };
-
-    getUser();
-
     fetch('http://127.0.0.1:8084/api/jobs', {
       headers: {
         'Content-Type': 'application/json',
