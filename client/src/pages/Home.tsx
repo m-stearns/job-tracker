@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
   const data = [
@@ -69,52 +70,67 @@ const NoContent = () => (
   </Container>
 );
 
-const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactElement => (
-  <Stack spacing={4} sx={{ py: '24px' }}>
-    {/* <Link to="/create-job"> */}
-    <Button variant="contained" sx={{ width: 'fit-content' }} startIcon={<AddCircleOutlineIcon />}>
-      Add new job application
-    </Button>
-    {/* </Link> */}
-    <Typography component="h1" variant="h3">
-      Current Job Applications:
-    </Typography>
-    <Paper elevation={4}>
-      <TableContainer>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow
-              sx={{
-                th: {
-                  fontSize: '1.5rem',
-                },
-              }}
-            >
-              <TableCell>Title</TableCell>
-              <TableCell align="right">Company</TableCell>
-              <TableCell align="right">Status</TableCell>
-              <TableCell align="right">Link</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((row) => (
-              <TableRow key={row.title} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  {row.title}
-                </TableCell>
-                <TableCell align="right">{row.company}</TableCell>
-                <TableCell align="right">{row.status}</TableCell>
-                <TableCell align="right">
-                  <a href={row.link}>{row.link}</a>
-                </TableCell>
+const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactElement => {
+  const navigate = useNavigate();
+  return (
+    <Stack spacing={4} sx={{ py: '24px' }}>
+      {/* <Link to="/create-job"> */}
+      <Button variant="contained" sx={{ width: 'fit-content' }} startIcon={<AddCircleOutlineIcon />}>
+        Add new job application
+      </Button>
+      {/* </Link> */}
+      <Typography component="h1" variant="h3">
+        Current Job Applications:
+      </Typography>
+      <Paper elevation={4}>
+        <TableContainer>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow
+                sx={{
+                  th: {
+                    fontSize: '1.5rem',
+                  },
+                }}
+              >
+                <TableCell>Title</TableCell>
+                <TableCell align="right">Company</TableCell>
+                <TableCell align="right">Status</TableCell>
+                <TableCell align="right">Link</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Paper>
-  </Stack>
-);
+            </TableHead>
+            <TableBody>
+              {data.map((row) => (
+                <TableRow
+                  key={row.title}
+                  hover
+                  // TODO: This will change in the future.
+                  // I'm not sure how we want this click behavior to work or how the URL will be represented.
+                  onClick={() => navigate(`/jobs/${row.title.replace(/\s/g, '')}-${row.company.replace(/\s/g, '')}`)}
+                  sx={{
+                    '&:hover': {
+                      cursor: 'pointer',
+                    },
+                    '&:last-child td, &:last-child th': { border: 0 },
+                  }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.title}
+                  </TableCell>
+                  <TableCell align="right">{row.company}</TableCell>
+                  <TableCell align="right">{row.status}</TableCell>
+                  <TableCell align="right">
+                    <a href={row.link}>{row.link}</a>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+    </Stack>
+  );
+};
 
 type JobRowData = {
   title: string;
