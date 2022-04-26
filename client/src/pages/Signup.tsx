@@ -4,7 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../common/AuthContext';
-import { register } from '../repository';
+// import { register } from '../repository';
 
 const emailPattern = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
@@ -18,7 +18,7 @@ export const Signup = () => {
   const [isPasswordError, setIsPasswordError] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const { user, setUser } = useAuth();
+  const { user, registerUser } = useAuth();
 
   const handleFirstnameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFirstName(event.target.value);
@@ -46,11 +46,7 @@ export const Signup = () => {
   const handleSignup = async () => {
     // Validate username is email and passwords match
     if (emailPattern.test(username) && password === confirmPassword) {
-      const {
-        data: { user, auth_token },
-      } = await register({ name: `${firstName} ${lastName}`, email: username, password });
-      localStorage.setItem('auth_token', auth_token);
-      setUser(user);
+      await registerUser({ firstName, lastName, username, password });
       navigate('/', {});
       return;
     }

@@ -4,12 +4,11 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
-  const { user, setUser } = useAuth();
+  const { user, logoutUser } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-    setUser(null);
+    logoutUser();
     navigate('/login');
   };
   return (
@@ -26,17 +25,19 @@ export const Navbar = () => {
               Logout
             </Button>
           ) : (
-            <Button>
-              <Link to="/login" style={{ textDecoration: 'none' }}>
-                Login
-              </Link>
-            </Button>
+            <>
+              <Button>
+                <Link to="/login" style={{ textDecoration: 'none' }}>
+                  Login
+                </Link>
+              </Button>
+              <Button>
+                <Link to="/signup" style={{ textDecoration: 'none' }}>
+                  Signup
+                </Link>
+              </Button>
+            </>
           )}
-          <Button>
-            <Link to="/signup" style={{ textDecoration: 'none' }}>
-              Signup
-            </Link>
-          </Button>
         </ButtonGroup>
       </Toolbar>
     </AppBar>

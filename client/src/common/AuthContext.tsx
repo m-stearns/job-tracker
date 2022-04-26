@@ -1,10 +1,13 @@
 import * as React from 'react';
-import { getCurrentUser } from '../repository';
+import { getCurrentUser, register, login } from '../repository';
 
 type AuthContextType = {
   user: { [key: string]: any } | null;
   fetchUser: () => any;
   setUser: any;
+  registerUser: any;
+  loginUser: any;
+  logoutUser: any;
 };
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
@@ -21,11 +24,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(user);
   };
 
+  const registerUser = async ({ firstName, lastName, username, password }: { [key: string]: string }) => {
+    const {
+      data: { user, auth_token },
+    } = await register({ name: `${firstName} ${lastName}`, email: username, password });
+    localStorage.setItem('auth_token', auth_token);
+    setUser(user);
+  };
+
+  const loginUser = async ({ username, password }: { [key: string]: string }) => {
+    const {
+      data: { user, auth_token },
+    } = await login({ email: username, password });
+    // save token to localStorage
+    localStorage.setItem('auth_token', auth_token);
+    setUser(user);
+  };
+
+  const logoutUser = () => {
+    localStorage.removeItem('auth_token');
+    setUser(null);
+  };
+
   React.useEffect(() => {
     fetchUser();
   }, []);
 
-  const value = { user, fetchUser, setUser };
+  const value = { user, fetchUser, setUser, registerUser, loginUser, logoutUser };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

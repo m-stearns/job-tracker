@@ -4,8 +4,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAuth } from '../common/AuthContext';
 import { Navigate } from 'react-router-dom';
 
-import { login } from '../repository';
-
 const emailPattern = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
 export const Login = () => {
@@ -13,7 +11,7 @@ export const Login = () => {
   const [password, setPassword] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
 
-  const { user, setUser } = useAuth();
+  const { user, loginUser } = useAuth();
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -28,12 +26,7 @@ export const Login = () => {
   const handleLogin = async () => {
     // Validate username as email
     if (emailPattern.test(username)) {
-      const {
-        data: { user, auth_token },
-      } = await login({ email: username, password });
-      // save token to localStorage
-      localStorage.setItem('auth_token', auth_token);
-      setUser(user);
+      await loginUser({ username, password });
     } else {
       setIsError(true);
     }
