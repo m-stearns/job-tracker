@@ -11,7 +11,7 @@ const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // The below will change when we start using the auth token.
   // For now out auth state is lost on every page refresh
-  const [isSignedIn, setIsSignedIn] = React.useState<boolean>(false);
+  const [isSignedIn, setIsSignedIn] = React.useState<boolean>(true);
   const signIn = () => setIsSignedIn(true);
   const signOut = () => setIsSignedIn(false);
 
