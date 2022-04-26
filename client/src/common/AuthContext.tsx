@@ -20,7 +20,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       data: { user },
     } = await getCurrentUser();
 
-    console.log(user);
     setUser(user);
   };
 
