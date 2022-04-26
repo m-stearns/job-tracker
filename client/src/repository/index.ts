@@ -36,8 +36,8 @@ apiClient.interceptors.response.use(
 
 // Users
 
-export const register = ({ name, email, password }: { name: string; email: string; password: string }) => {
-  return apiClient.post('/users/register', {
+export const register = async ({ name, email, password }: { name: string; email: string; password: string }) => {
+  return await apiClient.post('/users/register', {
     name,
     email,
     password,
