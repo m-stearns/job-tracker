@@ -4,6 +4,7 @@ import type React from 'react';
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { Signup } from '../pages/Signup';
+import { CreateJob } from '../pages/CreateJob';
 import { useAuth } from './AuthContext';
 
 export const PageRoutes = () => {
@@ -31,6 +32,14 @@ export const PageRoutes = () => {
         element={
           <PublicRoute>
             <Signup />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/createjob"
+        element={
+          <PublicRoute>
+            <CreateJob />
           </PublicRoute>
         }
       />
