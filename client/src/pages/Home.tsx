@@ -19,18 +19,21 @@ export const Home = () => {
   const data = [
     {
       title: 'Software Engineer 1',
+      id: 1,
       company: 'InstaWhat',
       status: 'Applied',
       link: 'http://www.google.com',
     },
     {
       title: 'Software Engineer 1',
+      id: 2,
       company: 'InstaWhat2',
       status: 'Applied',
       link: 'http://www.google.com',
     },
     {
       title: 'Software Engineer 1',
+      id: 3,
       company: 'InstaWhat3',
       status: 'Applied',
       link: 'http://www.google.com',
@@ -106,7 +109,7 @@ const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactEleme
                   hover
                   // TODO: This will change in the future.
                   // I'm not sure how we want this click behavior to work or how the URL will be represented.
-                  onClick={() => navigate(`/jobs/${row.title.replace(/\s/g, '')}-${row.company.replace(/\s/g, '')}`)}
+                  onClick={() => navigate(`/jobs/${row.id}`)}
                   sx={{
                     '&:hover': {
                       cursor: 'pointer',
@@ -133,6 +136,7 @@ const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactEleme
 };
 
 type JobRowData = {
+  id: number; // We can change this to a UUID later. Just doing this for simplicity
   title: string;
   company: string;
   status: string;
