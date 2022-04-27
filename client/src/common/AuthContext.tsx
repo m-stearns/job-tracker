@@ -1,21 +1,55 @@
 import * as React from 'react';
+import { getCurrentUser, register, login } from '../repository';
 
 type AuthContextType = {
-  isSignedIn: boolean;
-  signIn: () => void;
-  signOut: () => void;
+  user: { [key: string]: any } | null;
+  fetchUser: () => any;
+  setUser: any;
+  registerUser: any;
+  loginUser: any;
+  logoutUser: any;
 };
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // The below will change when we start using the auth token.
-  // For now out auth state is lost on every page refresh
-  const [isSignedIn, setIsSignedIn] = React.useState<boolean>(false);
-  const signIn = () => setIsSignedIn(true);
-  const signOut = () => setIsSignedIn(false);
+  const [user, setUser] = React.useState(null);
 
-  const value = { isSignedIn, signIn, signOut };
+  const fetchUser = async () => {
+    const {
+      data: { user },
+    } = await getCurrentUser();
+
+    setUser(user);
+  };
+
+  const registerUser = async ({ firstName, lastName, username, password }: { [key: string]: string }) => {
+    const {
+      data: { user, auth_token },
+    } = await register({ name: `${firstName} ${lastName}`, email: username, password });
+    localStorage.setItem('auth_token', auth_token);
+    setUser(user);
+  };
+
+  const loginUser = async ({ username, password }: { [key: string]: string }) => {
+    const {
+      data: { user, auth_token },
+    } = await login({ email: username, password });
+    // save token to localStorage
+    localStorage.setItem('auth_token', auth_token);
+    setUser(user);
+  };
+
+  const logoutUser = () => {
+    localStorage.removeItem('auth_token');
+    setUser(null);
+  };
+
+  React.useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const value = { user, fetchUser, setUser, registerUser, loginUser, logoutUser };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

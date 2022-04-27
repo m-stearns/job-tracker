@@ -11,7 +11,7 @@ export const Login = () => {
   const [password, setPassword] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
 
-  const { isSignedIn, signIn } = useAuth();
+  const { user, loginUser } = useAuth();
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -23,17 +23,16 @@ export const Login = () => {
     setIsError(false);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Validate username as email
     if (emailPattern.test(username)) {
-      alert(`username entered: ${username}\npassword: ${password}`);
-      signIn();
+      await loginUser({ username, password });
     } else {
       setIsError(true);
     }
   };
 
-  if (isSignedIn) {
+  if (user) {
     return <Navigate to="/" />;
   }
 

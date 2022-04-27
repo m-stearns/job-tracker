@@ -1,9 +1,16 @@
 import { AppBar, Toolbar, Button, ButtonGroup } from '@mui/material';
 import { useAuth } from './AuthContext';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
-  const auth = useAuth();
+  const { user, logoutUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/login');
+  };
   return (
     <AppBar position="static" elevation={0} color="primary">
       <Toolbar>
@@ -13,22 +20,24 @@ export const Navbar = () => {
               Home
             </Link>
           </Button>
-          <Button onClick={() => auth.isSignedIn && auth.signOut()}>
-            {auth.isSignedIn ? (
-              <Link to="/login" style={{ textDecoration: 'none' }}>
-                Logout
-              </Link>
-            ) : (
-              <Link to="/login" style={{ textDecoration: 'none' }}>
-                Login
-              </Link>
-            )}
-          </Button>
-          <Button>
-            <Link to="/signup" style={{ textDecoration: 'none' }}>
-              Signup
-            </Link>
-          </Button>
+          {user ? (
+            <Button onClick={handleLogout} style={{ textDecoration: 'none' }}>
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button>
+                <Link to="/login" style={{ textDecoration: 'none' }}>
+                  Login
+                </Link>
+              </Button>
+              <Button>
+                <Link to="/signup" style={{ textDecoration: 'none' }}>
+                  Signup
+                </Link>
+              </Button>
+            </>
+          )}
         </ButtonGroup>
       </Toolbar>
     </AppBar>

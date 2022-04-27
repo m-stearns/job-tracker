@@ -39,9 +39,9 @@ export const PageRoutes = () => {
 };
 
 export const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isSignedIn } = useAuth();
+  const { user } = useAuth();
 
-  if (isSignedIn) {
+  if (user) {
     console.log('signed in');
   } else {
     console.log('not signed in');
@@ -50,9 +50,9 @@ export const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children 
 };
 
 export const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isSignedIn } = useAuth();
+  const { user } = useAuth();
 
-  if (isSignedIn) {
+  if (user) {
     return <>{children}</>;
   }
 
