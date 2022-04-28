@@ -82,7 +82,7 @@ export const CreateJob = () => {
       <Paper elevation={10} style={{ padding: '16px', margin: '16px auto' }}>
         <Stack spacing={2} justifyContent="center" alignItems="center">
           <Typography component="h1">Create Job Application</Typography>
-          <Box component="form" noValidate onSubmit={handleCreateJob} width="400px">
+          <Box component="form" noValidate width="400px">
             <Grid container spacing={2} alignItems="center" justifyContent="center">
               <Grid item xs={12}>
                 <TextField
@@ -140,7 +140,15 @@ export const CreateJob = () => {
               <Grid item xs={12} style={{ marginBottom: '24px' }}>
                 <FormControl fullWidth onChange={handleJobStatusChange}>
                   <InputLabel id="status-label">Status</InputLabel>
-                  <Select labelId="status-label" id="status" label="Status" required fullWidth variant="standard">
+                  <Select
+                    labelId="status-label"
+                    id="status"
+                    label="Status"
+                    required
+                    fullWidth
+                    variant="standard"
+                    defaultValue={'Applied'}
+                  >
                     <MenuItem value={'Applied'}>Applied</MenuItem>
                     <MenuItem value={'Interview Scheduled'}>Interview Scheduled</MenuItem>
                     <MenuItem value={'Decision Pending'}>Decision Pending</MenuItem>
@@ -213,7 +221,9 @@ export const CreateJob = () => {
                 <Button variant="outlined">Cancel</Button>
               </Grid>
               <Grid item xs={6}>
-                <Button variant="contained">Submit</Button>
+                <Button variant="contained" onClick={handleCreateJob}>
+                  Submit
+                </Button>
               </Grid>
               {/** end form buttons */}
             </Grid>
