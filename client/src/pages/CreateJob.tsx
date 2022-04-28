@@ -7,6 +7,7 @@ import {
   Grid,
   TextField,
   Select,
+  SelectChangeEvent,
   MenuItem,
   FormControl,
   InputLabel,
@@ -19,7 +20,7 @@ export const CreateJob = () => {
   const [companyName, setCompanyName] = useState<string>('');
   const [jobDesc, setJobDesc] = useState<string>('');
   const [jobURL, setJobURL] = useState<string>('');
-  const [jobStatus, setJobStatus] = useState<string>('');
+  const [jobStatus, setJobStatus] = useState<string>('Applied');
   const [contactName, setContactName] = useState<string>('');
   const [contactEmail, setContactEmail] = useState<string>('');
   const [contactPhoneNumber, setContactPhoneNumber] = useState<string>('');
@@ -41,7 +42,7 @@ export const CreateJob = () => {
     setJobURL(event.target.value);
   };
 
-  const handleJobStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleJobStatusChange = (event: SelectChangeEvent) => {
     setJobStatus(event.target.value);
   };
 
@@ -138,7 +139,7 @@ export const CreateJob = () => {
               </Grid>
               {/** end of joburl item */}
               <Grid item xs={12} style={{ marginBottom: '24px' }}>
-                <FormControl fullWidth onChange={handleJobStatusChange}>
+                <FormControl fullWidth>
                   <InputLabel id="status-label">Status</InputLabel>
                   <Select
                     labelId="status-label"
@@ -147,7 +148,8 @@ export const CreateJob = () => {
                     required
                     fullWidth
                     variant="standard"
-                    defaultValue={'Applied'}
+                    value={jobStatus}
+                    onChange={handleJobStatusChange}
                   >
                     <MenuItem value={'Applied'}>Applied</MenuItem>
                     <MenuItem value={'Interview Scheduled'}>Interview Scheduled</MenuItem>
