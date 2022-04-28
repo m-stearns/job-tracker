@@ -105,7 +105,6 @@ export const CreateJob = () => {
                   variant="standard"
                   fullWidth
                   required
-                  autoFocus
                   type="text"
                   onChange={handleCompanyNameChange}
                 />
@@ -118,7 +117,6 @@ export const CreateJob = () => {
                   variant="standard"
                   fullWidth
                   required
-                  autoFocus
                   multiline
                   type="text"
                   onChange={handleJobDescChange}
@@ -132,7 +130,6 @@ export const CreateJob = () => {
                   variant="standard"
                   fullWidth
                   required
-                  autoFocus
                   type="text"
                   onChange={handleJobURLChange}
                 />
@@ -175,7 +172,6 @@ export const CreateJob = () => {
                   label="Contact Name"
                   variant="standard"
                   fullWidth
-                  autoFocus
                   type="text"
                   onChange={handleContactNameChange}
                 />
@@ -187,7 +183,6 @@ export const CreateJob = () => {
                   label="Email Address"
                   variant="standard"
                   fullWidth
-                  autoFocus
                   type="text"
                   onChange={handleContactEmailChange}
                 />
@@ -199,7 +194,6 @@ export const CreateJob = () => {
                   label="Phone Number"
                   variant="standard"
                   fullWidth
-                  autoFocus
                   type="text"
                   onChange={handleContactPhoneNoChange}
                 />
@@ -211,7 +205,6 @@ export const CreateJob = () => {
                   label="Company"
                   variant="standard"
                   fullWidth
-                  autoFocus
                   type="text"
                   onChange={handleContactCompanyChange}
                 />
