@@ -11,7 +11,7 @@ const emailPattern = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
 export const Signup = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
-  const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [isEmailError, setIsEmailError] = useState<boolean>(false);
@@ -28,8 +28,8 @@ export const Signup = () => {
     setLastName(event.target.value);
   };
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
     setIsEmailError(false);
   };
 
@@ -44,13 +44,13 @@ export const Signup = () => {
   };
 
   const handleSignup = async () => {
-    // Validate username is email and passwords match
-    if (emailPattern.test(username) && password === confirmPassword) {
-      await registerUser({ firstName, lastName, username, password });
+    // Validate email is email and passwords match
+    if (emailPattern.test(email) && password === confirmPassword) {
+      await registerUser({ firstName, lastName, email, password });
       navigate('/', {});
       return;
     }
-    if (!emailPattern.test(username)) {
+    if (!emailPattern.test(email)) {
       setIsEmailError(true);
     }
     if (password !== confirmPassword) {
@@ -96,15 +96,15 @@ export const Signup = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  id="username"
-                  label="Username"
+                  id="email"
+                  label="Email"
                   variant="outlined"
                   required
                   fullWidth
-                  helperText={isEmailError && 'Username must be a valid email'}
+                  helperText={isEmailError && 'email must be a valid email'}
                   type="email"
                   error={isEmailError}
-                  onChange={handleUsernameChange}
+                  onChange={handleEmailChange}
                 />
               </Grid>
               <Grid item xs={12}>
