@@ -5,6 +5,11 @@ import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { Signup } from '../pages/Signup';
 import { CreateJob } from '../pages/CreateJob';
+import { CreateContact } from '../pages/CreateContact';
+import { ContactsHome } from '../pages/ContactsHome';
+import { ContactsView } from '../pages/ContactsView';
+import { ContactsEdit } from '../pages/ContactsEdit';
+import { ContactsDelete } from '../pages/ContactsDelete';
 import { useAuth } from './AuthContext';
 
 export const PageRoutes = () => {
@@ -40,6 +45,46 @@ export const PageRoutes = () => {
         element={
           <PublicRoute>
             <CreateJob />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/contacts"
+        element={
+          <PublicRoute>
+            <ContactsHome />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/contacts/create"
+        element={
+          <PublicRoute>
+            <CreateContact />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/contacts/view-contact"
+        element={
+          <PublicRoute>
+            <ContactsView />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/contacts/edit-contact"
+        element={
+          <PublicRoute>
+            <ContactsEdit />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/contacts/delete-contact"
+        element={
+          <PublicRoute>
+            <ContactsDelete />
           </PublicRoute>
         }
       />

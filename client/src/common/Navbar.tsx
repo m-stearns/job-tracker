@@ -38,6 +38,11 @@ export const Navbar = () => {
               </Button>
             </>
           )}
+          <Button>
+            <Link to="/contacts" style={{ textDecoration: 'none' }}>
+              Contacts
+            </Link>
+          </Button>
         </ButtonGroup>
       </Toolbar>
     </AppBar>
