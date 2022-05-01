@@ -23,18 +23,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(user);
   };
 
-  const registerUser = async ({ firstName, lastName, username, password }: { [key: string]: string }) => {
+  const registerUser = async ({ firstName, lastName, email, password }: { [key: string]: string }) => {
     const {
       data: { user, auth_token },
-    } = await register({ name: `${firstName} ${lastName}`, email: username, password });
+    } = await register({ name: `${firstName} ${lastName}`, email, password });
     localStorage.setItem('auth_token', auth_token);
     setUser(user);
   };
 
-  const loginUser = async ({ username, password }: { [key: string]: string }) => {
+  const loginUser = async ({ email, password }: { [key: string]: string }) => {
     const {
       data: { user, auth_token },
-    } = await login({ email: username, password });
+    } = await login({ email: email, password });
     // save token to localStorage
     localStorage.setItem('auth_token', auth_token);
     setUser(user);
