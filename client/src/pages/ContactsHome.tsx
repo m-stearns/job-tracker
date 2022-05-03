@@ -22,13 +22,9 @@ export const ContactsHome = () => {
       <Paper elevation={10} style={{ padding: '16px', margin: '16px auto' }}>
         <Stack spacing={5} justifyContent="left" alignItems="center">
           <Grid container spacing={0}>
-            <Button variant="contained" color="primary">
-              <Link to="/contacts/create" style={{ textDecoration: 'none' }}>
-                <Typography component="h1" color="#FFFFFF">
-                  Add New Contact
-                </Typography>
-              </Link>
-            </Button>
+            <Link to="/contacts/create" style={{ textDecoration: 'none' }}>
+              <Button variant="contained">ADD NEW CONTACT</Button>
+            </Link>
           </Grid>
           <Typography>Contacts</Typography>
           <TableContainer component={Paper}>
@@ -49,13 +45,9 @@ export const ContactsHome = () => {
                     <TableCell align="left">{row.phoneNumber}</TableCell>
                     <TableCell align="left">{row.company}</TableCell>
                     <TableCell align="left">
-                      <Button variant="contained" color="primary">
-                        <Link to="/contacts/view-contact" style={{ textDecoration: 'none' }}>
-                          <Typography component="h1" color="#FFFFFF">
-                            View
-                          </Typography>
-                        </Link>
-                      </Button>
+                      <Link to="/contacts/view/:id" style={{ textDecoration: 'none' }}>
+                        <Button variant="contained">View</Button>
+                      </Link>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -9,7 +9,6 @@ import { CreateContact } from '../pages/CreateContact';
 import { ContactsHome } from '../pages/ContactsHome';
 import { ContactsView } from '../pages/ContactsView';
 import { ContactsEdit } from '../pages/ContactsEdit';
-import { ContactsDelete } from '../pages/ContactsDelete';
 import { useAuth } from './AuthContext';
 
 export const PageRoutes = () => {
@@ -65,7 +64,7 @@ export const PageRoutes = () => {
         }
       />
       <Route
-        path="/contacts/view-contact"
+        path="/contacts/view/:id"
         element={
           <PublicRoute>
             <ContactsView />
@@ -73,18 +72,10 @@ export const PageRoutes = () => {
         }
       />
       <Route
-        path="/contacts/edit-contact"
+        path="/contacts/edit/:id"
         element={
           <PublicRoute>
             <ContactsEdit />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/contacts/delete-contact"
-        element={
-          <PublicRoute>
-            <ContactsDelete />
           </PublicRoute>
         }
       />
