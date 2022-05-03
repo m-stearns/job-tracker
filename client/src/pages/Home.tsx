@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export const Home = () => {
   const data = [
@@ -77,11 +77,11 @@ const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactEleme
   const navigate = useNavigate();
   return (
     <Stack spacing={4} sx={{ py: '24px' }}>
-      {/* <Link to="/create-job"> */}
-      <Button variant="contained" sx={{ width: 'fit-content' }} startIcon={<AddCircleOutlineIcon />}>
-        Add new job application
-      </Button>
-      {/* </Link> */}
+      <Link to="jobs/create" style={{ display: 'contents' }}>
+        <Button variant="contained" sx={{ width: 'fit-content' }} startIcon={<AddCircleOutlineIcon />}>
+          Add new job application
+        </Button>
+      </Link>
       <Typography component="h1" variant="h3">
         Current Job Applications:
       </Typography>

@@ -62,3 +62,30 @@ export const login = async ({ email, password }: { email: string; password: stri
 export const getCurrentUser = async () => {
   return await apiClient.get('/users/current_user');
 };
+
+// Jobs
+
+export const createJob = async ({
+  jobTitle,
+  companyName,
+  jobDesc,
+  jobURL,
+  jobStatus,
+  isInternship,
+}: {
+  jobTitle: string;
+  companyName: string;
+  jobDesc: string;
+  jobURL: string;
+  jobStatus: string;
+  isInternship: boolean;
+}) => {
+  return await apiClient.post('/jobs/create', {
+    jobTitle,
+    companyName,
+    jobDesc,
+    jobURL,
+    jobStatus,
+    isInternship,
+  });
+};

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   Typography,
+  Checkbox,
   Container,
   Stack,
   Box,
@@ -10,21 +11,27 @@ import {
   SelectChangeEvent,
   MenuItem,
   FormControl,
+  FormControlLabel,
   InputLabel,
   Button,
   Paper,
 } from '@mui/material';
+import { createJob } from '../repository';
+import { useNavigate } from 'react-router-dom';
 
 export const CreateJob = () => {
   const [jobTitle, setJobTitle] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
   const [jobDesc, setJobDesc] = useState<string>('');
   const [jobURL, setJobURL] = useState<string>('');
+  const [isInternship, setIsInternship] = useState<boolean>(false);
   const [jobStatus, setJobStatus] = useState<string>('Applied');
   const [contactName, setContactName] = useState<string>('');
   const [contactEmail, setContactEmail] = useState<string>('');
   const [contactPhoneNumber, setContactPhoneNumber] = useState<string>('');
   const [contactCompany, setContactCompany] = useState<string>('');
+
+  const navigate = useNavigate();
 
   const handleJobTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setJobTitle(event.target.value);
@@ -69,13 +76,21 @@ export const CreateJob = () => {
       jobDesc,
       jobURL,
       jobStatus,
+      isInternship,
       contactName,
       contactEmail,
       contactPhoneNumber,
       contactCompany,
     };
     // TODO - implement fetch here with HTTP POST, Content-Type application/json
-    console.log(jobRecord);
+    createJob(jobRecord)
+      .then(() => {
+        console.log('Job created successfully');
+        navigate('/');
+      })
+      .catch((err) => {
+        console.log('error creating job: ', err);
+      });
   };
 
   return (
@@ -135,6 +150,13 @@ export const CreateJob = () => {
                 />
               </Grid>
               {/** end of joburl item */}
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={<Checkbox checked={isInternship} onChange={() => setIsInternship(!isInternship)} />}
+                  label="This position is an internship"
+                />
+              </Grid>
+              {/** end of internship item */}
               <Grid item xs={12} style={{ marginBottom: '24px' }}>
                 <FormControl fullWidth>
                   <InputLabel id="status-label">Status</InputLabel>
