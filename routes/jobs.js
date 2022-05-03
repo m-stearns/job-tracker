@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const { JobController } = require("../controllers");
+const requireAuth = require('../middlewares/requireAuth.middleware')
 
 router.get("/", (_, res) => {
   res.json([
@@ -15,6 +17,8 @@ router.get("/", (_, res) => {
     },
   ]);
 });
+
+router.post("/create", requireAuth, JobController.create);
 
 router.use("/jobs", router);
 
