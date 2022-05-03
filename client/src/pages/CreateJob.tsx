@@ -30,23 +30,31 @@ export const CreateJob = () => {
   const [contactEmail, setContactEmail] = useState<string>('');
   const [contactPhoneNumber, setContactPhoneNumber] = useState<string>('');
   const [contactCompany, setContactCompany] = useState<string>('');
+  const [isTitleError, setTitleError] = useState<boolean>(false);
+  const [isCompanyError, setCompanyError] = useState<boolean>(false);
+  const [isDescriptionError, setDescriptionError] = useState<boolean>(false);
+  const [isUrlError, setUrlError] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const handleJobTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setJobTitle(event.target.value);
+    setTitleError(false);
   };
 
   const handleCompanyNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyName(event.target.value);
+    setCompanyError(false);
   };
 
   const handleJobDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setJobDesc(event.target.value);
+    setDescriptionError(false);
   };
 
   const handleJobURLChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setJobURL(event.target.value);
+    setUrlError(false);
   };
 
   const handleJobStatusChange = (event: SelectChangeEvent) => {
@@ -69,28 +77,36 @@ export const CreateJob = () => {
     setContactCompany(event.target.value);
   };
 
-  const handleCreateJob = () => {
-    const jobRecord = {
-      jobTitle,
-      companyName,
-      jobDesc,
-      jobURL,
-      jobStatus,
-      isInternship,
-      contactName,
-      contactEmail,
-      contactPhoneNumber,
-      contactCompany,
-    };
-    // TODO - implement fetch here with HTTP POST, Content-Type application/json
-    createJob(jobRecord)
-      .then(() => {
-        console.log('Job created successfully');
-        navigate('/');
-      })
-      .catch((err) => {
-        console.log('error creating job: ', err);
-      });
+  const handleCreateJob = async () => {
+    // Check required fields are filled out
+    if ([jobTitle, companyName, jobDesc, jobURL].every((field) => field.length > 0)) {
+      const jobRecord = {
+        jobTitle,
+        companyName,
+        jobDesc,
+        jobURL,
+        jobStatus,
+        isInternship,
+        contactName,
+        contactEmail,
+        contactPhoneNumber,
+        contactCompany,
+      };
+      // TODO - implement fetch here with HTTP POST, Content-Type application/json
+      await createJob(jobRecord)
+        .then(() => {
+          console.log('Job created successfully');
+          navigate('/');
+        })
+        .catch((err) => {
+          console.log('error creating job: ', err);
+        });
+    } else {
+      if (jobTitle.length === 0) setTitleError(true);
+      if (companyName.length === 0) setCompanyError(true);
+      if (jobDesc.length === 0) setDescriptionError(true);
+      if (jobURL.length === 0) setUrlError(true);
+    }
   };
 
   return (
@@ -109,6 +125,7 @@ export const CreateJob = () => {
                   required
                   autoFocus
                   type="text"
+                  error={isTitleError}
                   onChange={handleJobTitleChange}
                 />
               </Grid>
@@ -121,6 +138,7 @@ export const CreateJob = () => {
                   fullWidth
                   required
                   type="text"
+                  error={isCompanyError}
                   onChange={handleCompanyNameChange}
                 />
               </Grid>
@@ -134,6 +152,7 @@ export const CreateJob = () => {
                   required
                   multiline
                   type="text"
+                  error={isDescriptionError}
                   onChange={handleJobDescChange}
                 />
               </Grid>
@@ -146,6 +165,7 @@ export const CreateJob = () => {
                   fullWidth
                   required
                   type="text"
+                  error={isUrlError}
                   onChange={handleJobURLChange}
                 />
               </Grid>

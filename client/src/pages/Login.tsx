@@ -26,7 +26,7 @@ export const Login = () => {
   const handleLogin = async () => {
     // Validate email as email
     if (emailPattern.test(email)) {
-      await loginUser({ email, password });
+      await loginUser(email, password).catch(() => setIsError(true));
     } else {
       setIsError(true);
     }
