@@ -23,6 +23,18 @@ class JobController {
     }
   }
 
+  static async fetchByUserId(req, res) {
+    try {
+      const id = req.user.dataValues.id
+      const jobs = await Job.findAll({where: {userId: id}});
+      res.status(200).json(jobs);
+
+    } catch (error) {
+      console.log("error: ", error)
+      res.status(400).send({ error })
+    }
+  }
+
 }
 
 module.exports = { JobController };
