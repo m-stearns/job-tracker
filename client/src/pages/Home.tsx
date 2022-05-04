@@ -105,7 +105,7 @@ const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactEleme
             <TableBody>
               {data.map((row) => (
                 <TableRow
-                  key={row.title}
+                  key={row.id}
                   hover
                   // TODO: This will change in the future.
                   // I'm not sure how we want this click behavior to work or how the URL will be represented.

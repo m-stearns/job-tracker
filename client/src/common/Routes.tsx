@@ -36,9 +36,9 @@ export const PageRoutes = () => (
     <Route
       path="/jobs/create"
       element={
-        <PublicRoute>
+        <PrivateRoute>
           <CreateJob />
-        </PublicRoute>
+        </PrivateRoute>
       }
     />
   </Routes>

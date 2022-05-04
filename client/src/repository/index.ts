@@ -13,11 +13,9 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     // Update Request with auth header
-    console.log(config);
     const authToken = localStorage.getItem('auth_token');
     if (authToken && config.headers) {
       config.headers['x-auth-token'] = authToken;
-      console.log(config);
     }
     return config;
   },

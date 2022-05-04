@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Avatar, Button, Container, Link, Paper, Stack, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAuth } from '../common/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 
 const emailPattern = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
@@ -10,7 +10,7 @@ export const Login = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   const { user, loginUser } = useAuth();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +26,9 @@ export const Login = () => {
   const handleLogin = async () => {
     // Validate email as email
     if (emailPattern.test(email)) {
-      await loginUser(email, password).catch(() => setIsError(true));
+      await loginUser(email, password)
+        .then(() => navigate('/'))
+        .catch(() => setIsError(true));
     } else {
       setIsError(true);
     }

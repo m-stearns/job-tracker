@@ -98,7 +98,7 @@ export const CreateJob = () => {
           console.log('Job created successfully');
           navigate('/');
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           console.log('error creating job: ', err);
         });
     } else {
