@@ -1,20 +1,31 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 
 const headers: { [key: string]: string } = {
   'content-type': 'application/json',
 };
-
-const authToken = localStorage.getItem('auth_token');
-
-if (authToken) {
-  headers['x-auth-token'] = authToken;
-}
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   timeout: 10000,
   headers,
 });
+
+apiClient.interceptors.request.use(
+  (config: AxiosRequestConfig) => {
+    // Update Request with auth header
+    console.log(config);
+    const authToken = localStorage.getItem('auth_token');
+    if (authToken && config.headers) {
+      config.headers['x-auth-token'] = authToken;
+      console.log(config);
+    }
+    return config;
+  },
+  (error: AxiosError) => {
+    // Do something with request error
+    return Promise.reject(error);
+  },
+);
 
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
