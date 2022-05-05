@@ -18,7 +18,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 export const Home = () => {
-  const [jobsData, setJobsData] = useState<any[]>([]);
+  const [jobsData, setJobsData] = useState<JobRowData[]>([]);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
 
@@ -39,18 +39,32 @@ export const Home = () => {
       });
   };
   useEffect(() => {
-    handleGetJobs();
+    handleGetJobs().catch((err) => {
+      console.log('Error', err);
+      setIsPending(false);
+      setError(err.message);
+    });
   }, []);
 
   return (
     <Container maxWidth="lg">
       {error && <div>{error}</div>}
-      {isPending && <div>Loading...</div>}
-      {jobsData!.length > 0 && <DataTable data={jobsData} />}
-      {jobsData!.length === 0 && <NoContent />}
+      {isPending && <Loading />}
+      {!isPending && jobsData.length > 0 && <DataTable data={jobsData} />}
+      {!isPending && jobsData.length === 0 && <NoContent />}
     </Container>
   );
 };
+
+const Loading = () => (
+  <Container maxWidth="sm">
+    <Paper elevation={10} style={{ padding: '32px', margin: '16px auto' }}>
+      <Stack spacing={6} justifyContent="center" alignItems="center">
+        <Typography sx={{ fontStyle: 'italic', pt: '8px' }}>Loading...</Typography>
+      </Stack>
+    </Paper>
+  </Container>
+);
 
 const NoContent = () => (
   <Container maxWidth="sm">
