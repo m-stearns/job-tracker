@@ -10,30 +10,48 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.User, { foreignKey: "userId" });
+      this.hasMany(models.JobSkills, {
+        foreignKey: "jobId",
+        as: "skills",
+      });
+
     }
   }
   Job.init(
     {
       internship: {
-          type: DataTypes.BOOLEAN,
-          allowNull: false,
-          defaultValue: false,
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       title: {
-          type: DataTypes.STRING,
-          allowNull: false
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       company: {
-          type: DataTypes.STRING,
-          allowNull: false
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       description: DataTypes.TEXT,
       link: DataTypes.TEXT,
-      userId: DataTypes.UUID,
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        allowNull: false,
+      },
       status: {
-          type: DataTypes.ENUM("Applied", "Interview Scheduled", "Decision Pending", "Accepted", "Rejected"),
-          defaultValue: "Applied"
-      }
+        type: DataTypes.ENUM(
+          "Applied",
+          "Interview Scheduled",
+          "Decision Pending",
+          "Accepted",
+          "Rejected"
+        ),
+        defaultValue: "Applied",
+      },
     },
     {
       sequelize,
