@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.Job, {
+        foreignKey: "jobId",
+      });
     }
   }
   Contacts.init(
@@ -17,7 +20,20 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       phoneNo: DataTypes.STRING,
       company: DataTypes.STRING,
-      userId: DataTypes.UUID,
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+      },
+      jobId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "Jobs",
+          key: "id",
+        },
+      },
     },
     {
       sequelize,

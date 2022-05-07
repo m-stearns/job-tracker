@@ -1,4 +1,4 @@
-const { Job, Skill, JobSkills } = require("../models");
+const { Job, Skill, JobSkills, Contacts } = require("../models");
 
 class JobController {
   static async findAll(req, res) {
@@ -20,6 +20,10 @@ class JobController {
               },
             ],
           },
+          {
+            model: Contacts,
+            as: "contacts",
+          }
         ],
       });
 
