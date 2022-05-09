@@ -10,7 +10,7 @@ class JobController {
         description: req.body.jobDesc,
         link: req.body.jobURL,
         status: req.body.jobStatus,
-        userId: req.user.dataValues.id
+        userId: req.user.id
       };
       // TODO: Doing nothing with contact data
       // TODO: Doing nothing with skills data
