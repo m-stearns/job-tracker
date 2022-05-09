@@ -1,10 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import type React from 'react';
 
-import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { Signup } from '../pages/Signup';
-import { CreateJob } from '../pages/CreateJob';
+import { Home, CreateJob, ViewJob } from '../pages/jobPages';
 import { CreateContact } from '../pages/CreateContact';
 import { ContactsHome } from '../pages/ContactsHome';
 import { ContactsView } from '../pages/ContactsView';
@@ -45,6 +44,14 @@ export const PageRoutes = () => {
           <PublicRoute>
             <CreateJob />
           </PublicRoute>
+        }
+      />
+      <Route
+        path="/jobs/view/:jobId"
+        element={
+          <PrivateRoute>
+            <ViewJob />
+          </PrivateRoute>
         }
       />
       <Route
