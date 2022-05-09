@@ -16,7 +16,7 @@ import {
   Button,
   Paper,
 } from '@mui/material';
-import { createJob } from '../repository';
+import { createJob } from '../../repository';
 import { useNavigate } from 'react-router-dom';
 
 export const CreateJob = () => {
