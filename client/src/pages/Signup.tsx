@@ -4,7 +4,6 @@ import AddIcon from '@mui/icons-material/Add';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../common/AuthContext';
-// import { register } from '../repository';
 
 const emailPattern = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
@@ -16,12 +15,14 @@ export const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [isEmailError, setIsEmailError] = useState<boolean>(false);
   const [isPasswordError, setIsPasswordError] = useState<boolean>(false);
+  const [isNameError, setIsNameError] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const { user, registerUser } = useAuth();
 
   const handleFirstnameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFirstName(event.target.value);
+    setIsNameError(false);
   };
 
   const handleLastnameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,8 +47,9 @@ export const Signup = () => {
   const handleSignup = async () => {
     // Validate email is email and passwords match
     if (emailPattern.test(email) && password === confirmPassword) {
-      await registerUser({ firstName, lastName, email, password });
-      navigate('/', {});
+      await registerUser({ firstName, lastName, email, password })
+        .then(() => navigate('/', {}))
+        .catch(() => console.log('error creating account'));
       return;
     }
     if (!emailPattern.test(email)) {
@@ -55,6 +57,9 @@ export const Signup = () => {
     }
     if (password !== confirmPassword) {
       setIsPasswordError(true);
+    }
+    if (firstName === '') {
+      setIsNameError(true);
     }
   };
 
@@ -80,6 +85,7 @@ export const Signup = () => {
                   fullWidth
                   required
                   autoFocus
+                  error={isNameError}
                   type="text"
                   onChange={handleFirstnameChange}
                 />

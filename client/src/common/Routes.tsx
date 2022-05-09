@@ -7,54 +7,44 @@ import { Signup } from '../pages/Signup';
 import { CreateJob } from '../pages/CreateJob';
 import { useAuth } from './AuthContext';
 
-export const PageRoutes = () => {
-  console.log('we got here');
-  return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <PrivateRoute>
-            <Home />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          <PublicRoute>
-            <Signup />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/jobs/create"
-        element={
-          <PublicRoute>
-            <CreateJob />
-          </PublicRoute>
-        }
-      />
-    </Routes>
-  );
-};
+export const PageRoutes = () => (
+  <Routes>
+    <Route
+      path="/"
+      element={
+        <PrivateRoute>
+          <Home />
+        </PrivateRoute>
+      }
+    />
+    <Route
+      path="/login"
+      element={
+        <PublicRoute>
+          <Login />
+        </PublicRoute>
+      }
+    />
+    <Route
+      path="/signup"
+      element={
+        <PublicRoute>
+          <Signup />
+        </PublicRoute>
+      }
+    />
+    <Route
+      path="/jobs/create"
+      element={
+        <PrivateRoute>
+          <CreateJob />
+        </PrivateRoute>
+      }
+    />
+  </Routes>
+);
 
 export const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user } = useAuth();
-
-  if (user) {
-    console.log('signed in');
-  } else {
-    console.log('not signed in');
-  }
   return <>{children}</>;
 };
 
