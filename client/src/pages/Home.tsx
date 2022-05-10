@@ -13,44 +13,58 @@ import {
   Typography,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { fetchJobs } from '../repository';
 import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 export const Home = () => {
-  const data = [
-    {
-      title: 'Software Engineer 1',
-      id: 1,
-      company: 'InstaWhat',
-      status: 'Applied',
-      link: 'http://www.google.com',
-    },
-    {
-      title: 'Software Engineer 1',
-      id: 2,
-      company: 'InstaWhat2',
-      status: 'Applied',
-      link: 'http://www.google.com',
-    },
-    {
-      title: 'Software Engineer 1',
-      id: 3,
-      company: 'InstaWhat3',
-      status: 'Applied',
-      link: 'http://www.google.com',
-    },
-  ] as JobRowData[];
+  const [jobsData, setJobsData] = useState<JobRowData[]>([]);
+  const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Check if user has no applications
-  if (data.length === 0) {
-    return <NoContent />;
-  }
+  const handleGetJobs = async () => {
+    await fetchJobs()
+      .then((res) => {
+        return res.data;
+      })
+      .then((data) => {
+        setJobsData(data);
+        setIsPending(false);
+        setError(null);
+      })
+      .catch((err) => {
+        console.log('Error: ', err);
+        setIsPending(false);
+        setError(err.message);
+      });
+  };
+  useEffect(() => {
+    handleGetJobs().catch((err) => {
+      console.log('Error', err);
+      setIsPending(false);
+      setError(err.message);
+    });
+  }, []);
 
   return (
     <Container maxWidth="lg">
-      <DataTable data={data} />
+      {error && <div>{error}</div>}
+      {isPending && <Loading />}
+      {!isPending && jobsData.length > 0 && <DataTable data={jobsData} />}
+      {!isPending && jobsData.length === 0 && <NoContent />}
     </Container>
   );
 };
+
+const Loading = () => (
+  <Container maxWidth="sm">
+    <Paper elevation={10} style={{ padding: '32px', margin: '16px auto' }}>
+      <Stack spacing={6} justifyContent="center" alignItems="center">
+        <Typography sx={{ fontStyle: 'italic', pt: '8px' }}>Loading...</Typography>
+      </Stack>
+    </Paper>
+  </Container>
+);
 
 const NoContent = () => (
   <Container maxWidth="sm">
