@@ -9,7 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // TODO:
+      this.belongsTo(models.User, {
+        primaryKey: "userId",
+        as: "user"
+      });
+      this.belongsTo(models.Skill, {
+        primaryKey: "skillId",
+        as: "skill"
+      });
     }
   }
   UserSkills.init(
