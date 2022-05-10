@@ -88,5 +88,5 @@ export const createJob = async ({
 };
 
 export const fetchJobs = async () => {
-  return apiClient.get('/jobs/fetch');
+  return apiClient.get('/jobs');
 };
