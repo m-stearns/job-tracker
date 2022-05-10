@@ -82,17 +82,9 @@ const NoContent = () => (
     <Paper elevation={10} style={{ padding: '32px', margin: '16px auto' }}>
       <Stack spacing={6} justifyContent="center" alignItems="center">
         <Typography sx={{ fontStyle: 'italic', pt: '8px' }}>Nothing to see here...</Typography>
-        <Button
-          variant="contained"
-          // TODO: Remove onClick when Link is enabled
-          onClick={() => {
-            alert('TODO: go to create job page');
-          }}
-        >
-          {/* <Link to="/create-job" style={{ textDecoration: 'none' }}> */}
-          Create new application
-          {/* </Link> */}
-        </Button>
+        <Link to="/jobs/create" style={{ textDecoration: 'none' }}>
+          <Button variant="contained">Create new application</Button>
+        </Link>
       </Stack>
     </Paper>
   </Container>
@@ -132,8 +124,6 @@ const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactEleme
                 <TableRow
                   key={row.id}
                   hover
-                  // TODO: This will change in the future.
-                  // I'm not sure how we want this click behavior to work or how the URL will be represented.
                   onClick={() => navigate(`/jobs/view/${row.id}`)}
                   sx={{
                     '&:hover': {
