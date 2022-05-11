@@ -84,13 +84,6 @@ export const PageRoutes = () => {
 };
 
 export const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user } = useAuth();
-
-  if (user) {
-    console.log('signed in');
-  } else {
-    console.log('not signed in');
-  }
   return <>{children}</>;
 };
 
