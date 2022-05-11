@@ -46,7 +46,7 @@ export const ContactsView = () => {
                 </Link>
               </Grid>
               <Grid item xs={4}>
-                <Link to="/contacts/edit/:id" style={{ textDecoration: 'none' }}>
+                <Link to="/contacts/edit/${row.id}" style={{ textDecoration: 'none' }}>
                   <Button variant="contained">Edit</Button>
                 </Link>
               </Grid>

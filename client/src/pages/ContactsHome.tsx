@@ -7,13 +7,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-function createData(name: string, email: string, phoneNumber: string, company: string) {
-  return { name, email, phoneNumber, company };
+function createData(name: string, email: string, phoneNumber: string, company: string, id: number) {
+  return { name, email, phoneNumber, company, id };
 }
 
 const rows = [
-  createData('John Doe', 'test@email.com', '555-555-5555', 'Google'),
-  createData('Jane Smith', 'jane@yahoo.com', '555-555-5555', 'Amazon'),
+  createData('John Doe', 'test@email.com', '555-555-5555', 'Google', 1),
+  createData('Jane Smith', 'jane@yahoo.com', '555-555-5555', 'Amazon', 2),
 ];
 
 export const ContactsHome = () => {
@@ -45,7 +45,7 @@ export const ContactsHome = () => {
                     <TableCell align="left">{row.phoneNumber}</TableCell>
                     <TableCell align="left">{row.company}</TableCell>
                     <TableCell align="left">
-                      <Link to="/contacts/view/:id" style={{ textDecoration: 'none' }}>
+                      <Link to="/contacts/view/${row.id}" style={{ textDecoration: 'none' }}>
                         <Button variant="contained">View</Button>
                       </Link>
                     </TableCell>
