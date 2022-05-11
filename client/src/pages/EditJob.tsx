@@ -14,6 +14,7 @@ import {
   MenuItem,
   SelectChangeEvent,
   Button,
+  Link,
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -153,12 +154,25 @@ export const EditJob = () => {
               {/** end of status item */}
               <Typography component="h1">Edit Skills</Typography>
               {/** TODO - Need to grab values from Skills here */}
-              <Grid item xs={12} style={{ marginBottom: '24px' }}>
+              <Grid item xs={12} style={{ marginBottom: '48px' }}>
                 <Button color="primary" sx={{ borderRadius: 28 }} variant="contained">
                   <Typography variant="body2">+Add Skill</Typography>
                 </Button>
               </Grid>
               {/** end of edit skills item */}
+              <Grid item xs={4}>
+                <Button variant="outlined">Cancel</Button>
+              </Grid>
+              <Grid item xs={4}>
+                <Button variant="contained">Submit</Button>
+              </Grid>
+              <Grid item xs={4}>
+                <Button variant="contained" color="secondary">
+                  <Link variant="body2" color="inherit" style={{ textDecoration: 'none' }}>
+                    Edit Contact
+                  </Link>
+                </Button>
+              </Grid>
             </Grid>
             {/** end of container */}
           </Box>
