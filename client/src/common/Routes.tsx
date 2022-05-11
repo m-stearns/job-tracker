@@ -50,33 +50,33 @@ export const PageRoutes = () => {
       <Route
         path="/contacts"
         element={
-          <PublicRoute>
+          <PrivateRoute>
             <ContactsHome />
-          </PublicRoute>
+          </PrivateRoute>
         }
       />
       <Route
         path="/contacts/create"
         element={
-          <PublicRoute>
+          <PrivateRoute>
             <CreateContact />
-          </PublicRoute>
+          </PrivateRoute>
         }
       />
       <Route
         path="/contacts/view/:id"
         element={
-          <PublicRoute>
+          <PrivateRoute>
             <ContactsView />
-          </PublicRoute>
+          </PrivateRoute>
         }
       />
       <Route
         path="/contacts/edit/:id"
         element={
-          <PublicRoute>
+          <PrivateRoute>
             <ContactsEdit />
-          </PublicRoute>
+          </PrivateRoute>
         }
       />
     </Routes>
