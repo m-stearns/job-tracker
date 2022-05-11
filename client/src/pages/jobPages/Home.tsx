@@ -1,4 +1,3 @@
-// import { useState } from 'react';
 import {
   Button,
   Container,
@@ -13,46 +12,38 @@ import {
   Typography,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-// import { fetchJobs } from '../../repository';
+import { fetchJobs } from '../../repository';
 import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import type { JobRowData } from '../../types';
 
 export const Home = () => {
   const [jobsData, setJobsData] = useState<JobRowData[]>([]);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
 
-  // const handleGetJobs = async () => {
-  //   await fetchJobs()
-  //     .then((res) => {
-  //       return res.data;
-  //     })
-  //     .then((data) => {
-  //       setJobsData(data);
-  //       setIsPending(false);
-  //       setError(null);
-  //     })
-  //     .catch((err) => {
-  //       console.log('Error: ', err);
-  //       setIsPending(false);
-  //       setError(err.message);
-  //     });
-  // };
+  const handleGetJobs = async () => {
+    await fetchJobs()
+      .then((res) => {
+        return res.data;
+      })
+      .then((data) => {
+        setJobsData(data);
+        setIsPending(false);
+        setError(null);
+      })
+      .catch((err) => {
+        console.log('Error: ', err);
+        setIsPending(false);
+        setError(err.message);
+      });
+  };
   useEffect(() => {
-    // handleGetJobs().catch((err) => {
-    //   console.log('Error', err);
-    //   setIsPending(false);
-    //   setError(err.message);
-    // });
-    setJobsData([
-      {
-        id: '123', // We can change this to a UUID later. Just doing this for simplicity
-        title: 'swe1',
-        company: 'apple',
-        status: 'applied',
-        link: 'www.google.com',
-      },
-    ]);
+    handleGetJobs().catch((err) => {
+      console.log('Error', err);
+      setIsPending(false);
+      setError(err.message);
+    });
     setIsPending(false);
     setError(null);
   }, []);
@@ -148,12 +139,4 @@ const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactEleme
       </Paper>
     </Stack>
   );
-};
-
-type JobRowData = {
-  id: string; // We can change this to a UUID later. Just doing this for simplicity
-  title: string;
-  company: string;
-  status: string;
-  link: string;
 };
