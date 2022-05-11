@@ -5,6 +5,7 @@ import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { Signup } from '../pages/Signup';
 import { CreateJob } from '../pages/CreateJob';
+import { EditJob } from '../pages/EditJob';
 import { useAuth } from './AuthContext';
 
 export const PageRoutes = () => (
@@ -38,6 +39,14 @@ export const PageRoutes = () => (
       element={
         <PrivateRoute>
           <CreateJob />
+        </PrivateRoute>
+      }
+    />
+    <Route
+      path="/jobs/edit"
+      element={
+        <PrivateRoute>
+          <EditJob />
         </PrivateRoute>
       }
     />
