@@ -2,19 +2,19 @@ import { useState } from 'react';
 import { Avatar, Button, Container, Link, Paper, Stack, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAuth } from '../common/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 
 const emailPattern = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
 export const Login = () => {
-  const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   const { user, loginUser } = useAuth();
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
     setIsError(false);
   };
 
@@ -24,9 +24,11 @@ export const Login = () => {
   };
 
   const handleLogin = async () => {
-    // Validate username as email
-    if (emailPattern.test(username)) {
-      await loginUser({ username, password });
+    // Validate email as email
+    if (emailPattern.test(email)) {
+      await loginUser(email, password)
+        .then(() => navigate('/'))
+        .catch(() => setIsError(true));
     } else {
       setIsError(true);
     }
@@ -45,14 +47,14 @@ export const Login = () => {
           </Avatar>
           <Typography component="h1">Sign in</Typography>
           <TextField
-            id="username"
-            label="Username"
+            id="email"
+            label="Email"
             variant="outlined"
             required
             fullWidth
             type="email"
             error={isError}
-            onChange={handleUsernameChange}
+            onChange={handleEmailChange}
           />
           <TextField
             id="password"

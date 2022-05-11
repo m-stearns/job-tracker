@@ -12,6 +12,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,  // Allows for the parsing of JSX
     },
+    project: './tsconfig.json'
   },
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
@@ -22,6 +23,7 @@ module.exports = {
     // allow jsx syntax in js files (for next.js project)
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }], //should add ".ts" if typescript project
     "react/prop-types": "off",
+    "@typescript-eslint/no-floating-promises": "warn",
   },
   settings: {
     react: {

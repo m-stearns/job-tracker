@@ -1,19 +1,26 @@
 import * as React from 'react';
 import { getCurrentUser, register, login } from '../repository';
 
+type UserData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
 type AuthContextType = {
-  user: { [key: string]: any } | null;
-  fetchUser: () => any;
-  setUser: any;
-  registerUser: any;
-  loginUser: any;
-  logoutUser: any;
+  user: UserData | null;
+  fetchUser: () => void;
+  setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
+  registerUser: (userData: UserData) => Promise<void>;
+  loginUser: (email: string, password: string) => Promise<void>;
+  logoutUser: () => void;
 };
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = React.useState<UserData | null>(null);
 
   const fetchUser = async () => {
     const {
@@ -23,18 +30,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(user);
   };
 
-  const registerUser = async ({ firstName, lastName, username, password }: { [key: string]: string }) => {
+  const registerUser = async ({ firstName, lastName, email, password }: UserData) => {
     const {
       data: { user, auth_token },
-    } = await register({ name: `${firstName} ${lastName}`, email: username, password });
+    } = await register({ name: `${firstName} ${lastName}`, email, password });
     localStorage.setItem('auth_token', auth_token);
     setUser(user);
   };
 
-  const loginUser = async ({ username, password }: { [key: string]: string }) => {
+  const loginUser = async (email: string, password: string) => {
     const {
       data: { user, auth_token },
-    } = await login({ email: username, password });
+    } = await login({ email: email, password });
     // save token to localStorage
     localStorage.setItem('auth_token', auth_token);
     setUser(user);
@@ -46,7 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   React.useEffect(() => {
-    fetchUser();
+    fetchUser().catch(() => console.log('error fetching user'));
   }, []);
 
   const value = { user, fetchUser, setUser, registerUser, loginUser, logoutUser };

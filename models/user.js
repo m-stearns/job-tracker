@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Job, {
         foreignKey: "userId",
       });
+      this.hasMany(models.UserSkills, {
+        foreignKey: "userId",
+        as: "skills",
+      });
     }
 
     genAuthToken() {
@@ -42,7 +46,21 @@ module.exports = (sequelize, DataTypes) => {
     static findByToken(token) {
       try {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        return this.findByPk(decodedToken.userId);
+        return User.findOne({
+          where: { id: decodedToken.userId },
+          include: [
+            {
+              model: sequelize.models.UserSkills,
+              as: "skills",
+              include: [
+                {
+                  model: sequelize.models.Skill,
+                  as: "skill",
+                },
+              ],
+            },
+          ],
+        });
       } catch (error) {
         throw new Error(error);
       }

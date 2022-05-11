@@ -7,7 +7,7 @@ module.exports = async (req, res, next) => {
     if (!user) {
       res.status(401).send();
     }
-    req.user = user;
+    req.user = user.dataValues;
     next();
   } catch (error) {
     console.error(error);
