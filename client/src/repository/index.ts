@@ -62,7 +62,6 @@ export const getCurrentUser = async () => {
 };
 
 // Jobs
-
 export const createJob = async ({
   jobTitle,
   companyName,
@@ -86,4 +85,8 @@ export const createJob = async ({
     jobStatus,
     isInternship,
   });
+};
+
+export const fetchJobs = async () => {
+  return apiClient.get('/jobs');
 };
