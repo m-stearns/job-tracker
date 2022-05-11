@@ -3,34 +3,10 @@ import { styled } from '@mui/material/styles';
 import { Typography, Chip, Container, Stack, Paper } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { StatusBar } from './StatusBar';
-
-type JobData = {
-  jobId: string;
-  title: string;
-  company: string;
-  description: string;
-  status: string;
-  link: string;
-  internship: boolean;
-};
-
-type Skill = {
-  id: string;
-  name: string;
-};
-
-type Contact = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  company: string;
-};
+import type { JobData, Skill } from '../../types';
 
 export const ViewJob = () => {
   const [jobData, setJobData] = useState<JobData | undefined>(undefined);
-  const [skills, setSkills] = useState<Skill[]>([]);
-  const [contact, setContact] = useState<Contact | undefined>(undefined);
   const { jobId } = useParams() as { jobId: string };
 
   // TODO: Remove after API call
@@ -47,24 +23,24 @@ export const ViewJob = () => {
   useEffect(() => {
     setJobData({
       ...tempSuperFakeNotRealJob,
-      jobId,
-    });
-    setSkills([
-      {
-        id: '12345',
-        name: 'Python',
+      id: jobId,
+      skills: [
+        {
+          id: '12345',
+          name: 'Python',
+        },
+        {
+          id: '54321',
+          name: 'Django',
+        },
+      ],
+      contact: {
+        id: '11111',
+        name: 'Maebe Funke',
+        email: 'maybe@fakeblock.com',
+        phone: '555-555-5555',
+        company: 'FakeBlock',
       },
-      {
-        id: '54321',
-        name: 'Django',
-      },
-    ]);
-    setContact({
-      id: '11111',
-      name: 'Maebe Funke',
-      email: 'maybe@fakeblock.com',
-      phone: '555-555-5555',
-      company: 'FakeBlock',
     });
   }, []);
 
@@ -107,35 +83,35 @@ export const ViewJob = () => {
             </Typography>
             <Typography component="dd">{jobData.status}</Typography>
           </Stack>
-          {skills.length > 0 && (
+          {jobData.skills.length > 0 && (
             <>
               <Typography component="h2" variant="h5">
                 Required Skills
               </Typography>
-              <SkillsChips skills={skills} />
+              <SkillsChips skills={jobData.skills} />
             </>
           )}
           <Typography component="h2" variant="h5">
             Contact
           </Typography>
-          {contact ? (
+          {jobData.contact ? (
             <Stack spacing={1} component="dl">
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Name
               </Typography>
-              <Typography component="dd">{contact.name}</Typography>
+              <Typography component="dd">{jobData.contact.name}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Email
               </Typography>
-              <Typography component="dd">{contact.email}</Typography>
+              <Typography component="dd">{jobData.contact.email}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Phone Number
               </Typography>
-              <Typography component="dd">{contact.phone}</Typography>
+              <Typography component="dd">{jobData.contact.phone}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Company
               </Typography>
-              <Typography component="dd">{contact.company}</Typography>
+              <Typography component="dd">{jobData.contact.company}</Typography>
             </Stack>
           ) : (
             <p>There is no contact information for this job</p>

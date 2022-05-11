@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import { JobRowData, UserData } from '../types';
 
 const headers: { [key: string]: string } = {
   'content-type': 'application/json',
@@ -58,7 +59,7 @@ export const login = async ({ email, password }: { email: string; password: stri
 };
 
 export const getCurrentUser = async () => {
-  return await apiClient.get('/users/current_user');
+  return await apiClient.get<{ user: UserData }>('/users/current_user');
 };
 
 // Jobs
@@ -88,5 +89,5 @@ export const createJob = async ({
 };
 
 export const fetchJobs = async () => {
-  return apiClient.get('/jobs');
+  return apiClient.get<JobRowData[]>('/jobs');
 };

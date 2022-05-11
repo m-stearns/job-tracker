@@ -1,18 +1,12 @@
 import * as React from 'react';
 import { getCurrentUser, register, login } from '../repository';
-
-type UserData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
+import type { UserData, UserInputData } from '../types';
 
 type AuthContextType = {
   user: UserData | null;
   fetchUser: () => void;
   setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
-  registerUser: (userData: UserData) => Promise<void>;
+  registerUser: (userData: UserInputData) => Promise<void>;
   loginUser: (email: string, password: string) => Promise<void>;
   logoutUser: () => void;
 };
@@ -26,11 +20,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const {
       data: { user },
     } = await getCurrentUser();
-
+    console.log(user);
     setUser(user);
   };
 
-  const registerUser = async ({ firstName, lastName, email, password }: UserData) => {
+  const registerUser = async ({ firstName, lastName, email, password }: UserInputData) => {
     const {
       data: { user, auth_token },
     } = await register({ name: `${firstName} ${lastName}`, email, password });
