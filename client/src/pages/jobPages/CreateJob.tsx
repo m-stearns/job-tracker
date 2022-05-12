@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { createJob } from '../../repository';
 import { useNavigate } from 'react-router-dom';
-import { SkillsUpdate, skillDataRecord } from '../common/SkillsUpdate';
+import { SkillsUpdate, skillDataRecord } from '../../common/SkillsUpdate';
 
 export const CreateJob = () => {
   const [jobTitle, setJobTitle] = useState<string>('');
