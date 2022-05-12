@@ -18,7 +18,11 @@ import {
 } from '@mui/material';
 import { createJob } from '../../repository';
 import { useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
 import { SkillsUpdate, skillDataRecord } from '../../common/SkillsUpdate';
+=======
+import { SkillsUpdate, skillDataRecord } from '../common/SkillsUpdate';
+>>>>>>> 7dd2ce8 (SkillsUpdate component now accepts skills state and setSkills hook to add skills to skillsData array.)
 
 export const CreateJob = () => {
   const [jobTitle, setJobTitle] = useState<string>('');
