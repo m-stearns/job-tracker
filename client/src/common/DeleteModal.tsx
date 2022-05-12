@@ -33,7 +33,7 @@ export const DeleteModal: React.FunctionComponent<{
         </Grid>
         <Grid item xs={4}>
           <Button variant="contained" onClick={closeModal}>
-            Back
+            Cancel
           </Button>
         </Grid>
         <Grid item xs={4}>
