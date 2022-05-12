@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { SetStateAction, useState } from 'react';
 import { Button, TextField, Typography, Grid, Box, Chip } from '@mui/material';
 
-type skillDataRecord = {
+export type skillDataRecord = {
   name: string;
   rating: number;
 };
 
-export const SkillsUpdate = () => {
+export const SkillsUpdate: React.FC<{
+  skillsData: skillDataRecord[];
+  setSkills: React.Dispatch<SetStateAction<skillDataRecord[]>>;
+}> = ({ skillsData, setSkills }): React.ReactElement => {
   const [skillName, setSkillName] = useState<string>('');
   const [skillRating, setSkillRating] = useState<number>(0);
-  const [skills, setSkills] = useState<skillDataRecord[]>([]);
 
   const minRating = 1;
   const maxRating = 5;
@@ -26,21 +28,20 @@ export const SkillsUpdate = () => {
       name: skillName,
       rating: skillRating,
     };
-    skills.push(newSkill);
-    setSkills([...skills]);
+    skillsData.push(newSkill);
+    setSkills([...skillsData]);
   };
   const handleChipDelete = (skillName: string) => {
-    console.log(`delete pressed for ${skillName}!`);
     let index = -1;
-    for (let i = 0; i < skills.length; i++) {
-      if (skillName == skills[i].name) {
+    for (let i = 0; i < skillsData.length; i++) {
+      if (skillName == skillsData[i].name) {
         index = i;
         break;
       }
     }
     if (index > -1) {
-      skills.splice(index, 1);
-      setSkills([...skills]);
+      skillsData.splice(index, 1);
+      setSkills([...skillsData]);
     }
   };
 
@@ -73,7 +74,7 @@ export const SkillsUpdate = () => {
         </Button>
       </Grid>
       <Grid item xs={12} style={{ marginBottom: '48px' }}>
-        {skills.map((skill) => (
+        {skillsData.map((skill) => (
           <Chip
             key={skill.name}
             label={skill.name + ': ' + skill.rating}

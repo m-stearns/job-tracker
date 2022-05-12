@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { createJob } from '../repository';
 import { useNavigate } from 'react-router-dom';
-import { SkillsUpdate } from '../common/SkillsUpdate';
+import { SkillsUpdate, skillDataRecord } from '../common/SkillsUpdate';
 
 export const CreateJob = () => {
   const [jobTitle, setJobTitle] = useState<string>('');
@@ -35,6 +35,7 @@ export const CreateJob = () => {
   const [isCompanyError, setCompanyError] = useState<boolean>(false);
   const [isDescriptionError, setDescriptionError] = useState<boolean>(false);
   const [isUrlError, setUrlError] = useState<boolean>(false);
+  const [skillsData, setSkillsData] = useState<skillDataRecord[]>([]);
 
   const navigate = useNavigate();
 
@@ -202,7 +203,7 @@ export const CreateJob = () => {
               {/** end of status item */}
               <Typography component="h1">Add Skills</Typography>
               {/** TODO - Need to grab values from Skills here */}
-              <SkillsUpdate></SkillsUpdate>
+              <SkillsUpdate skillsData={skillsData} setSkills={setSkillsData} />
               {/** end of add skills item */}
               <Typography component="h1">Add Contact (optional)</Typography>
               <Grid item xs={12}>
