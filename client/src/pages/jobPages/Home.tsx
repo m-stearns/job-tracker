@@ -1,4 +1,3 @@
-// import { useState } from 'react';
 import {
   Button,
   Container,
@@ -13,9 +12,10 @@ import {
   Typography,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { fetchJobs } from '../repository';
+import { fetchJobs } from '../../repository';
 import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import type { JobRowData } from '../../types';
 
 export const Home = () => {
   const [jobsData, setJobsData] = useState<JobRowData[]>([]);
@@ -44,6 +44,8 @@ export const Home = () => {
       setIsPending(false);
       setError(err.message);
     });
+    setIsPending(false);
+    setError(null);
   }, []);
 
   return (
@@ -71,17 +73,9 @@ const NoContent = () => (
     <Paper elevation={10} style={{ padding: '32px', margin: '16px auto' }}>
       <Stack spacing={6} justifyContent="center" alignItems="center">
         <Typography sx={{ fontStyle: 'italic', pt: '8px' }}>Nothing to see here...</Typography>
-        <Button
-          variant="contained"
-          // TODO: Remove onClick when Link is enabled
-          onClick={() => {
-            alert('TODO: go to create job page');
-          }}
-        >
-          {/* <Link to="/create-job" style={{ textDecoration: 'none' }}> */}
-          Create new application
-          {/* </Link> */}
-        </Button>
+        <Link to="/jobs/create" style={{ textDecoration: 'none' }}>
+          <Button variant="contained">Create new application</Button>
+        </Link>
       </Stack>
     </Paper>
   </Container>
@@ -121,9 +115,7 @@ const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactEleme
                 <TableRow
                   key={row.id}
                   hover
-                  // TODO: This will change in the future.
-                  // I'm not sure how we want this click behavior to work or how the URL will be represented.
-                  onClick={() => navigate(`/jobs/${row.id}`)}
+                  onClick={() => navigate(`/jobs/view/${row.id}`)}
                   sx={{
                     '&:hover': {
                       cursor: 'pointer',
@@ -147,12 +139,4 @@ const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactEleme
       </Paper>
     </Stack>
   );
-};
-
-type JobRowData = {
-  id: number; // We can change this to a UUID later. Just doing this for simplicity
-  title: string;
-  company: string;
-  status: string;
-  link: string;
 };
