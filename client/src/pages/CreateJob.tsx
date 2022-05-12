@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import { createJob } from '../repository';
 import { useNavigate } from 'react-router-dom';
+import { SkillsUpdate } from '../common/SkillsUpdate';
 
 export const CreateJob = () => {
   const [jobTitle, setJobTitle] = useState<string>('');
@@ -201,11 +202,7 @@ export const CreateJob = () => {
               {/** end of status item */}
               <Typography component="h1">Add Skills</Typography>
               {/** TODO - Need to grab values from Skills here */}
-              <Grid item xs={12} style={{ marginBottom: '24px' }}>
-                <Button color="primary" sx={{ borderRadius: 28 }} variant="contained">
-                  <Typography variant="body2">+Add Skill</Typography>
-                </Button>
-              </Grid>
+              <SkillsUpdate></SkillsUpdate>
               {/** end of add skills item */}
               <Typography component="h1">Add Contact (optional)</Typography>
               <Grid item xs={12}>
