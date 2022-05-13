@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import { JobRowData, UserData } from '../types';
+import type { JobRowData, UserData, JobData } from '../types';
 
 const headers: { [key: string]: string } = {
   'content-type': 'application/json',
@@ -90,4 +90,8 @@ export const createJob = async ({
 
 export const fetchJobs = async () => {
   return apiClient.get<JobRowData[]>('/jobs');
+};
+
+export const editJob = async (jobId: string, newJobData: Partial<JobData>) => {
+  return apiClient.put(`/jobs/edit/${jobId}`, { newJobData });
 };
