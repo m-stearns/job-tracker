@@ -88,6 +88,33 @@ class JobController {
       res.status(500).send(error);
     }
   }
+
+  static async edit(req, res) {
+    try {
+      const jobId = req.params.jobId;
+
+      await Job.update(
+        {
+          title: req.body.jobTitle,
+          internship: req.body.isInternship,
+          company: req.body.companyName,
+          description: req.body.jobDesc,
+          link: req.body.jobURL,
+          status: req.body.jobStatus,
+        },
+        {
+          where: {
+            id: jobId
+          }
+        }
+      )
+      // TODO: Doing nothing with contact data
+      // TODO: Doing nothing with skills data
+      res.status(200).send('OK')
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
 }
 
 module.exports = { JobController };

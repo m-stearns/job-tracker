@@ -78,7 +78,7 @@ export const createJob = async ({
   jobStatus: string;
   isInternship: boolean;
 }) => {
-  return await apiClient.post('/jobs/create', {
+  return await apiClient.post('/jobs', {
     jobTitle,
     companyName,
     jobDesc,
