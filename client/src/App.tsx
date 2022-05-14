@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme } from '@mui/material';
 import { AuthProvider } from './common/AuthContext';
 import { PageRoutes } from './common/Routes';
 import { Layout } from './common/Layout';
+import { JobsQueryProvider } from './common/JobsQueryProvider';
 
 const theme = createTheme();
 
@@ -12,9 +13,11 @@ export const App = () => {
     <ThemeProvider theme={theme}>
       <AuthProvider>
         <BrowserRouter>
-          <Layout>
-            <PageRoutes />
-          </Layout>
+          <JobsQueryProvider>
+            <Layout>
+              <PageRoutes />
+            </Layout>
+          </JobsQueryProvider>
         </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>
