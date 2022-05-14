@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import { JobRowData, UserData } from '../types';
+import { JobRowData, UserData, Contact } from '../types';
 
 const headers: { [key: string]: string } = {
   'content-type': 'application/json',
@@ -90,4 +90,28 @@ export const createJob = async ({
 
 export const fetchJobs = async () => {
   return apiClient.get<JobRowData[]>('/jobs');
+};
+
+// Contacts
+export const createContact = async ({
+  contactName,
+  email,
+  phoneNumber,
+  company,
+}: {
+  contactName: string;
+  email: string;
+  phoneNumber: string;
+  company: string;
+}) => {
+  return await apiClient.post('/contacts/create', {
+    contactName,
+    email,
+    phoneNumber,
+    company,
+  });
+};
+
+export const fetchContacts = async () => {
+  return apiClient.get<Contact[]>('/contacts');
 };
