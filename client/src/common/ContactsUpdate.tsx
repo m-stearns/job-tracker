@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Typography, Container, Stack, Box, Grid, TextField, Button, Paper } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { createContact } from '../repository';
+import { useNavigate } from 'react-router-dom';
 
 interface ContactsProps {
   title: string;
@@ -8,10 +10,12 @@ interface ContactsProps {
 }
 
 export const ContactsUpdate = (props: ContactsProps) => {
-  const [contactName, setContactName] = useState<string>('');
-  const [contactEmail, setContactEmail] = useState<string>('');
-  const [contactPhoneNumber, setContactPhoneNumber] = useState<string>('');
-  const [contactCompany, setContactCompany] = useState<string>('');
+  const [ContactName, setContactName] = useState<string>('');
+  const [ContactEmail, setContactEmail] = useState<string>('');
+  const [ContactPhoneNumber, setContactPhoneNumber] = useState<string>('');
+  const [ContactCompany, setContactCompany] = useState<string>('');
+
+  const navigate = useNavigate();
 
   const handleContactNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setContactName(event.target.value);
@@ -29,15 +33,24 @@ export const ContactsUpdate = (props: ContactsProps) => {
     setContactCompany(event.target.value);
   };
 
-  const handleCreateContact = () => {
+  const handleCreateContact = async () => {
     const contactRecord = {
-      contactName,
-      contactEmail,
-      contactPhoneNumber,
-      contactCompany,
+      contactName: ContactName,
+      email: ContactEmail,
+      phoneNumber: ContactPhoneNumber,
+      company: ContactCompany,
     };
-    console.log(contactRecord);
+    await createContact(contactRecord)
+      .then(() => {
+        console.log('Contact created');
+        console.log(contactRecord);
+        navigate('/contacts');
+      })
+      .catch((err: Error) => {
+        console.log('error creating contact: ', err);
+      });
   };
+
   return (
     <Container maxWidth="lg">
       <Paper elevation={10} style={{ padding: '16px', margin: '16px auto' }}>
