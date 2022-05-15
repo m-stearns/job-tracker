@@ -96,22 +96,39 @@ export const fetchJobs = async () => {
 export const createContact = async ({
   contactName,
   email,
-  phoneNumber,
+  phoneNo,
   company,
+  jobId,
 }: {
   contactName: string;
   email: string;
-  phoneNumber: string;
+  phoneNo: string;
   company: string;
+  jobId: string;
 }) => {
   return await apiClient.post('/contacts/create', {
     contactName,
     email,
-    phoneNumber,
+    phoneNo,
     company,
+    jobId,
   });
 };
 
 export const fetchContacts = async () => {
   return apiClient.get<Contact[]>('/contacts');
+};
+
+export const getContact = async (id:string) => {
+  try{
+    var result = parseInt(id); 
+    return await apiClient.get('/current_contact', {
+      params: {
+        ID: result
+      }, 
+    });
+
+  } catch(error) {
+    console.log(error); 
+  }
 };

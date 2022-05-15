@@ -1,13 +1,36 @@
-import { Container, Stack, Box, Grid, Button, Paper, Typography } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import * as React from 'react';
-import { DeleteModal } from '../common/DeleteModal';
-import { Contact } from '../types';
+import { Container, Stack, Box, Grid, Button, Paper, Modal, Typography } from '@mui/material';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import type { Contact } from '../../types';
+import { getContact } from '../../repository';
+//import { AxiosResponse } from 'axios';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
+var blankContact: Contact = {
+  name: '', 
+  phoneNo: '', 
+  email: '', 
+  company: '', 
+  id: ''
+}; 
 
 export const ContactsView = () => {
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const handleOpen = () => setModalOpen(true);
-  const handleClose = () => setModalOpen(false);
+  const params = useParams();
+  const [contactData, setContactData] = useState<Contact>(blankContact);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
   const fakeContact: Contact = {
@@ -18,11 +41,25 @@ export const ContactsView = () => {
     company: 'FakeBlock',
   };
 
-  const deleteContact = React.useCallback(() => {
-    // TODO: Call delete contact API
-    console.log(`Simulating delete contact ${fakeContact.id}`);
-    navigate('/contacts');
-  }, [fakeContact.id]);
+  
+  const handleGetContact = async () => {
+    try{
+      await getContact(params.id as string).then((res) => {
+        if(res != undefined)
+        {
+          setContactData(res.data.contact); 
+        }
+      });
+    } catch (error)
+    {
+      console.log(error); 
+    }
+  };
+  
+  useEffect(() => {
+    handleGetContact(); 
+    console.log(contactData); 
+  });
 
   return (
     <Container maxWidth="lg">
@@ -30,17 +67,18 @@ export const ContactsView = () => {
         <Stack spacing={2} justifyContent="center" alignItems="center">
           <Box component="form" noValidate width="400px">
             <Grid container spacing={2} alignItems="center" justifyContent="center">
+
               <Grid item xs={12}>
-                <Typography>{fakeContact.name}</Typography>
+                <Typography>{contactData.name}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>{fakeContact.company}</Typography>
+                <Typography>{contactData.email}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>{fakeContact.email}</Typography>
+                <Typography>{contactData.phoneNo}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>{fakeContact.phone}</Typography>
+                <Typography>{contactData.company}</Typography>
               </Grid>
               <Grid item xs={4}>
                 <Link to="/contacts" style={{ textDecoration: 'none' }}>
@@ -48,7 +86,7 @@ export const ContactsView = () => {
                 </Link>
               </Grid>
               <Grid item xs={4}>
-                <Link to={`/contacts/edit/${fakeContact.id}`} style={{ textDecoration: 'none' }}>
+                <Link to={`/contacts/edit/${contactData.id}`} style={{ textDecoration: 'none' }}>
                   <Button variant="contained">Edit</Button>
                 </Link>
               </Grid>

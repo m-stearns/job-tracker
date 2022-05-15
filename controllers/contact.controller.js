@@ -1,14 +1,15 @@
-const { Contacts } = require("../models");
+const { Contacts } = require("../models"); 
 
 class ContactController {
   static async create(req, res) {
     try {
       const ContactData = {
-        name: req.body.name,
+        name: req.body.contactName,
         email: req.body.email,
-        phoneNumber: req.body.phoneNumber,
+        phoneNo: req.body.phoneNo,
         company: req.body.company,
         userId: req.user.id,
+        jobId: req.body.jobId, 
       };
       await Contacts.create(ContactData);
 
@@ -32,6 +33,18 @@ class ContactController {
       res.send(contacts);
     } catch (error) {
       res.status(500).send(error);
+    }
+  }
+
+  static async currentContact(req, res) {
+    try {
+      const userKey = parseInt(req.params.ID); 
+      const contact = await Contacts.findByPk(userKey); 
+      res.json({ contact }); 
+    } 
+    catch (error) {
+      console.error({currentContact: error}); 
+      res.status(400).send({error: error.essage }); 
     }
   }
 }
