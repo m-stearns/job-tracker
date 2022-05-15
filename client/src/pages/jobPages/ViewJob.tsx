@@ -1,16 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
-import { Typography, Chip, Container, Stack, Paper } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { Button, Typography, Chip, Container, Stack, Paper, Grid } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
 import { StatusBar } from './StatusBar';
 import type { JobData, Skill } from '../../types';
+import { DeleteModal } from '../../common/DeleteModal';
 
 export const ViewJob = () => {
   const [jobData, setJobData] = useState<JobData | undefined>(undefined);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
   const { jobId } = useParams() as { jobId: string };
+  const navigate = useNavigate();
+
+  const toggleModal = useCallback(() => {
+    setModalIsOpen(!modalIsOpen);
+  }, [modalIsOpen]);
 
   // TODO: Remove after API call
   const tempSuperFakeNotRealJob = {
+    id: jobId,
     title: 'CTO',
     company: 'FakeBlock',
     description:
@@ -23,7 +32,6 @@ export const ViewJob = () => {
   useEffect(() => {
     setJobData({
       ...tempSuperFakeNotRealJob,
-      id: jobId,
       skills: [
         {
           id: '12345',
@@ -43,6 +51,12 @@ export const ViewJob = () => {
       },
     });
   }, []);
+
+  const deleteJob = useCallback(() => {
+    // TODO: Call delete job API
+    console.log(`Simulating delete job ${jobId}`);
+    navigate('/');
+  }, [jobId]);
 
   // Show loading state
   if (!jobData) {
@@ -116,6 +130,21 @@ export const ViewJob = () => {
           ) : (
             <p>There is no contact information for this job</p>
           )}
+          <Grid container direction="row" justifyContent="space-evenly">
+            <Button variant="contained" onClick={() => console.log('todo')}>
+              Edit Job
+            </Button>
+            <Button variant="contained" color="error" onClick={toggleModal}>
+              Delete Job
+            </Button>
+          </Grid>
+          <DeleteModal
+            open={modalIsOpen}
+            headingText="Are you sure?"
+            message={`Are you sure you want to delete ${jobData.title} at ${jobData.company}?  This is permenant.`}
+            deleteById={deleteJob}
+            closeModal={toggleModal}
+          />
         </Stack>
       </Paper>
     </Container>

@@ -45,7 +45,7 @@ export const ContactsHome = () => {
                     <TableCell align="left">{row.phoneNumber}</TableCell>
                     <TableCell align="left">{row.company}</TableCell>
                     <TableCell align="left">
-                      <Link to="/contacts/view/${row.id}" style={{ textDecoration: 'none' }}>
+                      <Link to={`/contacts/view/${row.id}`} style={{ textDecoration: 'none' }}>
                         <Button variant="contained">View</Button>
                       </Link>
                     </TableCell>

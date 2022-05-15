@@ -1,27 +1,29 @@
-import { Container, Stack, Box, Grid, Button, Paper, Modal, Typography } from '@mui/material';
+import { Container, Stack, Box, Grid, Button, Paper, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import * as React from 'react';
+import { DeleteModal } from '../common/DeleteModal';
+import { Contact } from '../types';
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 export const ContactsView = () => {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const handleOpen = () => setModalOpen(true);
+  const handleClose = () => setModalOpen(false);
   const navigate = useNavigate();
-  const routeChange = () => {
-    const path = '/contacts';
-    navigate(path);
+
+  const fakeContact: Contact = {
+    id: '1234',
+    name: 'Fakey McFakeface',
+    email: 'faker@poser.com',
+    phone: '555-555-5555-555-555fake555',
+    company: 'FakeBlock',
   };
+
+  const deleteContact = React.useCallback(() => {
+    // TODO: Call delete contact API
+    console.log(`Simulating delete contact ${fakeContact.id}`);
+    navigate('/contacts');
+  }, [fakeContact.id]);
+
   return (
     <Container maxWidth="lg">
       <Paper elevation={10} style={{ padding: '16px', margin: '16px auto' }}>
@@ -29,16 +31,16 @@ export const ContactsView = () => {
           <Box component="form" noValidate width="400px">
             <Grid container spacing={2} alignItems="center" justifyContent="center">
               <Grid item xs={12}>
-                <Typography>Contact Name</Typography>
+                <Typography>{fakeContact.name}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>Email Address</Typography>
+                <Typography>{fakeContact.company}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>Phone Number</Typography>
+                <Typography>{fakeContact.email}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>Company</Typography>
+                <Typography>{fakeContact.phone}</Typography>
               </Grid>
               <Grid item xs={4}>
                 <Link to="/contacts" style={{ textDecoration: 'none' }}>
@@ -46,35 +48,21 @@ export const ContactsView = () => {
                 </Link>
               </Grid>
               <Grid item xs={4}>
-                <Link to="/contacts/edit/${row.id}" style={{ textDecoration: 'none' }}>
+                <Link to={`/contacts/edit/${fakeContact.id}`} style={{ textDecoration: 'none' }}>
                   <Button variant="contained">Edit</Button>
                 </Link>
               </Grid>
               <Grid item xs={4}>
-                <Button variant="contained" color="warning" onClick={handleOpen}>
+                <Button variant="contained" color="error" onClick={handleOpen}>
                   DELETE
                 </Button>
-                <Modal open={open} onClose={handleClose}>
-                  <Box sx={style}>
-                    <Grid container spacing={2} alignItems="center" justifyContent="center">
-                      <Grid item xs={12}>
-                        <Typography>Contact Name</Typography>
-                      </Grid>
-
-                      <Typography>Are you sure you want to delete this Contact?</Typography>
-                      <Grid item xs={4}>
-                        <Button variant="outlined" onClick={handleClose}>
-                          Back
-                        </Button>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Button variant="contained" color="warning" onClick={routeChange}>
-                          Delete
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Modal>
+                <DeleteModal
+                  open={modalOpen}
+                  headingText="Are you sure?"
+                  message={`Are you sure you want to delete ${fakeContact.name} from your contacts?  This is permenant.`}
+                  deleteById={deleteContact}
+                  closeModal={handleClose}
+                />
               </Grid>
             </Grid>
           </Box>
