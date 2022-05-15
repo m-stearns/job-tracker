@@ -60,7 +60,7 @@ export const ContactsView = () => {
   useEffect(() => {
     handleGetContact();
     //console.log(contactData);
-  }, []);
+  });
 
   return (
     <Container maxWidth="lg">
