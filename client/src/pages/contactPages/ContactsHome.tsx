@@ -14,13 +14,23 @@ export const ContactsHome = () => {
   const [contactsData, setContactsData] = useState<Contact[]>([]);
 
   const handleGetContacts = async () => {
-    await fetchContacts().then((res) => {
-      setContactsData(res.data);
-    });
+    await fetchContacts()
+      .then((res) => {
+        //setContactsData(res.data);
+        return res.data;
+      })
+      .then((data) => {
+        setContactsData(data);
+      })
+      .catch((err) => {
+        console.log('Error: ', err);
+      });
   };
   useEffect(() => {
-    handleGetContacts();
-  });
+    handleGetContacts().catch((err) => {
+      console.log('Error', err);
+    });
+  }, []);
 
   return (
     <Container maxWidth="lg">
