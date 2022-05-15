@@ -119,16 +119,10 @@ export const fetchContacts = async () => {
   return apiClient.get<Contact[]>('/contacts');
 };
 
-export const getContact = async (id:string) => {
-  try{
-    var result = parseInt(id); 
-    return await apiClient.get('/current_contact', {
-      params: {
-        ID: result
-      }, 
-    });
-
-  } catch(error) {
-    console.log(error); 
+export const getContact = async (id: string) => {
+  try {
+    return await apiClient.get<Contact>('/contacts/current_contact', { params: { ID: id } });
+  } catch (error) {
+    console.log(error);
   }
 };
