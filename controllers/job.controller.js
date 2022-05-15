@@ -18,7 +18,7 @@ class JobController {
       const job = await Job.create(jobData, { transaction: t });
 
       const skills = req.body.skills;
-      if (skills) {
+      if (skills && skills.length) {
         await Promise.all(
           skills.map((skillId) => {
             return JobSkills.create(
