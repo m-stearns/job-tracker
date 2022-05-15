@@ -17,13 +17,13 @@ const style = {
   p: 4,
 };
 
-var blankContact: Contact = {
-  name: '', 
-  phoneNo: '', 
-  email: '', 
-  company: '', 
-  id: ''
-}; 
+const blankContact: Contact = {
+  name: 'blank',
+  phoneNo: 'blank',
+  email: 'blank',
+  company: 'blank',
+  id: 'blank',
+};
 
 export const ContactsView = () => {
   const params = useParams();
@@ -41,25 +41,26 @@ export const ContactsView = () => {
     company: 'FakeBlock',
   };
 
-  
   const handleGetContact = async () => {
-    try{
-      await getContact(params.id as string).then((res) => {
-        if(res != undefined)
-        {
-          setContactData(res.data.contact); 
-        }
-      });
-    } catch (error)
-    {
-      console.log(error); 
+    try {
+      await getContact(params.id as string)
+        .then((res) => {
+          if (res != undefined) {
+            return res.data;
+          }
+        })
+        .then((data) => {
+          console.log(data);
+        });
+    } catch (error) {
+      console.log(error);
     }
   };
-  
+
   useEffect(() => {
-    handleGetContact(); 
-    console.log(contactData); 
-  });
+    handleGetContact();
+    //console.log(contactData);
+  }, []);
 
   return (
     <Container maxWidth="lg">
@@ -67,7 +68,6 @@ export const ContactsView = () => {
         <Stack spacing={2} justifyContent="center" alignItems="center">
           <Box component="form" noValidate width="400px">
             <Grid container spacing={2} alignItems="center" justifyContent="center">
-
               <Grid item xs={12}>
                 <Typography>{contactData.name}</Typography>
               </Grid>
