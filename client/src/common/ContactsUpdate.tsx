@@ -1,8 +1,23 @@
-import React, { useState } from 'react';
-import { Typography, Container, Stack, Box, Grid, TextField, Button, Paper } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+  Typography,
+  Container,
+  Stack,
+  Box,
+  Grid,
+  TextField,
+  Button,
+  Paper,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import { createContact } from '../repository';
 import { useNavigate } from 'react-router-dom';
+import { fetchJobs } from '../repository';
+import type { JobRowData } from '../types';
 
 interface ContactsProps {
   title: string;
@@ -14,6 +29,9 @@ export const ContactsUpdate = (props: ContactsProps) => {
   const [ContactEmail, setContactEmail] = useState<string>('');
   const [ContactPhoneNumber, setContactPhoneNumber] = useState<string>('');
   const [ContactCompany, setContactCompany] = useState<string>('');
+  const [jobsData, setJobsData] = useState<JobRowData[]>([]);
+  const [jobId, setJobId] = useState<string>('');
+  const [selectName, setSelectName] = useState<string>('');
 
   const navigate = useNavigate();
 
@@ -33,12 +51,18 @@ export const ContactsUpdate = (props: ContactsProps) => {
     setContactCompany(event.target.value);
   };
 
+  const handleJobIdChange = (job: JobRowData) => {
+    setJobId(job.id);
+    setSelectName(job.title);
+  };
+
   const handleCreateContact = async () => {
     const contactRecord = {
       contactName: ContactName,
       email: ContactEmail,
-      phoneNumber: ContactPhoneNumber,
+      phoneNo: ContactPhoneNumber,
       company: ContactCompany,
+      jobId,
     };
     await createContact(contactRecord)
       .then(() => {
@@ -50,6 +74,15 @@ export const ContactsUpdate = (props: ContactsProps) => {
         console.log('error creating contact: ', err);
       });
   };
+
+  const handleGetJobs = async () => {
+    await fetchJobs().then((res) => {
+      setJobsData(res.data);
+    });
+  };
+  useEffect(() => {
+    handleGetJobs();
+  });
 
   return (
     <Container maxWidth="lg">
@@ -99,15 +132,30 @@ export const ContactsUpdate = (props: ContactsProps) => {
                 />
               </Grid>
 
-              <Grid item xs={4}>
-                <Link to={props.route} style={{ textDecoration: 'none' }}>
-                  <Button variant="outlined">Back</Button>
-                </Link>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel>Job</InputLabel>
+                  <Select value={selectName}>
+                    {jobsData.map((job) => (
+                      <MenuItem key={job.id} value={job.title} onClick={() => handleJobIdChange(job)}>
+                        {job.title}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
-              <Grid item xs={4}>
-                <Button variant="contained" onClick={handleCreateContact}>
-                  Submit
-                </Button>
+
+              <Grid item xs={12} container spacing={20} alignItems="center" justifyContent="left">
+                <Grid item xs={4}>
+                  <Link to={props.route} style={{ textDecoration: 'none' }}>
+                    <Button variant="outlined">Back</Button>
+                  </Link>
+                </Grid>
+                <Grid item xs={4}>
+                  <Button variant="contained" onClick={handleCreateContact}>
+                    Submit
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </Box>

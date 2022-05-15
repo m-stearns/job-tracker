@@ -1,6 +1,9 @@
 import { Container, Stack, Box, Grid, Button, Paper, Modal, Typography } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import * as React from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import type { Contact } from '../../types';
+import { getContact } from '../../repository';
+//import { AxiosResponse } from 'axios';
 
 const style = {
   position: 'absolute',
@@ -13,8 +16,19 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+
+var blankContact: Contact = {
+  name: '', 
+  phoneNo: '', 
+  email: '', 
+  company: '', 
+  id: ''
+}; 
+
 export const ContactsView = () => {
-  const [open, setOpen] = React.useState(false);
+  const params = useParams();
+  const [contactData, setContactData] = useState<Contact>(blankContact);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
@@ -22,23 +36,45 @@ export const ContactsView = () => {
     const path = '/contacts';
     navigate(path);
   };
+
+  
+  const handleGetContact = async () => {
+    try{
+      await getContact(params.id as string).then((res) => {
+        if(res != undefined)
+        {
+          setContactData(res.data.contact); 
+        }
+      });
+    } catch (error)
+    {
+      console.log(error); 
+    }
+  };
+  
+  useEffect(() => {
+    handleGetContact(); 
+    console.log(contactData); 
+  });
+
   return (
     <Container maxWidth="lg">
       <Paper elevation={10} style={{ padding: '16px', margin: '16px auto' }}>
         <Stack spacing={2} justifyContent="center" alignItems="center">
           <Box component="form" noValidate width="400px">
             <Grid container spacing={2} alignItems="center" justifyContent="center">
+
               <Grid item xs={12}>
-                <Typography>Contact Name</Typography>
+                <Typography>{contactData.name}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>Email Address</Typography>
+                <Typography>{contactData.email}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>Phone Number</Typography>
+                <Typography>{contactData.phoneNo}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography>Company</Typography>
+                <Typography>{contactData.company}</Typography>
               </Grid>
               <Grid item xs={4}>
                 <Link to="/contacts" style={{ textDecoration: 'none' }}>
@@ -46,7 +82,7 @@ export const ContactsView = () => {
                 </Link>
               </Grid>
               <Grid item xs={4}>
-                <Link to="/contacts/edit/${row.id}" style={{ textDecoration: 'none' }}>
+                <Link to={`/contacts/edit/${contactData.id}`} style={{ textDecoration: 'none' }}>
                   <Button variant="contained">Edit</Button>
                 </Link>
               </Grid>
