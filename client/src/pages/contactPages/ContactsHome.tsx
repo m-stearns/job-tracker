@@ -14,13 +14,23 @@ export const ContactsHome = () => {
   const [contactsData, setContactsData] = useState<Contact[]>([]);
 
   const handleGetContacts = async () => {
-    await fetchContacts().then((res) => {
-      setContactsData(res.data);
-    });
+    await fetchContacts()
+      .then((res) => {
+        //setContactsData(res.data);
+        return res.data;
+      })
+      .then((data) => {
+        setContactsData(data);
+      })
+      .catch((err) => {
+        console.log('Error: ', err);
+      });
   };
   useEffect(() => {
-    handleGetContacts();
-  });
+    handleGetContacts().catch((err) => {
+      console.log('Error', err);
+    });
+  }, []);
 
   return (
     <Container maxWidth="lg">
@@ -50,7 +60,7 @@ export const ContactsHome = () => {
                     <TableCell align="left">{row.phoneNo}</TableCell>
                     <TableCell align="left">{row.company}</TableCell>
                     <TableCell align="left">
-                      <Link to={`/contacts/view/${row.id}`}  style={{ textDecoration: 'none' }}>
+                      <Link to={`/contacts/view/${row.id}`} style={{ textDecoration: 'none' }}>
                         <Button variant="contained">View</Button>
                       </Link>
                     </TableCell>
