@@ -39,7 +39,8 @@ class JobController {
             jobId: job.id,
             name: contact.name,
             email: contact.email,
-            phone: contact.phone,
+            company: contact.company,
+            phoneNo: contact.phoneNo,
             userId: req.user.id,
           },
           { transaction: t }
