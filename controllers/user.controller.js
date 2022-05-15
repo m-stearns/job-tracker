@@ -44,10 +44,30 @@ class UserController {
     }
   }
 
-  // TODO: Remove. Dummy method to test auth middleware
-  static protectedResource(req, res) {
-    console.log(req.user);
-    res.status(200).send(req.user);
+  static async addSkill(req, res) {
+    try {
+      const { skillId } = req.body;
+      const user = req.user;
+
+      await user.addSkill(skillId);
+
+      res.status(200).send("OK");
+    } catch (error) {
+      res.status(400).send({ error });
+    }
+  }
+
+  static async destroySkill(req, res) {
+    try {
+      const { skillId } = req.body;
+      const user = req.user;
+
+      await user.removeSkill(skillId);
+
+      res.status(200).send("OK");
+    } catch (error) {
+      res.status(400).send({ error });
+    }
   }
 }
 
