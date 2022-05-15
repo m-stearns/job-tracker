@@ -38,9 +38,15 @@ class ContactController {
 
   static async currentContact(req, res) {
     try { 
-      const userKey = req.params.id;    
+      const user = req.user; 
+      const userKey = req.params.id;   
       const result = parseInt(userKey); 
-      const contact = await Contacts.findByPk(result); 
+      const contact = await Contacts.findOne({
+        where: {
+          id: result,
+          userId: user.id, 
+        }, 
+      }); 
       res.json({ contact }); 
     } 
     catch (error) {
