@@ -32,13 +32,9 @@ export const ContactsView = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
-
-  const fakeContact: Contact = {
-    id: '1234',
-    name: 'Fakey McFakeface',
-    email: 'faker@poser.com',
-    phone: '555-555-5555-555-555fake555',
-    company: 'FakeBlock',
+  const routeChange = () => {
+    const path = '/contacts';
+    navigate(path);
   };
 
   const handleGetContact = async () => {
@@ -91,16 +87,30 @@ export const ContactsView = () => {
                 </Link>
               </Grid>
               <Grid item xs={4}>
-                <Button variant="contained" color="error" onClick={handleOpen}>
+                <Button variant="contained" color="warning" onClick={handleOpen}>
                   DELETE
                 </Button>
-                <DeleteModal
-                  open={modalOpen}
-                  headingText="Are you sure?"
-                  message={`Are you sure you want to delete ${fakeContact.name} from your contacts?  This is permenant.`}
-                  deleteById={deleteContact}
-                  closeModal={handleClose}
-                />
+                <Modal open={open} onClose={handleClose}>
+                  <Box sx={style}>
+                    <Grid container spacing={2} alignItems="center" justifyContent="center">
+                      <Grid item xs={12}>
+                        <Typography>Contact Name</Typography>
+                      </Grid>
+
+                      <Typography>Are you sure you want to delete this Contact?</Typography>
+                      <Grid item xs={4}>
+                        <Button variant="outlined" onClick={handleClose}>
+                          Back
+                        </Button>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Button variant="contained" color="warning" onClick={routeChange}>
+                          Delete
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Modal>
               </Grid>
             </Grid>
           </Box>
