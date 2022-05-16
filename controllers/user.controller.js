@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, UserSkills } = require("../models");
 
 class UserController {
   static async register(req, res) {
@@ -46,10 +46,14 @@ class UserController {
 
   static async addSkill(req, res) {
     try {
-      const { skillId } = req.body;
+      const { skillId, comfortLevel } = req.body;
       const user = req.user;
 
-      await user.addSkill(skillId);
+      await UserSkills.create({
+        userId: user.id,
+        skillId,
+        comfortLevel: comfortLevel > 0 && comfortLevel <= 5 ? comfortLevel : 0,
+      });
 
       res.status(200).send("OK");
     } catch (error) {
