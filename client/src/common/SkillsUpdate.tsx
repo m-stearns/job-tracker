@@ -22,7 +22,6 @@ export const SkillsUpdate: React.FC<{
   existingSkillsData: skillDataRecord[];
   setSkills: React.Dispatch<SetStateAction<skillDataRecord[]>>;
 }> = ({ skillsData, existingSkillsData, setSkills }): React.ReactElement => {
-  // const skills = [{ name: 'python' }, { name: 'react' }];
   const [existingSkillName, setExistingSkillName] = useState<string>('');
   const [existingSkills] = useState<skillDataRecord[]>(existingSkillsData);
   const [userCreatedSkillName, setUserCreatedSkillName] = useState<string>('');
