@@ -1,36 +1,52 @@
 import React, { SetStateAction, useState } from 'react';
-import { Button, TextField, Typography, Grid, Box, Chip } from '@mui/material';
+import {
+  Button,
+  TextField,
+  Typography,
+  Grid,
+  Box,
+  Chip,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+} from '@mui/material';
 
 export type skillDataRecord = {
   name: string;
-  rating: number;
 };
 
 export const SkillsUpdate: React.FC<{
   skillsData: skillDataRecord[];
+  existingSkillsData: skillDataRecord[];
   setSkills: React.Dispatch<SetStateAction<skillDataRecord[]>>;
-}> = ({ skillsData, setSkills }): React.ReactElement => {
-  const [skillName, setSkillName] = useState<string>('');
-  const [skillRating, setSkillRating] = useState<number>(0);
+}> = ({ skillsData, existingSkillsData, setSkills }): React.ReactElement => {
+  // const skills = [{ name: 'python' }, { name: 'react' }];
+  const [existingSkillName, setExistingSkillName] = useState<string>('');
+  const [existingSkills] = useState<skillDataRecord[]>(existingSkillsData);
+  const [userCreatedSkillName, setUserCreatedSkillName] = useState<string>('');
+  const [addNewSkillField, setAddNewSkillField] = useState<boolean>(false);
 
-  const minRating = 1;
-  const maxRating = 5;
-
-  const handleSkillNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSkillName(event.target.value);
-  };
-  const handleSkillRatingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const num = Number(event.target.value);
-    setSkillRating(num);
-  };
-  const handleCreateSkill = () => {
+  const handleAddSkill = (skillName: string) => {
     const newSkill: skillDataRecord = {
       name: skillName,
-      rating: skillRating,
     };
-    skillsData.push(newSkill);
-    setSkills([...skillsData]);
+    let addSkill = true;
+    // if name of skill already exists in array, don't add the skill.
+    for (let i = 0; i < skillsData.length; i++) {
+      if (newSkill.name == skillsData[i].name) {
+        addSkill = false;
+        break;
+      }
+    }
+    if (newSkill.name && addSkill) {
+      skillsData.push(newSkill);
+      setSkills([...skillsData]);
+      setUserCreatedSkillName('');
+    }
   };
+
   const handleChipDelete = (skillName: string) => {
     let index = -1;
     for (let i = 0; i < skillsData.length; i++) {
@@ -45,39 +61,95 @@ export const SkillsUpdate: React.FC<{
     }
   };
 
+  const handleExistingSkillChange = (event: SelectChangeEvent) => {
+    setExistingSkillName(event.target.value);
+  };
+
+  const handleUserCreatedSkillNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserCreatedSkillName(event.target.value);
+  };
+
+  const handleShowAddNewSkillField = () => {
+    setAddNewSkillField(true);
+  };
+
+  const handleRemoveAddNewSkillField = () => {
+    setAddNewSkillField(false);
+  };
+
   return (
     <Box width="400px">
-      <Grid item xs={12}>
-        <TextField
-          fullWidth
-          variant="standard"
-          type="text"
-          name="skillName"
-          label="Skill Name"
-          value={skillName}
-          onChange={handleSkillNameChange}
-        />
+      <Grid>
+        <FormControl fullWidth style={{ marginBottom: '24px' }}>
+          <InputLabel id="skills-label">Skills</InputLabel>
+          <Select
+            labelId="skills-label"
+            id="existing-skills"
+            label="Skills"
+            fullWidth
+            variant="standard"
+            value={existingSkillName}
+            onChange={handleExistingSkillChange}
+          >
+            <MenuItem value="" onClickCapture={handleRemoveAddNewSkillField}></MenuItem>
+            {existingSkills.map((skill) => (
+              <MenuItem key={skill.name} value={skill.name} onClickCapture={handleRemoveAddNewSkillField}>
+                {skill.name}
+              </MenuItem>
+            ))}
+            <MenuItem value="other" onClickCapture={handleShowAddNewSkillField}>
+              Other (Add new skill)
+            </MenuItem>
+          </Select>
+        </FormControl>
       </Grid>
-      <Grid item xs={12} style={{ marginBottom: '20px' }}>
-        <TextField
-          fullWidth
-          variant="standard"
-          type="number"
-          label="Comfort Rating"
-          inputProps={{ inputMode: 'numeric', inputProps: { max: maxRating, min: minRating } }}
-          onChange={handleSkillRatingChange}
-        />
-      </Grid>
-      <Grid item xs={12} style={{ marginBottom: '48px' }}>
-        <Button color="primary" onClick={handleCreateSkill} sx={{ borderRadius: 28 }} variant="contained">
-          <Typography variant="body2">Submit</Typography>
-        </Button>
-      </Grid>
+      {!addNewSkillField && (
+        <Grid item xs={12} style={{ marginBottom: '24px' }}>
+          <Button
+            color="primary"
+            sx={{ borderRadius: 28 }}
+            variant="contained"
+            onClick={() => {
+              handleAddSkill(existingSkillName);
+            }}
+          >
+            <Typography variant="body2">Add Skill</Typography>
+          </Button>
+        </Grid>
+      )}
+      {addNewSkillField && (
+        <Box>
+          <Grid item xs={12} style={{ marginBottom: '24px' }}>
+            <TextField
+              fullWidth
+              variant="standard"
+              type="text"
+              name="skillName"
+              label="Skill Name"
+              value={userCreatedSkillName}
+              onChange={handleUserCreatedSkillNameChange}
+            />
+          </Grid>
+          <Grid item xs={12} style={{ marginBottom: '24px' }}>
+            <Button
+              color="primary"
+              onClick={() => {
+                handleAddSkill(userCreatedSkillName);
+              }}
+              sx={{ borderRadius: 28 }}
+              variant="contained"
+            >
+              <Typography variant="body2">Add Skill</Typography>
+            </Button>
+          </Grid>
+        </Box>
+      )}
+
       <Grid item xs={12} style={{ marginBottom: '48px' }}>
         {skillsData.map((skill) => (
           <Chip
             key={skill.name}
-            label={skill.name + ': ' + skill.rating}
+            label={skill.name}
             onDelete={() => {
               handleChipDelete(skill.name);
             }}

@@ -36,6 +36,8 @@ export const CreateJob = () => {
   const [isDescriptionError, setDescriptionError] = useState<boolean>(false);
   const [isUrlError, setUrlError] = useState<boolean>(false);
   const [skillsData, setSkillsData] = useState<skillDataRecord[]>([]);
+  const skills = [{ name: 'python' }, { name: 'react' }];
+  const [existingSkillsData] = useState<skillDataRecord[]>(skills);
 
   const navigate = useNavigate();
 
@@ -179,7 +181,7 @@ export const CreateJob = () => {
                 />
               </Grid>
               {/** end of internship item */}
-              <Grid item xs={12} style={{ marginBottom: '24px' }}>
+              <Grid item xs={12} style={{ marginBottom: '48px' }}>
                 <FormControl fullWidth>
                   <InputLabel id="status-label">Status</InputLabel>
                   <Select
@@ -203,7 +205,7 @@ export const CreateJob = () => {
               {/** end of status item */}
               <Typography component="h1">Add Skills</Typography>
               {/** TODO - Need to grab values from Skills here */}
-              <SkillsUpdate skillsData={skillsData} setSkills={setSkillsData} />
+              <SkillsUpdate skillsData={skillsData} existingSkillsData={existingSkillsData} setSkills={setSkillsData} />
               {/** end of add skills item */}
               <Typography component="h1">Add Contact (optional)</Typography>
               <Grid item xs={12}>
