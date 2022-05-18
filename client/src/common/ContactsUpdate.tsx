@@ -5,13 +5,18 @@ import { Link } from 'react-router-dom';
 interface ContactsProps {
   title: string;
   route: string;
+  contactData: ContactRowData;
 }
 
 export const ContactsUpdate = (props: ContactsProps) => {
-  const [contactName, setContactName] = useState<string>('');
-  const [contactEmail, setContactEmail] = useState<string>('');
-  const [contactPhoneNumber, setContactPhoneNumber] = useState<string>('');
-  const [contactCompany, setContactCompany] = useState<string>('');
+  const [contactName, setContactName] = useState<string>(props.contactData.name ? props.contactData.name : '');
+  const [contactEmail, setContactEmail] = useState<string>(props.contactData.email ? props.contactData.email : '');
+  const [contactPhoneNumber, setContactPhoneNumber] = useState<string>(
+    props.contactData.phone_no ? props.contactData.phone_no : '',
+  );
+  const [contactCompany, setContactCompany] = useState<string>(
+    props.contactData.company ? props.contactData.company : '',
+  );
 
   const handleContactNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setContactName(event.target.value);
@@ -52,6 +57,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   variant="standard"
                   fullWidth
                   type="text"
+                  value={contactName}
                   onChange={handleContactNameChange}
                 />
               </Grid>
@@ -62,6 +68,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   variant="standard"
                   fullWidth
                   type="text"
+                  value={contactEmail}
                   onChange={handleContactEmailChange}
                 />
               </Grid>
@@ -72,6 +79,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   variant="standard"
                   fullWidth
                   type="text"
+                  value={contactPhoneNumber}
                   onChange={handleContactPhoneNoChange}
                 />
               </Grid>
@@ -82,6 +90,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   variant="standard"
                   fullWidth
                   type="text"
+                  value={contactCompany}
                   onChange={handleContactCompanyChange}
                 />
               </Grid>
@@ -102,4 +111,11 @@ export const ContactsUpdate = (props: ContactsProps) => {
       </Paper>
     </Container>
   );
+};
+
+export type ContactRowData = {
+  name: string;
+  email: string;
+  phone_no: string;
+  company: string;
 };

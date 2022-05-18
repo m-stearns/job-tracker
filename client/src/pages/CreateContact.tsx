@@ -1,4 +1,10 @@
-import { ContactsUpdate } from '../common/ContactsUpdate';
+import { ContactsUpdate, ContactRowData } from '../common/ContactsUpdate';
 export const CreateContact = () => {
-  return <ContactsUpdate title="Create Contact" route="/contacts" />;
+  const contactData: ContactRowData = {
+    name: '',
+    email: '',
+    phone_no: '',
+    company: '',
+  };
+  return <ContactsUpdate title="Create Contact" route="/contacts" contactData={contactData} />;
 };
