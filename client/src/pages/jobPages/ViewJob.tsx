@@ -3,11 +3,12 @@ import { styled } from '@mui/material/styles';
 import { Button, Typography, Chip, Container, Stack, Paper, Grid } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { StatusBar } from './StatusBar';
-import type { JobData, Skill } from '../../types';
+import type { JobPageData, Skill } from '../../types';
 import { DeleteModal } from '../../common/DeleteModal';
+import { fetchJob } from '../../repository';
 
 export const ViewJob = () => {
-  const [jobData, setJobData] = useState<JobData | undefined>(undefined);
+  const [jobPageData, setJobPageData] = useState<JobPageData | undefined>(undefined);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const { jobId } = useParams() as { jobId: string };
@@ -16,6 +17,43 @@ export const ViewJob = () => {
   const toggleModal = useCallback(() => {
     setModalIsOpen(!modalIsOpen);
   }, [modalIsOpen]);
+
+  const handleGetJob = async (jobId: string) => {
+    await fetchJob(jobId)
+      .then((res) => {
+        return res.data[0];
+      })
+      .then((data) => {
+        const jobPageData: JobPageData = {
+          id: jobId,
+          title: data.title,
+          company: data.company,
+          description: data.description,
+          status: data.status,
+          link: data.link,
+          internship: data.internship,
+          skills: [
+            {
+              id: '1234',
+              name: 'python',
+            },
+          ],
+          contact: {
+            id: '11111',
+            name: 'Maebe Funke',
+            email: 'maybe@fakeblock.com',
+            phone: '555-555-5555',
+            company: 'FakeBlock',
+          },
+        };
+        setJobPageData(jobPageData);
+        return data;
+      });
+  };
+
+  useEffect(() => {
+    handleGetJob(jobId);
+  }, []);
 
   // TODO: Remove after API call
   const tempSuperFakeNotRealJob = {
@@ -30,7 +68,7 @@ export const ViewJob = () => {
   };
 
   useEffect(() => {
-    setJobData({
+    setJobPageData({
       ...tempSuperFakeNotRealJob,
       skills: [
         {
@@ -59,7 +97,7 @@ export const ViewJob = () => {
   }, [jobId]);
 
   // Show loading state
-  if (!jobData) {
+  if (!jobPageData) {
     return (
       <Container maxWidth="lg">
         <p>Loading job...</p>
@@ -72,60 +110,60 @@ export const ViewJob = () => {
       <Paper elevation={10} style={{ padding: '16px', margin: '16px auto' }}>
         <Stack spacing={4}>
           <Typography component="h1" variant="h4">
-            {jobData.title} @ {jobData.company}
+            {jobPageData.title} @ {jobPageData.company}
           </Typography>
           <Stack spacing={1} component="dl">
-            <StatusBar currentStatus={jobData.status} />
+            <StatusBar currentStatus={jobPageData.status} />
             <Typography component="dt" sx={{ fontWeight: 'bold' }}>
               Job Title
             </Typography>
-            <Typography component="dd">{jobData.title}</Typography>
+            <Typography component="dd">{jobPageData.title}</Typography>
             <Typography component="dt" sx={{ fontWeight: 'bold' }}>
               Company Name
             </Typography>
-            <Typography component="dd">{jobData.company}</Typography>
+            <Typography component="dd">{jobPageData.company}</Typography>
             <Typography component="dt" sx={{ fontWeight: 'bold' }}>
               Job Description
             </Typography>
-            <Typography component="dd">{jobData.description}</Typography>
+            <Typography component="dd">{jobPageData.description}</Typography>
             <Typography component="dt" sx={{ fontWeight: 'bold' }}>
               URL to job application posting
             </Typography>
-            <Typography component="dd">{jobData.link}</Typography>
+            <Typography component="dd">{jobPageData.link}</Typography>
             <Typography component="dt" sx={{ fontWeight: 'bold' }}>
               Status
             </Typography>
-            <Typography component="dd">{jobData.status}</Typography>
+            <Typography component="dd">{jobPageData.status}</Typography>
           </Stack>
-          {jobData.skills.length > 0 && (
+          {jobPageData.skills.length > 0 && (
             <>
               <Typography component="h2" variant="h5">
                 Required Skills
               </Typography>
-              <SkillsChips skills={jobData.skills} />
+              <SkillsChips skills={jobPageData.skills} />
             </>
           )}
           <Typography component="h2" variant="h5">
             Contact
           </Typography>
-          {jobData.contact ? (
+          {jobPageData.contact ? (
             <Stack spacing={1} component="dl">
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Name
               </Typography>
-              <Typography component="dd">{jobData.contact.name}</Typography>
+              <Typography component="dd">{jobPageData.contact.name}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Email
               </Typography>
-              <Typography component="dd">{jobData.contact.email}</Typography>
+              <Typography component="dd">{jobPageData.contact.email}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Phone Number
               </Typography>
-              <Typography component="dd">{jobData.contact.phone}</Typography>
+              <Typography component="dd">{jobPageData.contact.phone}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Company
               </Typography>
-              <Typography component="dd">{jobData.contact.company}</Typography>
+              <Typography component="dd">{jobPageData.contact.company}</Typography>
             </Stack>
           ) : (
             <p>There is no contact information for this job</p>
@@ -141,7 +179,7 @@ export const ViewJob = () => {
           <DeleteModal
             open={modalIsOpen}
             headingText="Are you sure?"
-            message={`Are you sure you want to delete ${jobData.title} at ${jobData.company}?  This is permenant.`}
+            message={`Are you sure you want to delete ${jobPageData.title} at ${jobPageData.company}?  This is permenant.`}
             deleteById={deleteJob}
             closeModal={toggleModal}
           />
