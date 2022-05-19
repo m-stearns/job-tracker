@@ -35,7 +35,7 @@ export interface JobRowData {
   internship: boolean;
 }
 
-export interface JobData extends JobRowData {
+export interface JobPageData extends JobRowData {
   skills: Skill[];
   contact: Contact | undefined;
 }
