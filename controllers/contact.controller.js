@@ -82,16 +82,15 @@ class ContactController {
     try {
       const user = req.user; 
       const contactId = req.params.id; 
-      const contact = Contacts.findOne({
-        where: {
-          id: contactId, 
-          userId: user.id, 
-        }, 
-      }); 
-      if(!contact) {
-        res.status(404).send("Contact not found"); 
-      }
-      contact.destroy();
+      await Contacts.destroy(
+        {
+          where: {
+            id: contactId,
+            userId: user.id, 
+          }
+        }
+      )
+      console.log("contact deleted"); 
       res.status(200).send("Contact deleted"); 
     } catch (error) {
       res.status(500).send(error); 

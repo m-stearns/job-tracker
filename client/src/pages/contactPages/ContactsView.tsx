@@ -2,7 +2,7 @@ import { Container, Stack, Box, Grid, Button, Paper, Modal, Typography } from '@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import type { Contact } from '../../types';
-import { getContact } from '../../repository';
+import { getContact, deleteContact } from '../../repository';
 
 const style = {
   position: 'absolute',
@@ -31,10 +31,6 @@ export const ContactsView = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
-  const routeChange = () => {
-    const path = '/contacts';
-    navigate(path);
-  };
 
   const handleGetContact = async () => {
     try {
@@ -51,6 +47,22 @@ export const ContactsView = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleDeleteContact = async () => {
+    try{
+      await deleteContact(params.id as string)
+    } catch (error) {
+      console.log(error); 
+    }
+  }; 
+
+  const routeChange = async () => {
+    await handleDeleteContact()
+    .then(() => {
+      const path = '/contacts'; 
+      navigate(path); 
+    })
   };
 
   useEffect(() => {
@@ -93,7 +105,7 @@ export const ContactsView = () => {
                   <Box sx={style}>
                     <Grid container spacing={2} alignItems="center" justifyContent="center">
                       <Grid item xs={12}>
-                        <Typography>Contact Name</Typography>
+                        <Typography>{contactData.name}</Typography>
                       </Grid>
 
                       <Typography>Are you sure you want to delete this Contact?</Typography>

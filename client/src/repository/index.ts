@@ -134,14 +134,14 @@ export const editContact = async ({
   phoneNo,
   company,
   jobId,
-  id
+  id, 
 }: {
   contactName: string; 
   email: string; 
   phoneNo: string; 
   company: string; 
   jobId: string; 
-  id: string
+  id: string; 
 }) => {
   return await apiClient.put(`/contacts/edit/${id}`, {
     contactName, 
@@ -150,4 +150,12 @@ export const editContact = async ({
     company,
     jobId, 
   }); 
+}; 
+
+export const deleteContact = async (id: string) => {
+  try {
+    return await apiClient.delete(`/contacts/${id}`)
+  } catch (error) {
+    console.log(error); 
+  }
 }; 
