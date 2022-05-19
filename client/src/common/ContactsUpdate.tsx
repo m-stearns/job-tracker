@@ -14,10 +14,9 @@ import {
   Select,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { createContact } from '../repository';
-import { useNavigate } from 'react-router-dom';
-import { fetchJobs } from '../repository';
-import type { JobRowData } from '../types';
+import { useNavigate, useParams } from 'react-router-dom';
+import { createContact, editContact, fetchJobs, getContact } from '../repository';
+import type { JobRowData, Contact } from '../types';
 
 interface ContactsProps {
   title: string;
@@ -25,6 +24,14 @@ interface ContactsProps {
 }
 
 export const ContactsUpdate = (props: ContactsProps) => {
+  const params = useParams(); 
+  const blankContact: Contact = {
+    name: '',
+    phoneNo: '',
+    email: '',
+    company: '',
+  };
+  const [contactData, setContactData] = useState<Contact | undefined>(blankContact);
   const [ContactName, setContactName] = useState<string>('');
   const [ContactEmail, setContactEmail] = useState<string>('');
   const [ContactPhoneNumber, setContactPhoneNumber] = useState<string>('');
@@ -32,6 +39,17 @@ export const ContactsUpdate = (props: ContactsProps) => {
   const [jobsData, setJobsData] = useState<JobRowData[]>([]);
   const [jobId, setJobId] = useState<string>('');
   const [selectName, setSelectName] = useState<string>('');
+  const [isEdit, setIsEdit] = useState<boolean>(false); 
+
+  if(props.title == "Create Contact")
+  {
+    var route = "/contacts"; 
+  }
+  else
+  {
+    //setIsEdit(true);  
+    var route = `/contacts/view/${params.id}`; 
+  }
 
   const navigate = useNavigate();
 
@@ -57,14 +75,16 @@ export const ContactsUpdate = (props: ContactsProps) => {
   };
 
   const handleCreateContact = async () => {
-    const contactRecord = {
-      contactName: ContactName,
-      email: ContactEmail,
-      phoneNo: ContactPhoneNumber,
-      company: ContactCompany,
-      jobId,
-    };
-    await createContact(contactRecord)
+    if(props.title == "Create Contact")
+    {
+      const contactRecord = {
+        contactName: ContactName,
+        email: ContactEmail,
+        phoneNo: ContactPhoneNumber,
+        company: ContactCompany,
+        jobId,
+      };
+      await createContact(contactRecord)
       .then(() => {
         console.log('Contact created');
         console.log(contactRecord);
@@ -73,6 +93,27 @@ export const ContactsUpdate = (props: ContactsProps) => {
       .catch((err: Error) => {
         console.log('error creating contact: ', err);
       });
+    }
+    else
+    {
+      const contactRecord = {
+        contactName: ContactName,
+        email: ContactEmail,
+        phoneNo: ContactPhoneNumber,
+        company: ContactCompany,
+        jobId,
+        id: params.id as string, 
+      };
+      await editContact(contactRecord)
+      .then(() => {
+        console.log('Contact created');
+        console.log(contactRecord);
+        navigate('/contacts');
+      })
+      .catch((err: Error) => {
+        console.log('error creating contact: ', err);
+      });
+    }
   };
 
   const handleGetJobs = async () => {
@@ -80,9 +121,53 @@ export const ContactsUpdate = (props: ContactsProps) => {
       setJobsData(res.data);
     });
   };
+
+  const handleGetContact = async () => {
+    await getContact(params.id as string)
+      .then((res) => {
+        if (res != undefined) {
+          //setContactData(res.data); 
+          setContactName(res.data.name);
+          setContactEmail(res.data.email); 
+          setContactPhoneNumber(res.data.phoneNo);
+          setContactCompany(res.data.company); 
+        }
+      })
+  }
+  /*
+  const handleGetContact = async () => {
+    if(isEdit)
+    {
+      try {
+        await getContact(params.id as string)
+          .then((res) => {
+            if (res != undefined) {
+              return res.data;
+            }
+          })
+          .then((data) => {
+            console.log(data);
+            setContactData(data);  
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  */
+
+  useEffect(() => { 
+    handleGetJobs(); 
+  }, []);
+
+  
   useEffect(() => {
-    handleGetJobs();
-  });
+    if(props.title == "Edit Contact")
+    {
+      handleGetContact(); 
+    } 
+  }, []); 
+  
 
   return (
     <Container maxWidth="lg">
@@ -99,6 +184,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   fullWidth
                   type="text"
                   onChange={handleContactNameChange}
+                  value={ContactName}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -109,6 +195,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   fullWidth
                   type="text"
                   onChange={handleContactEmailChange}
+                  value={ContactEmail}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -119,6 +206,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   fullWidth
                   type="text"
                   onChange={handleContactPhoneNoChange}
+                  value={ContactPhoneNumber}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -129,6 +217,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   fullWidth
                   type="text"
                   onChange={handleContactCompanyChange}
+                  value={ContactCompany}
                 />
               </Grid>
 
@@ -147,7 +236,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
 
               <Grid item xs={12} container spacing={20} alignItems="center" justifyContent="left">
                 <Grid item xs={4}>
-                  <Link to={props.route} style={{ textDecoration: 'none' }}>
+                  <Link to={route} style={{ textDecoration: 'none' }}>
                     <Button variant="outlined">Back</Button>
                   </Link>
                 </Grid>

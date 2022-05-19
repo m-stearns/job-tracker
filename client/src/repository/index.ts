@@ -121,9 +121,33 @@ export const fetchContacts = async () => {
 
 export const getContact = async (id: string) => {
   try {
-    //const result = parseInt(id); 
-    return await apiClient.get<Contact>('/contacts/current_contact', { params: { id: id } });
+    //const result = parseInt(id);
+    return await apiClient.get<Contact>(`/contacts/${id}`);
   } catch (error) {
     console.log(error);
   }
-};
+}; 
+
+export const editContact = async ({
+  contactName,
+  email,
+  phoneNo,
+  company,
+  jobId,
+  id
+}: {
+  contactName: string; 
+  email: string; 
+  phoneNo: string; 
+  company: string; 
+  jobId: string; 
+  id: string
+}) => {
+  return await apiClient.put(`/contacts/edit/${id}`, {
+    contactName, 
+    email,
+    phoneNo,
+    company,
+    jobId, 
+  }); 
+}; 

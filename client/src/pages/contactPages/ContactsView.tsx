@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import type { Contact } from '../../types';
 import { getContact } from '../../repository';
-//import { AxiosResponse } from 'axios';
 
 const style = {
   position: 'absolute',
@@ -27,7 +26,7 @@ const blankContact: Contact = {
 
 export const ContactsView = () => {
   const params = useParams();
-  const [contactData, setContactData] = useState<Contact>(blankContact);
+  const [contactData, setContactData] = useState<Contact | undefined>(blankContact);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -47,6 +46,7 @@ export const ContactsView = () => {
         })
         .then((data) => {
           console.log(data);
+          setContactData(data); 
         });
     } catch (error) {
       console.log(error);
@@ -55,8 +55,7 @@ export const ContactsView = () => {
 
   useEffect(() => {
     handleGetContact();
-    //console.log(contactData);
-  });
+  }, []);
 
   return (
     <Container maxWidth="lg">

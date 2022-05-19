@@ -20,7 +20,7 @@ export const ContactsHome = () => {
   };
   useEffect(() => {
     handleGetContacts();
-  });
+  },[]);
 
   return (
     <Container maxWidth="lg">

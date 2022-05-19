@@ -6,7 +6,8 @@ const requireAuth = require("../middlewares/requireAuth.middleware");
 
 router.get("/", requireAuth, ContactController.findAll);
 router.post("/create", requireAuth, ContactController.create);
-router.get("/current_contact", requireAuth, ContactController.currentContact)
-
+router.get("/:id", requireAuth, ContactController.findById)
+router.put("/edit/:id", requireAuth, ContactController.edit); 
+router.delete("/:id", requireAuth, ContactController.destroy); 
 
 module.exports = { contactsRouter: router };

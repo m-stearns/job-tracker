@@ -36,22 +36,65 @@ class ContactController {
     }
   }
 
-  static async currentContact(req, res) {
+  static async findById(req, res) {
     try { 
       const user = req.user; 
-      const userKey = req.params.id;   
-      const result = parseInt(userKey); 
+      const contactId = req.params.id;   
       const contact = await Contacts.findOne({
         where: {
-          id: result,
+          id: contactId,
           userId: user.id, 
         }, 
       }); 
-      res.json({ contact }); 
+      res.json( contact ); 
     } 
     catch (error) {
       console.error({currentContact: error}); 
       res.status(400).send({error: error.essage }); 
+    }
+  }
+
+  static async edit(req, res) {
+    try {
+      const contactId = req.params.id; 
+      await Contacts.update(
+        {
+          name: req.body.contactName,
+          email: req.body.email,
+          phoneNo: req.body.phoneNo,
+          company: req.body.company,
+          userId: req.user.id,
+          jobId: req.body.jobId, 
+        }, 
+        {
+          where: {
+            id: contactId
+          }
+        }
+      )
+      res.status(200).send('OK'); 
+    } catch (error) {
+      res.status(500).send(error); 
+    }
+  }
+
+  static async destroy(req, res) {
+    try {
+      const user = req.user; 
+      const contactId = req.params.id; 
+      const contact = Contacts.findOne({
+        where: {
+          id: contactId, 
+          userId: user.id, 
+        }, 
+      }); 
+      if(!contact) {
+        res.status(404).send("Contact not found"); 
+      }
+      contact.destroy();
+      res.status(200).send("Contact deleted"); 
+    } catch (error) {
+      res.status(500).send(error); 
     }
   }
 }
