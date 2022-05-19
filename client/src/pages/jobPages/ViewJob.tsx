@@ -43,12 +43,12 @@ export const ViewJob = () => {
   ) => {
     const contact: Contact = {
       id: '-1',
-      name: '',
-      email: '',
-      phone: '',
-      company: '',
+      name: 'n/a',
+      email: 'n/a',
+      phone: 'n/a',
+      company: 'n/a',
     };
-    if (contactsData) {
+    if (contactsData.length > 0) {
       contact.name = contactsData[0]['name'];
       contact.email = contactsData[0]['email'];
       contact.phone = contactsData[0]['phoneNo'];
