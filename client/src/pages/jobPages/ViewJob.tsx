@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import { Button, Typography, Chip, Container, Stack, Paper, Grid } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { StatusBar } from './StatusBar';
-import type { JobPageData, Skill } from '../../types';
+import type { JobPageData, Skill, Contact } from '../../types';
 import { DeleteModal } from '../../common/DeleteModal';
 import { fetchJob } from '../../repository';
 
@@ -18,76 +18,78 @@ export const ViewJob = () => {
     setModalIsOpen(!modalIsOpen);
   }, [modalIsOpen]);
 
+  const createSkills = (skillsData: any[]) => {
+    const skills: Skill[] = [];
+    if (skillsData) {
+      for (let i = 0; i < skillsData.length; i++) {
+        const skill: Skill = {
+          id: skillsData[i].skill['id'],
+          name: skillsData[i].skill['name'],
+        };
+        skills.push(skill);
+      }
+    }
+    return skills;
+  };
+
+  const createContact = (
+    contactsData: {
+      id: string;
+      name: string;
+      email: string;
+      phoneNo: string;
+      company: string;
+    }[],
+  ) => {
+    const contact: Contact = {
+      id: '-1',
+      name: '',
+      email: '',
+      phone: '',
+      company: '',
+    };
+    if (contactsData) {
+      contact.name = contactsData[0]['name'];
+      contact.email = contactsData[0]['email'];
+      contact.phone = contactsData[0]['phoneNo'];
+      contact.company = contactsData[0]['company'];
+    }
+    return contact;
+  };
+
+  const createJobPageData = (data: any, skills: Skill[], contact: Contact) => {
+    const jobPageData: JobPageData = {
+      id: jobId,
+      title: data.title,
+      company: data.company,
+      description: data.description,
+      status: data.status,
+      link: data.link,
+      internship: data.internship,
+      skills: skills,
+      contact: contact,
+    };
+    return jobPageData;
+  };
+
   const handleGetJob = async (jobId: string) => {
     await fetchJob(jobId)
       .then((res) => {
         return res.data[0];
       })
       .then((data) => {
-        const jobPageData: JobPageData = {
-          id: jobId,
-          title: data.title,
-          company: data.company,
-          description: data.description,
-          status: data.status,
-          link: data.link,
-          internship: data.internship,
-          skills: [
-            {
-              id: '1234',
-              name: 'python',
-            },
-          ],
-          contact: {
-            id: '11111',
-            name: 'Maebe Funke',
-            email: 'maybe@fakeblock.com',
-            phone: '555-555-5555',
-            company: 'FakeBlock',
-          },
-        };
+        const skills = createSkills(data.skills);
+        const contact = createContact(data.contacts);
+        const jobPageData = createJobPageData(data, skills, contact);
         setJobPageData(jobPageData);
-        return data;
+      })
+      .catch((err) => {
+        console.log(`Error: ${err}`);
       });
   };
 
   useEffect(() => {
     handleGetJob(jobId);
-  }, []);
-
-  // TODO: Remove after API call
-  const tempSuperFakeNotRealJob = {
-    id: jobId,
-    title: 'CTO',
-    company: 'FakeBlock',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    status: 'Interview Scheduled',
-    link: 'www.google.com',
-    internship: false,
-  };
-
-  useEffect(() => {
-    setJobPageData({
-      ...tempSuperFakeNotRealJob,
-      skills: [
-        {
-          id: '12345',
-          name: 'Python',
-        },
-        {
-          id: '54321',
-          name: 'Django',
-        },
-      ],
-      contact: {
-        id: '11111',
-        name: 'Maebe Funke',
-        email: 'maybe@fakeblock.com',
-        phone: '555-555-5555',
-        company: 'FakeBlock',
-      },
-    });
   }, []);
 
   const deleteJob = useCallback(() => {
