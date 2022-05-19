@@ -1,4 +1,4 @@
-const { User, UserSkills } = require("../models");
+const { User, UserSkills, JobSkills, Job } = require("../models");
 
 class UserController {
   static async register(req, res) {
@@ -57,6 +57,45 @@ class UserController {
 
       res.status(200).send("OK");
     } catch (error) {
+      res.status(400).send({ error });
+    }
+  }
+
+  static async skillStats(req, res) {
+    try {
+      const user = req.user;
+
+      const userJobsCount = await Job.count({
+        where: {
+          userId: user.id,
+        },
+      });
+
+      const userSkillsStats = await Promise.all(
+        user.skills.map(async (userSkill) => {
+          const skillJobSkillsCount = await JobSkills.count({
+            where: {
+              skillId: userSkill.skillId,
+            },
+          });
+
+          return {
+            id: userSkill.skillId,
+            name: userSkill.skill.name,
+            comfortLevel: userSkill.comfortLevel,
+            count: skillJobSkillsCount,
+            appearsInPercentageOfJobs: Math.round(
+              (skillJobSkillsCount / userJobsCount) * 100
+            ),
+          };
+        })
+      );
+
+      res.json({
+        userSkillsStats,
+      });
+    } catch (error) {
+      console.error(error);
       res.status(400).send({ error });
     }
   }
