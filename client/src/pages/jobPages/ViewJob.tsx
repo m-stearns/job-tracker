@@ -46,7 +46,7 @@ export const ViewJob = () => {
         id: '11111',
         name: 'Maebe Funke',
         email: 'maybe@fakeblock.com',
-        phone: '555-555-5555',
+        phoneNo: '555-555-5555',
         company: 'FakeBlock',
       },
     });
@@ -121,7 +121,7 @@ export const ViewJob = () => {
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Phone Number
               </Typography>
-              <Typography component="dd">{jobData.contact.phone}</Typography>
+              <Typography component="dd">{jobData.contact.phoneNo}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Company
               </Typography>

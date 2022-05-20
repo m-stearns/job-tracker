@@ -26,7 +26,7 @@ const blankContact: Contact = {
 
 export const ContactsView = () => {
   const params = useParams();
-  const [contactData, setContactData] = useState<Contact | undefined>(blankContact);
+  const [contactData, setContactData] = useState<Contact>(blankContact);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -42,7 +42,7 @@ export const ContactsView = () => {
         })
         .then((data) => {
           console.log(data);
-          setContactData(data); 
+          setContactData(data as Contact);
         });
     } catch (error) {
       console.log(error);
@@ -50,19 +50,18 @@ export const ContactsView = () => {
   };
 
   const handleDeleteContact = async () => {
-    try{
-      await deleteContact(params.id as string)
+    try {
+      await deleteContact(params.id as string);
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     }
-  }; 
+  };
 
   const routeChange = async () => {
-    await handleDeleteContact()
-    .then(() => {
-      const path = '/contacts'; 
-      navigate(path); 
-    })
+    await handleDeleteContact().then(() => {
+      const path = '/contacts';
+      navigate(path);
+    });
   };
 
   useEffect(() => {

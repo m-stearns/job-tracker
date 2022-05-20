@@ -16,7 +16,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createContact, editContact, fetchJobs, getContact } from '../repository';
-import type { JobRowData, Contact } from '../types';
+import type { JobRowData } from '../types';
 
 interface ContactsProps {
   title: string;
@@ -24,14 +24,7 @@ interface ContactsProps {
 }
 
 export const ContactsUpdate = (props: ContactsProps) => {
-  const params = useParams(); 
-  const blankContact: Contact = {
-    name: '',
-    phoneNo: '',
-    email: '',
-    company: '',
-  };
-  const [contactData, setContactData] = useState<Contact | undefined>(blankContact);
+  const params = useParams();
   const [ContactName, setContactName] = useState<string>('');
   const [ContactEmail, setContactEmail] = useState<string>('');
   const [ContactPhoneNumber, setContactPhoneNumber] = useState<string>('');
@@ -39,16 +32,13 @@ export const ContactsUpdate = (props: ContactsProps) => {
   const [jobsData, setJobsData] = useState<JobRowData[]>([]);
   const [jobId, setJobId] = useState<string>('');
   const [selectName, setSelectName] = useState<string>('');
-  const [isEdit, setIsEdit] = useState<boolean>(false); 
 
-  if(props.title == "Create Contact")
-  {
-    var route = "/contacts"; 
-  }
-  else
-  {
-    //setIsEdit(true);  
-    var route = `/contacts/view/${params.id}`; 
+  let route: string;
+
+  if (props.title == 'Create Contact') {
+    route = '/contacts';
+  } else {
+    route = `/contacts/view/${params.id}`;
   }
 
   const navigate = useNavigate();
@@ -75,8 +65,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
   };
 
   const handleCreateContact = async () => {
-    if(props.title == "Create Contact")
-    {
+    if (props.title == 'Create Contact') {
       const contactRecord = {
         contactName: ContactName,
         email: ContactEmail,
@@ -85,34 +74,32 @@ export const ContactsUpdate = (props: ContactsProps) => {
         jobId,
       };
       await createContact(contactRecord)
-      .then(() => {
-        console.log('Contact created');
-        console.log(contactRecord);
-        navigate('/contacts');
-      })
-      .catch((err: Error) => {
-        console.log('error creating contact: ', err);
-      });
-    }
-    else
-    {
+        .then(() => {
+          console.log('Contact created');
+          console.log(contactRecord);
+          navigate('/contacts');
+        })
+        .catch((err: Error) => {
+          console.log('error creating contact: ', err);
+        });
+    } else {
       const contactRecord = {
         contactName: ContactName,
         email: ContactEmail,
         phoneNo: ContactPhoneNumber,
         company: ContactCompany,
         jobId,
-        id: params.id as string, 
+        id: params.id as string,
       };
       await editContact(contactRecord)
-      .then(() => {
-        console.log('Contact created');
-        console.log(contactRecord);
-        navigate('/contacts');
-      })
-      .catch((err: Error) => {
-        console.log('error creating contact: ', err);
-      });
+        .then(() => {
+          console.log('Contact created');
+          console.log(contactRecord);
+          navigate('/contacts');
+        })
+        .catch((err: Error) => {
+          console.log('error creating contact: ', err);
+        });
     }
   };
 
@@ -123,51 +110,25 @@ export const ContactsUpdate = (props: ContactsProps) => {
   };
 
   const handleGetContact = async () => {
-    await getContact(params.id as string)
-      .then((res) => {
-        if (res != undefined) {
-          //setContactData(res.data); 
-          setContactName(res.data.name);
-          setContactEmail(res.data.email); 
-          setContactPhoneNumber(res.data.phoneNo);
-          setContactCompany(res.data.company); 
-        }
-      })
-  }
-  /*
-  const handleGetContact = async () => {
-    if(isEdit)
-    {
-      try {
-        await getContact(params.id as string)
-          .then((res) => {
-            if (res != undefined) {
-              return res.data;
-            }
-          })
-          .then((data) => {
-            console.log(data);
-            setContactData(data);  
-          });
-      } catch (error) {
-        console.log(error);
+    await getContact(params.id as string).then((res) => {
+      if (res != undefined) {
+        setContactName(res.data.name);
+        setContactEmail(res.data.email);
+        setContactPhoneNumber(res.data.phoneNo);
+        setContactCompany(res.data.company);
       }
-    }
+    });
   };
-  */
 
-  useEffect(() => { 
-    handleGetJobs(); 
+  useEffect(() => {
+    handleGetJobs();
   }, []);
 
-  
   useEffect(() => {
-    if(props.title == "Edit Contact")
-    {
-      handleGetContact(); 
-    } 
-  }, []); 
-  
+    if (props.title == 'Edit Contact') {
+      handleGetContact();
+    }
+  }, []);
 
   return (
     <Container maxWidth="lg">
