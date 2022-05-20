@@ -39,4 +39,3 @@ export interface JobData extends JobRowData {
   skills: Skill[];
   contact: Contact | undefined;
 }
-
