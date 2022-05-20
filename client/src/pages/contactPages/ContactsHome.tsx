@@ -6,17 +6,22 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-
-function createData(name: string, email: string, phoneNumber: string, company: string, id: number) {
-  return { name, email, phoneNumber, company, id };
-}
-
-const rows = [
-  createData('John Doe', 'test@email.com', '555-555-5555', 'Google', 1),
-  createData('Jane Smith', 'jane@yahoo.com', '555-555-5555', 'Amazon', 2),
-];
+import { fetchContacts } from '../../repository';
+import type { Contact } from '../../types';
+import { useState, useEffect } from 'react';
 
 export const ContactsHome = () => {
+  const [contactsData, setContactsData] = useState<Contact[]>([]);
+
+  const handleGetContacts = async () => {
+    await fetchContacts().then((res) => {
+      setContactsData(res.data);
+    });
+  };
+  useEffect(() => {
+    handleGetContacts();
+  },[]);
+
   return (
     <Container maxWidth="lg">
       <Paper elevation={10} style={{ padding: '16px', margin: '16px auto' }}>
@@ -38,11 +43,11 @@ export const ContactsHome = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
+                {contactsData.map((row) => (
                   <TableRow hover={true} key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                     <TableCell align="left">{row.name}</TableCell>
                     <TableCell align="left">{row.email}</TableCell>
-                    <TableCell align="left">{row.phoneNumber}</TableCell>
+                    <TableCell align="left">{row.phoneNo}</TableCell>
                     <TableCell align="left">{row.company}</TableCell>
                     <TableCell align="left">
                       <Link to={`/contacts/view/${row.id}`} style={{ textDecoration: 'none' }}>

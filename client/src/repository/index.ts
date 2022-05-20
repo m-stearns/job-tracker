@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import type { JobRowData, UserData, JobData } from '../types';
+import type { JobRowData, UserData, JobData, Contact } from '../types';
 
 const headers: { [key: string]: string } = {
   'content-type': 'application/json',
@@ -95,3 +95,70 @@ export const fetchJobs = async () => {
 export const editJob = async (jobId: string, newJobData: Partial<JobData>) => {
   return apiClient.put(`/jobs/edit/${jobId}`, { newJobData });
 };
+// Contacts
+export const createContact = async ({
+  contactName,
+  email,
+  phoneNo,
+  company,
+  jobId,
+}: {
+  contactName: string;
+  email: string;
+  phoneNo: string;
+  company: string;
+  jobId: string;
+}) => {
+  return await apiClient.post('/contacts/create', {
+    contactName,
+    email,
+    phoneNo,
+    company,
+    jobId,
+  });
+};
+
+export const fetchContacts = async () => {
+  return apiClient.get<Contact[]>('/contacts');
+};
+
+export const getContact = async (id: string) => {
+  try {
+    //const result = parseInt(id);
+    return await apiClient.get<Contact>(`/contacts/${id}`);
+  } catch (error) {
+    console.log(error);
+  }
+}; 
+
+export const editContact = async ({
+  contactName,
+  email,
+  phoneNo,
+  company,
+  jobId,
+  id, 
+}: {
+  contactName: string; 
+  email: string; 
+  phoneNo: string; 
+  company: string; 
+  jobId: string; 
+  id: string; 
+}) => {
+  return await apiClient.put(`/contacts/edit/${id}`, {
+    contactName, 
+    email,
+    phoneNo,
+    company,
+    jobId, 
+  }); 
+}; 
+
+export const deleteContact = async (id: string) => {
+  try {
+    return await apiClient.delete(`/contacts/${id}`)
+  } catch (error) {
+    console.log(error); 
+  }
+}; 
