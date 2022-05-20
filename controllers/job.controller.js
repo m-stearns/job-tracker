@@ -120,10 +120,7 @@ class JobController {
     try {
       const jobId = req.params.jobId;
 
-      const job = await Job.findAll({
-        where: {
-          id: jobId,
-        },
+      const job = await Job.findByPk(jobId, {
         include: [
           {
             model: JobSkills,
