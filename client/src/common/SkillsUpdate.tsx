@@ -12,44 +12,69 @@ import {
   MenuItem,
   SelectChangeEvent,
 } from '@mui/material';
-
-export type skillDataRecord = {
-  name: string;
-};
+import { Skill } from '../types';
 
 export const SkillsUpdate: React.FC<{
-  skillsData: skillDataRecord[];
-  existingSkillsData: skillDataRecord[];
-  setSkills: React.Dispatch<SetStateAction<skillDataRecord[]>>;
+  skillsData: Skill[];
+  existingSkillsData: Skill[];
+  setSkills: React.Dispatch<SetStateAction<Skill[]>>;
 }> = ({ skillsData, existingSkillsData, setSkills }): React.ReactElement => {
+  const [existingSkills] = useState<Skill[]>(existingSkillsData);
+
+  // nextAvailableId is set as id attribute when the user creates a brand new skill
+  existingSkills.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+  const id = parseInt(existingSkills[0].id) + 1;
+  const [nextAvailableId, setNextAvailableId] = useState<string>(id.toString());
+
   const [existingSkillName, setExistingSkillName] = useState<string>('');
-  const [existingSkills] = useState<skillDataRecord[]>(existingSkillsData);
+  const [existingSkillId, setExistingSkillId] = useState<string>('-1');
   const [userCreatedSkillName, setUserCreatedSkillName] = useState<string>('');
+  // toggles on/off the field to add brand new skills
   const [addNewSkillField, setAddNewSkillField] = useState<boolean>(false);
 
-  const handleAddSkill = (skillName: string) => {
-    const newSkill: skillDataRecord = {
-      name: skillName,
+  const handleAddNewSkill = (skillName: string) => {
+    const newSkill: Skill = {
+      id: nextAvailableId,
+      name: skillName.trim(),
     };
     let addSkill = true;
     // if name of skill already exists in array, don't add the skill.
     for (let i = 0; i < skillsData.length; i++) {
-      if (newSkill.name == skillsData[i].name) {
+      if (newSkill.name.toLowerCase() === skillsData[0].name.toLowerCase()) {
         addSkill = false;
         break;
       }
     }
     if (newSkill.name && addSkill) {
-      skillsData.push(newSkill);
-      setSkills([...skillsData]);
+      setSkills([...skillsData, newSkill]);
+      const id = parseInt(nextAvailableId) + 1;
+      setNextAvailableId(id.toString());
+    }
+  };
+
+  const handleAddExistingSkill = (skillName: string, skillId: string) => {
+    const newSkill: Skill = {
+      id: skillId,
+      name: skillName,
+    };
+    let addSkill = true;
+    // if id of skill already exists in array, or the name already exists in the array, don't add the skill.
+    for (let i = 0; i < skillsData.length; i++) {
+      if (newSkill.id === skillsData[i].id || newSkill.name.toLowerCase() === skillsData[i].name.toLowerCase()) {
+        addSkill = false;
+        break;
+      }
+    }
+    if (newSkill.name && addSkill) {
+      setSkills([...skillsData, newSkill]);
       setUserCreatedSkillName('');
     }
   };
 
-  const handleChipDelete = (skillName: string) => {
+  const handleChipDelete = (skillToDelete: Skill) => {
     let index = -1;
     for (let i = 0; i < skillsData.length; i++) {
-      if (skillName == skillsData[i].name) {
+      if (skillToDelete.id == skillsData[i].id) {
         index = i;
         break;
       }
@@ -60,7 +85,7 @@ export const SkillsUpdate: React.FC<{
     }
   };
 
-  const handleExistingSkillChange = (event: SelectChangeEvent) => {
+  const handleExistingSkillNameChange = (event: SelectChangeEvent) => {
     setExistingSkillName(event.target.value);
   };
 
@@ -76,6 +101,15 @@ export const SkillsUpdate: React.FC<{
     setAddNewSkillField(false);
   };
 
+  const handleSetExistingSkillId = (event: any) => {
+    setExistingSkillId(event.target.id);
+  };
+
+  const handleExistingSkillClick = (event: any) => {
+    handleRemoveAddNewSkillField();
+    handleSetExistingSkillId(event);
+  };
+
   return (
     <Box width="400px">
       <Grid>
@@ -88,11 +122,11 @@ export const SkillsUpdate: React.FC<{
             fullWidth
             variant="standard"
             value={existingSkillName}
-            onChange={handleExistingSkillChange}
+            onChange={handleExistingSkillNameChange}
           >
             <MenuItem value="" onClickCapture={handleRemoveAddNewSkillField}></MenuItem>
             {existingSkills.map((skill) => (
-              <MenuItem key={skill.name} value={skill.name} onClickCapture={handleRemoveAddNewSkillField}>
+              <MenuItem key={skill.id} id={skill.id} value={skill.name} onClickCapture={handleExistingSkillClick}>
                 {skill.name}
               </MenuItem>
             ))}
@@ -109,7 +143,7 @@ export const SkillsUpdate: React.FC<{
             sx={{ borderRadius: 28 }}
             variant="contained"
             onClick={() => {
-              handleAddSkill(existingSkillName);
+              handleAddExistingSkill(existingSkillName, existingSkillId);
             }}
           >
             <Typography variant="body2">Add Skill</Typography>
@@ -133,7 +167,7 @@ export const SkillsUpdate: React.FC<{
             <Button
               color="primary"
               onClick={() => {
-                handleAddSkill(userCreatedSkillName);
+                handleAddNewSkill(userCreatedSkillName);
               }}
               sx={{ borderRadius: 28 }}
               variant="contained"
@@ -147,10 +181,10 @@ export const SkillsUpdate: React.FC<{
       <Grid item xs={12} style={{ marginBottom: '48px' }}>
         {skillsData.map((skill) => (
           <Chip
-            key={skill.name}
+            key={skill.id}
             label={skill.name}
             onDelete={() => {
-              handleChipDelete(skill.name);
+              handleChipDelete(skill);
             }}
           />
         ))}
