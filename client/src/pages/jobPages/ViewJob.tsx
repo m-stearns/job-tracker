@@ -75,7 +75,7 @@ export const ViewJob = () => {
   const handleGetJob = async (jobId: string) => {
     await fetchJob(jobId)
       .then((res) => {
-        return res.data[0];
+        return res.data;
       })
       .then((data) => {
         const skills = createSkills(data.skills);
