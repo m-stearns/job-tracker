@@ -40,3 +40,10 @@ export interface JobPageData extends JobRowData {
   contact: Contact | undefined;
 }
 
+export interface UserSkillStat {
+  id: string;
+  name: string;
+  comfortLevel: number;
+  count: number;
+  appearsInPercentageOfJobs: number;
+}
