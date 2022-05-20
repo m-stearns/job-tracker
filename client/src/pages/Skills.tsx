@@ -25,6 +25,17 @@ export const Skills = () => {
     fetchData();
   }, []);
 
+  const renderComfortLevelStars = (comfortLevel: number) => {
+    const stars = Array(comfortLevel + 1).fill(0);
+    return (
+      <span>
+        {stars.map((_, i) => (
+          <span key={i}>&#9733;</span>
+        ))}
+      </span>
+    );
+  };
+
   return (
     <Container maxWidth="lg">
       <Stack spacing={4} sx={{ py: '24px' }}>
@@ -51,7 +62,7 @@ export const Skills = () => {
               {skillsStats.map((skill) => (
                 <TableRow key={skill.id}>
                   <TableCell align="right">{skill.name}</TableCell>
-                  <TableCell align="right">{skill.comfortLevel}</TableCell>
+                  <TableCell align="right">{renderComfortLevelStars(skill.comfortLevel)}</TableCell>
                   <TableCell align="right">{skill.count}</TableCell>
                   <TableCell align="right">{skill.appearsInPercentageOfJobs}%</TableCell>
                 </TableRow>
