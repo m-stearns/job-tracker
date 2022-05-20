@@ -18,7 +18,8 @@ import {
 } from '@mui/material';
 import { createJob } from '../../repository';
 import { useNavigate } from 'react-router-dom';
-import { SkillsUpdate, skillDataRecord } from '../../common/SkillsUpdate';
+import { SkillsUpdate } from '../../common/SkillsUpdate';
+import { Skill } from '../../types';
 
 export const CreateJob = () => {
   const [jobTitle, setJobTitle] = useState<string>('');
@@ -35,9 +36,12 @@ export const CreateJob = () => {
   const [isCompanyError, setCompanyError] = useState<boolean>(false);
   const [isDescriptionError, setDescriptionError] = useState<boolean>(false);
   const [isUrlError, setUrlError] = useState<boolean>(false);
-  const [skillsData, setSkillsData] = useState<skillDataRecord[]>([]);
-  const skills = [{ name: 'python' }, { name: 'react' }];
-  const [existingSkillsData] = useState<skillDataRecord[]>(skills);
+  const [skillsData, setSkillsData] = useState<Skill[]>([]);
+  const skills = [
+    { id: '1', name: 'python' },
+    { id: '2', name: 'react' },
+  ];
+  const [existingSkillsData] = useState<Skill[]>(skills);
 
   const navigate = useNavigate();
 
