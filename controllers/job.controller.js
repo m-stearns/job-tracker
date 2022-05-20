@@ -55,7 +55,7 @@ class JobController {
 
       res.status(400).send({ error });
     }
-  }
+  };
 
   static async findAll(req, res) {
     try {
@@ -87,7 +87,7 @@ class JobController {
     } catch (error) {
       res.status(500).send(error);
     }
-  }
+  };
 
   static async edit(req, res) {
     try {
@@ -114,7 +114,37 @@ class JobController {
     } catch (error) {
       res.status(500).send(error);
     }
-  }
-}
+  };
+
+  static async find(req, res) {
+    try {
+      const jobId = req.params.jobId;
+
+      const job = await Job.findByPk(jobId, {
+        include: [
+          {
+            model: JobSkills,
+            as: "skills",
+            include: [
+              {
+                model: Skill,
+                as: "skill",
+              },
+            ],
+          },
+          {
+            model: Contacts,
+            as: "contacts",
+          },
+        ],
+      });
+
+      res.send(job);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  };
+
+} // end JobController
 
 module.exports = { JobController };
