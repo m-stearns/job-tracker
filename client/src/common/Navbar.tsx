@@ -21,9 +21,21 @@ export const Navbar = () => {
             </Link>
           </Button>
           {user ? (
-            <Button onClick={handleLogout} style={{ textDecoration: 'none' }}>
-              Logout
-            </Button>
+            <>
+              <Button>
+                <Link to="/contacts" style={{ textDecoration: 'none' }}>
+                  Contacts
+                </Link>
+              </Button>
+              <Button>
+                <Link to="/skills" style={{ textDecoration: 'none' }}>
+                  Skills
+                </Link>
+              </Button>
+              <Button onClick={handleLogout} style={{ textDecoration: 'none' }}>
+                Logout
+              </Button>
+            </>
           ) : (
             <>
               <Button>
@@ -38,16 +50,6 @@ export const Navbar = () => {
               </Button>
             </>
           )}
-          <Button>
-            <Link to="/contacts" style={{ textDecoration: 'none' }}>
-              Contacts
-            </Link>
-          </Button>
-          <Button>
-            <Link to="/skills" style={{ textDecoration: 'none' }}>
-              Skills
-            </Link>
-          </Button>
         </ButtonGroup>
       </Toolbar>
     </AppBar>
