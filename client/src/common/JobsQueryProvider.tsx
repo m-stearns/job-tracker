@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from 'react-query';
 import type { UseMutateFunction } from 'react-query';
-import { createJob, fetchAllJobs } from '../repository';
+import { createJob, fetchAllJobs, updateJob } from '../repository';
 import { JobData } from '../types';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ export interface CachedJobsContext {
   jobsData: JobData[];
   addJobError: boolean;
   addJob: UseMutateFunction<
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     any,
     unknown,
     {
@@ -24,6 +25,18 @@ export interface CachedJobsContext {
     },
     unknown
   >;
+  editJobError: boolean;
+  editJob: UseMutateFunction<
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    any,
+    unknown,
+    {
+      jobId: string;
+      newJobData: Partial<JobData>;
+    },
+    unknown
+  >;
+  invalidateJobCache: () => Promise<void>;
 }
 
 const CachedJobsContext = React.createContext<CachedJobsContext | undefined>(undefined);
@@ -64,6 +77,17 @@ export const CachedJobsProvider: React.FunctionComponent<{ children: React.React
     },
   });
 
+  const { isError: editJobError, mutate: editJob } = useMutation(updateJob, {
+    onSuccess: async () => {
+      // Invalidate jobData and refetch
+      await queryClient.invalidateQueries('jobsData');
+      navigate('/');
+    },
+    onError: (err) => {
+      console.log('error editing job job.', err);
+    },
+  });
+
   // Typeguard used to make Typescript shutup about possibly undefined responses
   const jobsData = React.useMemo(() => {
     if (Array.isArray(data)) {
@@ -73,6 +97,11 @@ export const CachedJobsProvider: React.FunctionComponent<{ children: React.React
     }
   }, [data]);
 
+  // Exposing this just in case we need to manually invalidate after any of our future API calls
+  const invalidateJobCache = async () => {
+    await queryClient.invalidateQueries('jobsData');
+  };
+
   const value = {
     fetchAllJobsHasError,
     fetchAllJobsError,
@@ -80,6 +109,9 @@ export const CachedJobsProvider: React.FunctionComponent<{ children: React.React
     jobsData,
     addJobError,
     addJob,
+    editJobError,
+    editJob,
+    invalidateJobCache,
   };
   return <CachedJobsContext.Provider value={value}>{children}</CachedJobsContext.Provider>;
 };

@@ -95,8 +95,9 @@ export const fetchAllJobs = async () => {
   return response.data;
 };
 
-export const editJob = async (jobId: string, newJobData: Partial<JobPageData>) => {
-  return apiClient.put(`/jobs/edit/${jobId}`, { newJobData });
+export const updateJob = async ({ jobId, newJobData }: { jobId: string; newJobData: Partial<JobPageData> }) => {
+  const response = await apiClient.put(`/jobs/edit/${jobId}`, { newJobData });
+  return response;
 };
 
 export const fetchJob = async (jobId: string) => {
