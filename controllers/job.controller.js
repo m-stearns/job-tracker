@@ -17,10 +17,37 @@ class JobController {
 
       const job = await Job.create(jobData, { transaction: t });
 
-      const skills = req.body.skills;
-      if (skills && skills.length) {
+      const existingSkills = req.body.existingSkills;
+      if (existingSkills && existingSkills.length) {
         await Promise.all(
-          skills.map((skillId) => {
+          existingSkills.map((skillId) => {
+            return JobSkills.create(
+              {
+                jobId: job.id,
+                skillId: skillId,
+              },
+              { transaction: t }
+            );
+          })
+        );
+      }
+
+      const newSkills = req.body.newSkills;
+      if (newSkills && newSkills.length) {
+        const newSkillIds = await Promise.all(
+          newSkills.map(async (skillName) => {
+            const skill = await Skill.create(
+              {
+                name: skillName,
+                userId: req.user.id,
+              },
+              { transaction: t }
+            );
+            return skill.id;
+          })
+        );
+        await Promise.all(
+          newSkillIds.map((skillId) => {
             return JobSkills.create(
               {
                 jobId: job.id,
@@ -52,10 +79,10 @@ class JobController {
       res.status(200).send("OK");
     } catch (error) {
       await t.rollback();
-
+      console.error(error);
       res.status(400).send({ error });
     }
-  };
+  }
 
   static async findAll(req, res) {
     try {
@@ -87,7 +114,7 @@ class JobController {
     } catch (error) {
       res.status(500).send(error);
     }
-  };
+  }
 
   static async edit(req, res) {
     try {
@@ -104,17 +131,17 @@ class JobController {
         },
         {
           where: {
-            id: jobId
-          }
+            id: jobId,
+          },
         }
-      )
+      );
       // TODO: Doing nothing with contact data
       // TODO: Doing nothing with skills data
-      res.status(200).send('OK')
+      res.status(200).send("OK");
     } catch (error) {
       res.status(500).send(error);
     }
-  };
+  }
 
   static async find(req, res) {
     try {
@@ -143,8 +170,7 @@ class JobController {
     } catch (error) {
       res.status(500).send(error);
     }
-  };
-
+  }
 } // end JobController
 
 module.exports = { JobController };
