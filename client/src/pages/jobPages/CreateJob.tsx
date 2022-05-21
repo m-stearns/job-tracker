@@ -36,12 +36,13 @@ export const CreateJob = () => {
   const [isCompanyError, setCompanyError] = useState<boolean>(false);
   const [isDescriptionError, setDescriptionError] = useState<boolean>(false);
   const [isUrlError, setUrlError] = useState<boolean>(false);
-  const [skillsData, setSkillsData] = useState<Skill[]>([]);
-  const skills = [
+  const [userChosenExistingSkills, setUserChosenExistingSkills] = useState<Skill[]>([]);
+  const [userChosenNewSkills, setUserChosenNewSkills] = useState<string[]>([]);
+  const tempSkillsData = [
     { id: '1', name: 'python' },
     { id: '2', name: 'react' },
   ];
-  const [existingSkillsData] = useState<Skill[]>(skills);
+  const [existingSkillsData] = useState<Skill[]>(tempSkillsData);
 
   const navigate = useNavigate();
 
@@ -209,7 +210,13 @@ export const CreateJob = () => {
               {/** end of status item */}
               <Typography component="h1">Add Skills</Typography>
               {/** TODO - Need to grab values from Skills here */}
-              <SkillsUpdate skillsData={skillsData} existingSkillsData={existingSkillsData} setSkills={setSkillsData} />
+              <SkillsUpdate
+                skillsBankData={existingSkillsData}
+                userChosenExistingSkills={userChosenExistingSkills}
+                setUserChosenExistingSkills={setUserChosenExistingSkills}
+                userCreatedSkills={userChosenNewSkills}
+                setUserCreatedSkills={setUserChosenNewSkills}
+              />
               {/** end of add skills item */}
               <Typography component="h1">Add Contact (optional)</Typography>
               <Grid item xs={12}>

@@ -15,73 +15,96 @@ import {
 import { Skill } from '../types';
 
 export const SkillsUpdate: React.FC<{
-  skillsData: Skill[];
-  existingSkillsData: Skill[];
-  setSkills: React.Dispatch<SetStateAction<Skill[]>>;
-}> = ({ skillsData, existingSkillsData, setSkills }): React.ReactElement => {
-  const [existingSkills] = useState<Skill[]>(existingSkillsData);
-
-  // nextAvailableId is set as id attribute when the user creates a brand new skill
-  existingSkills.sort((a, b) => parseInt(b.id) - parseInt(a.id));
-  const id = parseInt(existingSkills[0].id) + 1;
-  const [nextAvailableId, setNextAvailableId] = useState<string>(id.toString());
+  skillsBankData: Skill[];
+  userChosenExistingSkills: Skill[];
+  setUserChosenExistingSkills: React.Dispatch<SetStateAction<Skill[]>>;
+  userCreatedSkills: string[];
+  setUserCreatedSkills: React.Dispatch<SetStateAction<string[]>>;
+}> = ({
+  skillsBankData,
+  userChosenExistingSkills,
+  setUserChosenExistingSkills,
+  userCreatedSkills,
+  setUserCreatedSkills,
+}): React.ReactElement => {
+  const [skillsBank] = useState<Skill[]>(skillsBankData);
 
   const [existingSkillName, setExistingSkillName] = useState<string>('');
   const [existingSkillId, setExistingSkillId] = useState<string>('-1');
   const [userCreatedSkillName, setUserCreatedSkillName] = useState<string>('');
+
   // toggles on/off the field to add brand new skills
   const [addNewSkillField, setAddNewSkillField] = useState<boolean>(false);
 
-  const handleAddNewSkill = (skillName: string) => {
-    const newSkill: Skill = {
-      id: nextAvailableId,
-      name: skillName.trim(),
-    };
+  const handleAddNewSkill = (chosenNewSkillName: string) => {
     let addSkill = true;
-    // if name of skill already exists in array, don't add the skill.
-    for (let i = 0; i < skillsData.length; i++) {
-      if (newSkill.name.toLowerCase() === skillsData[0].name.toLowerCase()) {
+    for (let i = 0; i < userChosenExistingSkills.length; i++) {
+      if (chosenNewSkillName.toLowerCase() === userChosenExistingSkills[0].name.toLowerCase()) {
         addSkill = false;
         break;
       }
     }
-    if (newSkill.name && addSkill) {
-      setSkills([...skillsData, newSkill]);
-      const id = parseInt(nextAvailableId) + 1;
-      setNextAvailableId(id.toString());
-    }
-  };
-
-  const handleAddExistingSkill = (skillName: string, skillId: string) => {
-    const newSkill: Skill = {
-      id: skillId,
-      name: skillName,
-    };
-    let addSkill = true;
-    // if id of skill already exists in array, or the name already exists in the array, don't add the skill.
-    for (let i = 0; i < skillsData.length; i++) {
-      if (newSkill.id === skillsData[i].id || newSkill.name.toLowerCase() === skillsData[i].name.toLowerCase()) {
+    for (let i = 0; i < userCreatedSkills.length; i++) {
+      if (chosenNewSkillName.toLowerCase() == userCreatedSkills[i].toLowerCase()) {
         addSkill = false;
         break;
       }
     }
-    if (newSkill.name && addSkill) {
-      setSkills([...skillsData, newSkill]);
+    if (chosenNewSkillName && addSkill) {
+      setUserCreatedSkills([...userCreatedSkills, chosenNewSkillName]);
       setUserCreatedSkillName('');
     }
   };
 
-  const handleChipDelete = (skillToDelete: Skill) => {
+  const handleAddExistingSkill = (skillName: string, skillId: string) => {
+    const chosenExistingSkill: Skill = {
+      id: skillId,
+      name: skillName,
+    };
+    let addSkill = true;
+    for (let i = 0; i < userChosenExistingSkills.length; i++) {
+      if (chosenExistingSkill.id === userChosenExistingSkills[i].id) {
+        addSkill = false;
+        break;
+      }
+    }
+    for (let i = 0; i < userCreatedSkills.length; i++) {
+      if (chosenExistingSkill.name.toLowerCase() === userCreatedSkills[i].toLowerCase()) {
+        addSkill = false;
+        break;
+      }
+    }
+    if (chosenExistingSkill.name && addSkill) {
+      setUserChosenExistingSkills([...userChosenExistingSkills, chosenExistingSkill]);
+      setUserCreatedSkillName('');
+    }
+  };
+
+  const handleChipDeleteExistingSkill = (skillToDelete: Skill) => {
     let index = -1;
-    for (let i = 0; i < skillsData.length; i++) {
-      if (skillToDelete.id == skillsData[i].id) {
+    for (let i = 0; i < userChosenExistingSkills.length; i++) {
+      if (skillToDelete.id == userChosenExistingSkills[i].id) {
         index = i;
         break;
       }
     }
     if (index > -1) {
-      skillsData.splice(index, 1);
-      setSkills([...skillsData]);
+      userChosenExistingSkills.splice(index, 1);
+      setUserChosenExistingSkills([...userChosenExistingSkills]);
+    }
+  };
+
+  const handleChipDeleteNewSkill = (skillName: string) => {
+    let index = -1;
+    for (let i = 0; i < userCreatedSkills.length; i++) {
+      if (skillName == userCreatedSkills[i]) {
+        index = i;
+        break;
+      }
+    }
+    if (index > -1) {
+      userCreatedSkills.splice(index, 1);
+      setUserCreatedSkills([...userCreatedSkills]);
     }
   };
 
@@ -125,7 +148,7 @@ export const SkillsUpdate: React.FC<{
             onChange={handleExistingSkillNameChange}
           >
             <MenuItem value="" onClickCapture={handleRemoveAddNewSkillField}></MenuItem>
-            {existingSkills.map((skill) => (
+            {skillsBank.map((skill) => (
               <MenuItem key={skill.id} id={skill.id} value={skill.name} onClickCapture={handleExistingSkillClick}>
                 {skill.name}
               </MenuItem>
@@ -179,12 +202,21 @@ export const SkillsUpdate: React.FC<{
       )}
 
       <Grid item xs={12} style={{ marginBottom: '48px' }}>
-        {skillsData.map((skill) => (
+        {userChosenExistingSkills.map((skill) => (
           <Chip
             key={skill.id}
             label={skill.name}
             onDelete={() => {
-              handleChipDelete(skill);
+              handleChipDeleteExistingSkill(skill);
+            }}
+          />
+        ))}
+        {userCreatedSkills.map((skillName) => (
+          <Chip
+            key={skillName}
+            label={skillName}
+            onDelete={() => {
+              handleChipDeleteNewSkill(skillName);
             }}
           />
         ))}
