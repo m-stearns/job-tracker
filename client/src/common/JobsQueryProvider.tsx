@@ -2,14 +2,14 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from 'react-query';
 import type { UseMutateFunction } from 'react-query';
 import { createJob, fetchAllJobs, updateJob } from '../repository';
-import { JobData } from '../types';
+import { JobPageData } from '../types';
 import { useNavigate } from 'react-router-dom';
 
 export interface CachedJobsContext {
   fetchAllJobsHasError: boolean;
   fetchAllJobsError: Error | null;
   fetchAllJobsLoading: boolean;
-  jobsData: JobData[];
+  jobsData: JobPageData[];
   addJobError: boolean;
   addJob: UseMutateFunction<
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -32,7 +32,7 @@ export interface CachedJobsContext {
     unknown,
     {
       jobId: string;
-      newJobData: Partial<JobData>;
+      newJobData: Partial<JobPageData>;
     },
     unknown
   >;
@@ -61,7 +61,7 @@ export const CachedJobsProvider: React.FunctionComponent<{ children: React.React
     error: fetchAllJobsError,
     isLoading: fetchAllJobsLoading,
     data,
-  } = useQuery<JobData[], Error>('jobsData', fetchAllJobs, {
+  } = useQuery<JobPageData[], Error>('jobsData', fetchAllJobs, {
     cacheTime: Infinity,
   });
 
