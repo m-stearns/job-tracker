@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import type { JobPageData, UserData, UserSkillStat } from '../types';
+import type { JobPageData, UserData, SkillStats } from '../types';
 
 const headers: { [key: string]: string } = {
   'content-type': 'application/json',
@@ -105,5 +105,5 @@ export const fetchJob = async (jobId: string) => {
 };
 
 export const fetchSkillsStats = async () => {
-  return apiClient.get<{ userSkillsStats: UserSkillStat[] }>('/users/skills/stats');
+  return apiClient.get<SkillStats>('/users/skills/stats');
 };

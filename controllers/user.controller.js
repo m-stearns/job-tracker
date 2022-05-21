@@ -1,4 +1,12 @@
-const { User, UserSkills, JobSkills, Job } = require("../models");
+const {
+  User,
+  UserSkills,
+  JobSkills,
+  Job,
+  Skill,
+  sequelize,
+} = require("../models");
+const { Op } = require("sequelize");
 
 class UserController {
   static async register(req, res) {
@@ -91,8 +99,50 @@ class UserController {
         })
       );
 
+      const userJobsIds = await Job.findAll({
+        where: {
+          userId: user.id,
+        },
+        attributes: ["id"],
+      });
+
+      const otherSkills = await JobSkills.findAll({
+        where: {
+          jobId: {
+            [Op.in]: userJobsIds.map((job) => job.id),
+          },
+          skillId: {
+            [Op.notIn]: user.skills.map((userSkill) => userSkill.skillId),
+          },
+        },
+        include: [
+          {
+            model: Skill,
+            as: "skill",
+            attributes: ["id", "name"],
+          },
+        ],
+      });
+
+      // count how many times each skill appears in jobs
+      const otherJobSkillsStatsCount = otherSkills.reduce((acc, skill) => {
+        const skillName = skill.skill.name;
+        const skillId = skill.skill.id;
+        const skillCount = acc[skillName] ? acc[skillName].count + 1 : 1;
+        const appearsInPercentageOfJobs = Math.round(
+          (skillCount / userJobsCount) * 100
+        );
+        acc[skillName] = { id: skillId, name: skillName, count: skillCount, appearsInPercentageOfJobs };
+        return acc;
+      }, {});
+
+      const otherJobSkillsStats = Object.keys(otherJobSkillsStatsCount).map(
+        (skillName) => otherJobSkillsStatsCount[skillName]
+      );
+
       res.json({
         userSkillsStats,
+        otherJobSkillsStats,
       });
     } catch (error) {
       console.error(error);

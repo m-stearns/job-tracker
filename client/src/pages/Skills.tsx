@@ -12,17 +12,20 @@ import {
   TableBody,
   TableRow,
 } from '@mui/material';
-import { UserSkillStat } from '../types';
+import { SkillStats } from '../types';
 
 export const Skills = () => {
-  const [skillsStats, setSkillsStats] = useState<UserSkillStat[]>([]);
+  // is fetching
+  const [isFetching, setIsFetching] = useState(true);
+  const [skillsStats, setSkillsStats] = useState<SkillStats | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await fetchSkillsStats();
-      setSkillsStats(data.userSkillsStats as any);
+      setSkillsStats(data);
     };
     fetchData();
+    setIsFetching(false);
   }, []);
 
   const renderComfortLevelStars = (comfortLevel: number) => {
@@ -36,41 +39,88 @@ export const Skills = () => {
     );
   };
 
+  const renderSkillRow = (stats: SkillStats['userSkillsStats'] | SkillStats['otherJobSkillsStats']) => {
+    if (!stats || !stats.length) {
+      return (
+        <TableRow>
+          <TableCell>
+            <Typography variant="body1">No skills</Typography>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    return stats.map((stat) => {
+      return (
+        <TableRow key={stat.id}>
+          <TableCell align="right">{stat.name}</TableCell>
+          {/* @ts-expect-error todo maybe never */}
+          {stat.comfortLevel != undefined ? (
+            /* @ts-expect-error todo maybe never */
+            <TableCell align="right">{renderComfortLevelStars(stat.comfortLevel)}</TableCell>
+          ) : null}
+          <TableCell align="right">{stat.count}</TableCell>
+          <TableCell align="right">{stat.appearsInPercentageOfJobs}%</TableCell>
+        </TableRow>
+      );
+    });
+  };
+
   return (
     <Container maxWidth="lg">
-      <Stack spacing={4} sx={{ py: '24px' }}>
-        <Typography component="h1" variant="h3">
-          My Skills
-        </Typography>
-        <TableContainer component={Paper} elevation={4}>
-          <Table>
-            <TableHead>
-              <TableRow
-                sx={{
-                  th: {
-                    fontSize: '1.5rem',
-                  },
-                }}
-              >
-                <TableCell align="right">Skill</TableCell>
-                <TableCell align="right">Comfort Level</TableCell>
-                <TableCell align="right">Appears in # of Jobs</TableCell>
-                <TableCell align="right">Appears in % of Jobs</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {skillsStats.map((skill) => (
-                <TableRow key={skill.id}>
-                  <TableCell align="right">{skill.name}</TableCell>
-                  <TableCell align="right">{renderComfortLevelStars(skill.comfortLevel)}</TableCell>
-                  <TableCell align="right">{skill.count}</TableCell>
-                  <TableCell align="right">{skill.appearsInPercentageOfJobs}%</TableCell>
+      {isFetching && <Typography>Loading...</Typography>}
+      {skillsStats?.userSkillsStats && !isFetching && (
+        <Stack spacing={4} sx={{ py: '24px' }}>
+          <Typography component="h1" variant="h3">
+            My Skills
+          </Typography>
+          <TableContainer component={Paper} elevation={4}>
+            <Table>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    th: {
+                      fontSize: '1.5rem',
+                    },
+                  }}
+                >
+                  <TableCell align="right">Skill</TableCell>
+                  <TableCell align="right">Comfort Level</TableCell>
+                  <TableCell align="right">Appears in # of Jobs</TableCell>
+                  <TableCell align="right">Appears in % of Jobs</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Stack>
+              </TableHead>
+              <TableBody>{renderSkillRow(skillsStats.userSkillsStats)}</TableBody>
+            </Table>
+          </TableContainer>
+        </Stack>
+      )}
+
+      {skillsStats?.otherJobSkillsStats && !isFetching && (
+        <Stack spacing={4} sx={{ py: '24px' }}>
+          <Typography component="h1" variant="h3">
+            Other Job Skills
+          </Typography>
+          <TableContainer component={Paper} elevation={4}>
+            <Table>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    th: {
+                      fontSize: '1.5rem',
+                    },
+                  }}
+                >
+                  <TableCell align="right">Skill</TableCell>
+                  <TableCell align="right">Appears in # of Jobs</TableCell>
+                  <TableCell align="right">Appears in % of Jobs</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{renderSkillRow(skillsStats.otherJobSkillsStats)}</TableBody>
+            </Table>
+          </TableContainer>
+        </Stack>
+      )}
     </Container>
   );
 };
