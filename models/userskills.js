@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       skillId: { type: DataTypes.INTEGER, primaryKey: true },
       userId: { type: DataTypes.UUID, primaryKey: true },
+      comfortLevel: { type: DataTypes.INTEGER, defaultValue: 0 },
     },
     {
       sequelize,

@@ -1,51 +1,105 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
-import { Typography, Chip, Container, Stack, Paper } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { Button, Typography, Chip, Container, Stack, Paper, Grid } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
 import { StatusBar } from './StatusBar';
-import type { JobData, Skill } from '../../types';
+import type { JobPageData, Skill, Contact } from '../../types';
+import { DeleteModal } from '../../common/DeleteModal';
+import { fetchJob } from '../../repository';
 
 export const ViewJob = () => {
-  const [jobData, setJobData] = useState<JobData | undefined>(undefined);
-  const { jobId } = useParams() as { jobId: string };
+  const [jobPageData, setJobPageData] = useState<JobPageData | undefined>(undefined);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  // TODO: Remove after API call
-  const tempSuperFakeNotRealJob = {
-    title: 'CTO',
-    company: 'FakeBlock',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    status: 'Interview Scheduled',
-    link: 'www.google.com',
-    internship: false,
+  const { jobId } = useParams() as { jobId: string };
+  const navigate = useNavigate();
+
+  const toggleModal = useCallback(() => {
+    setModalIsOpen(!modalIsOpen);
+  }, [modalIsOpen]);
+
+  const createSkills = (skillsData: any[]) => {
+    const skills: Skill[] = [];
+    if (skillsData) {
+      for (let i = 0; i < skillsData.length; i++) {
+        const skill: Skill = {
+          id: skillsData[i].skill['id'],
+          name: skillsData[i].skill['name'],
+        };
+        skills.push(skill);
+      }
+    }
+    return skills;
+  };
+
+  const createContact = (
+    contactsData: {
+      id: string;
+      name: string;
+      email: string;
+      phoneNo: string;
+      company: string;
+    }[],
+  ) => {
+    const contact: Contact = {
+      id: '-1',
+      name: 'n/a',
+      email: 'n/a',
+      phone: 'n/a',
+      company: 'n/a',
+    };
+    if (contactsData.length > 0) {
+      contact.name = contactsData[0]['name'];
+      contact.email = contactsData[0]['email'];
+      contact.phone = contactsData[0]['phoneNo'];
+      contact.company = contactsData[0]['company'];
+    }
+    return contact;
+  };
+
+  const createJobPageData = (data: any, skills: Skill[], contact: Contact) => {
+    const jobPageData: JobPageData = {
+      id: jobId,
+      title: data.title,
+      company: data.company,
+      description: data.description,
+      status: data.status,
+      link: data.link,
+      internship: data.internship,
+      skills: skills,
+      contact: contact,
+    };
+    return jobPageData;
+  };
+
+  const handleGetJob = async (jobId: string) => {
+    await fetchJob(jobId)
+      .then((res) => {
+        return res.data;
+      })
+      .then((data) => {
+        const skills = createSkills(data.skills);
+        const contact = createContact(data.contacts);
+        const jobPageData = createJobPageData(data, skills, contact);
+        setJobPageData(jobPageData);
+      })
+      .catch((err) => {
+        console.log(`Error: ${err}`);
+      });
   };
 
   useEffect(() => {
-    setJobData({
-      ...tempSuperFakeNotRealJob,
-      id: jobId,
-      skills: [
-        {
-          id: '12345',
-          name: 'Python',
-        },
-        {
-          id: '54321',
-          name: 'Django',
-        },
-      ],
-      contact: {
-        id: '11111',
-        name: 'Maebe Funke',
-        email: 'maybe@fakeblock.com',
-        phone: '555-555-5555',
-        company: 'FakeBlock',
-      },
-    });
+    handleGetJob(jobId);
   }, []);
 
+  const deleteJob = useCallback(() => {
+    // TODO: Call delete job API
+    console.log(`Simulating delete job ${jobId}`);
+    navigate('/');
+  }, [jobId]);
+
   // Show loading state
-  if (!jobData) {
+  if (!jobPageData) {
     return (
       <Container maxWidth="lg">
         <p>Loading job...</p>
@@ -58,64 +112,79 @@ export const ViewJob = () => {
       <Paper elevation={10} style={{ padding: '16px', margin: '16px auto' }}>
         <Stack spacing={4}>
           <Typography component="h1" variant="h4">
-            {jobData.title} @ {jobData.company}
+            {jobPageData.title} @ {jobPageData.company}
           </Typography>
           <Stack spacing={1} component="dl">
-            <StatusBar currentStatus={jobData.status} />
+            <StatusBar currentStatus={jobPageData.status} />
             <Typography component="dt" sx={{ fontWeight: 'bold' }}>
               Job Title
             </Typography>
-            <Typography component="dd">{jobData.title}</Typography>
+            <Typography component="dd">{jobPageData.title}</Typography>
             <Typography component="dt" sx={{ fontWeight: 'bold' }}>
               Company Name
             </Typography>
-            <Typography component="dd">{jobData.company}</Typography>
+            <Typography component="dd">{jobPageData.company}</Typography>
             <Typography component="dt" sx={{ fontWeight: 'bold' }}>
               Job Description
             </Typography>
-            <Typography component="dd">{jobData.description}</Typography>
+            <Typography component="dd">{jobPageData.description}</Typography>
             <Typography component="dt" sx={{ fontWeight: 'bold' }}>
               URL to job application posting
             </Typography>
-            <Typography component="dd">{jobData.link}</Typography>
+            <Typography component="dd">{jobPageData.link}</Typography>
             <Typography component="dt" sx={{ fontWeight: 'bold' }}>
               Status
             </Typography>
-            <Typography component="dd">{jobData.status}</Typography>
+            <Typography component="dd">{jobPageData.status}</Typography>
           </Stack>
-          {jobData.skills.length > 0 && (
+          {jobPageData.skills.length > 0 && (
             <>
               <Typography component="h2" variant="h5">
                 Required Skills
               </Typography>
-              <SkillsChips skills={jobData.skills} />
+              <SkillsChips skills={jobPageData.skills} />
             </>
           )}
           <Typography component="h2" variant="h5">
             Contact
           </Typography>
-          {jobData.contact ? (
+          {jobPageData.contact ? (
             <Stack spacing={1} component="dl">
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Name
               </Typography>
-              <Typography component="dd">{jobData.contact.name}</Typography>
+              <Typography component="dd">{jobPageData.contact.name}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Email
               </Typography>
-              <Typography component="dd">{jobData.contact.email}</Typography>
+              <Typography component="dd">{jobPageData.contact.email}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Phone Number
               </Typography>
-              <Typography component="dd">{jobData.contact.phone}</Typography>
+              <Typography component="dd">{jobPageData.contact.phone}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Company
               </Typography>
-              <Typography component="dd">{jobData.contact.company}</Typography>
+              <Typography component="dd">{jobPageData.contact.company}</Typography>
             </Stack>
           ) : (
             <p>There is no contact information for this job</p>
           )}
+          <Grid container direction="row" justifyContent="space-evenly">
+            <Button variant="contained" onClick={() => console.log('todo')}>
+              Edit Job
+            </Button>
+            <Button variant="contained" color="error" onClick={toggleModal}>
+              Delete Job
+            </Button>
+          </Grid>
+          <DeleteModal
+            open={modalIsOpen}
+            headingText="Are you sure?"
+            message={`Are you sure you want to delete ${jobPageData.title} at ${jobPageData.company}?  This is permenant.`}
+            deleteById={deleteJob}
+            closeModal={toggleModal}
+          />
         </Stack>
       </Paper>
     </Container>

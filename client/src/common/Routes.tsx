@@ -8,6 +8,7 @@ import { CreateContact } from '../pages/CreateContact';
 import { ContactsHome } from '../pages/ContactsHome';
 import { ContactsView } from '../pages/ContactsView';
 import { ContactsEdit } from '../pages/ContactsEdit';
+import { Skills } from '../pages/Skills';
 import { useAuth } from './AuthContext';
 
 export const PageRoutes = () => {
@@ -83,6 +84,14 @@ export const PageRoutes = () => {
         element={
           <PrivateRoute>
             <ContactsEdit />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/skills"
+        element={
+          <PrivateRoute>
+            <Skills />
           </PrivateRoute>
         }
       />

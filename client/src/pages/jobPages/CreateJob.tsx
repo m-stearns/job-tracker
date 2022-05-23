@@ -16,10 +16,12 @@ import {
   Button,
   Paper,
 } from '@mui/material';
+
 import { createJob } from '../../repository';
 import { useNavigate } from 'react-router-dom';
 import { SkillsUpdate } from '../../common/SkillsUpdate';
 import { Skill } from '../../types';
+import { useJobsApi } from '../../common/JobsQueryProvider';
 
 export const CreateJob = () => {
   const [jobTitle, setJobTitle] = useState<string>('');
@@ -44,7 +46,7 @@ export const CreateJob = () => {
   ];
   const [existingSkillsData] = useState<Skill[]>(tempSkillsData);
 
-  const navigate = useNavigate();
+  const { addJob } = useJobsApi();
 
   const handleJobTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setJobTitle(event.target.value);
@@ -86,7 +88,7 @@ export const CreateJob = () => {
     setContactCompany(event.target.value);
   };
 
-  const handleCreateJob = async () => {
+  const handleCreateJob = () => {
     // Check required fields are filled out
     if ([jobTitle, companyName, jobDesc, jobURL].every((field) => field.length > 0)) {
       const jobRecord = {
@@ -101,15 +103,7 @@ export const CreateJob = () => {
         contactPhoneNumber,
         contactCompany,
       };
-      // TODO - implement fetch here with HTTP POST, Content-Type application/json
-      await createJob(jobRecord)
-        .then(() => {
-          console.log('Job created successfully');
-          navigate('/');
-        })
-        .catch((err: Error) => {
-          console.log('error creating job: ', err);
-        });
+      addJob(jobRecord);
     } else {
       if (jobTitle.length === 0) setTitleError(true);
       if (companyName.length === 0) setCompanyError(true);

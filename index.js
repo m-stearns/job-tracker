@@ -15,7 +15,7 @@ app.use(express.static(path.resolve(__dirname, "./client/build")));
 app.use(express.json());
 
 // prefixes all routes with /api
-app.use("/api", [...routes]);
+app.use("/api", routes);
 
 // fallback is to always serve react bundle
 app.get("*", (_, res) => {
