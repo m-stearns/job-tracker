@@ -99,8 +99,18 @@ const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactEleme
                   </TableCell>
                   <TableCell align="right">{row.company}</TableCell>
                   <TableCell align="right">{row.status}</TableCell>
-                  <TableCell align="right">
-                    <a href={row.link}>{row.link}</a>
+                  <TableCell
+                    align="right"
+                    onClick={(e) => e.stopPropagation()}
+                    sx={{
+                      '&:hover': {
+                        cursor: 'default',
+                      },
+                    }}
+                  >
+                    <a href={row.link} target="_blank" rel="noreferrer">
+                      {row.link}
+                    </a>
                   </TableCell>
                 </TableRow>
               ))}
