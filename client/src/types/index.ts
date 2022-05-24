@@ -37,7 +37,7 @@ export interface JobRowData {
 
 export interface JobPageData extends JobRowData {
   skills: Skill[];
-  contact: Contact | undefined;
+  contact: Contact;
 }
 
 interface UserSkillStat {
