@@ -17,8 +17,8 @@ import {
   Paper,
 } from '@mui/material';
 
-import { createJob } from '../../repository';
-import { useNavigate } from 'react-router-dom';
+// import { createJob } from '../../repository';
+// import { useNavigate } from 'react-router-dom';
 import { SkillsUpdate } from '../../common/SkillsUpdate';
 import { Skill } from '../../types';
 import { useJobsApi } from '../../common/JobsQueryProvider';
