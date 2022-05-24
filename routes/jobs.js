@@ -8,5 +8,6 @@ router.get("/", requireAuth, JobController.findAll);
 router.post("/", requireAuth, JobController.create);
 router.put("/edit/:jobId", requireAuth, JobController.edit);
 router.get("/:jobId", requireAuth, JobController.find);
+router.delete("/:jobId", requireAuth, JobController.delete);
 
 module.exports = { jobsRouter: router };
