@@ -104,6 +104,10 @@ export const fetchJob = async (jobId: string) => {
   return apiClient.get(`/jobs/${jobId}`);
 };
 
+export const deleteJob = async (jobId: string) => {
+  return apiClient.delete(`/jobs/${jobId}`);
+};
+
 export const fetchSkillsStats = async () => {
   return apiClient.get<SkillStats>('/users/skills/stats');
 };
