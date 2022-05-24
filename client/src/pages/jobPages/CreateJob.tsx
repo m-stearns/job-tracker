@@ -20,7 +20,7 @@ import {
 import { SkillsUpdate } from '../../common/SkillsUpdate';
 import { Skill } from '../../types';
 import { useJobsApi } from '../../common/JobsQueryProvider';
-import { fetchSkills } from '../../repository';
+import { fetchSkillsByUser } from '../../repository';
 
 export const CreateJob = () => {
   const [skillsBank, setSkillsBank] = useState<Skill[]>([{ id: '-1', name: '' }]);
@@ -28,7 +28,7 @@ export const CreateJob = () => {
   const [error, setError] = useState(null);
 
   const handleFetchSkills = async () => {
-    await fetchSkills()
+    await fetchSkillsByUser()
       .then((res) => {
         return res.data;
       })
