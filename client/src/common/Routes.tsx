@@ -3,7 +3,7 @@ import type React from 'react';
 
 import { Login } from '../pages/Login';
 import { Signup } from '../pages/Signup';
-import { Home, CreateJob, ViewJob } from '../pages/jobPages';
+import { Home, CreateJob, ViewJob, EditJob } from '../pages/jobPages';
 import { CreateContact } from '../pages/CreateContact';
 import { ContactsHome } from '../pages/ContactsHome';
 import { ContactsView } from '../pages/ContactsView';
@@ -52,6 +52,14 @@ export const PageRoutes = () => {
         element={
           <PrivateRoute>
             <ViewJob />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/jobs/edit/:jobId"
+        element={
+          <PrivateRoute>
+            <EditJob />
           </PrivateRoute>
         }
       />
