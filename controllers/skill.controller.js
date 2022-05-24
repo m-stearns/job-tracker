@@ -27,15 +27,6 @@ class SkillController {
       res.status(500).send(error);
     }
   }
-  
-  static async findAll(req, res) {
-    try {
-      const skills = await Skill.findAll();
-      res.send(skills);
-    } catch (error) {
-      res.status(500).send(error);
-    }
-  }
 
   static destroy(req, res) {
     try {
