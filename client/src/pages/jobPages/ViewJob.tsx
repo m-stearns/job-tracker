@@ -171,7 +171,12 @@ export const ViewJob = () => {
             <p>There is no contact information for this job</p>
           )}
           <Grid container direction="row" justifyContent="space-evenly">
-            <Button variant="contained" onClick={() => console.log('todo')}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                navigate(`/jobs/edit/${jobPageData.id}`);
+              }}
+            >
               Edit Job
             </Button>
             <Button variant="contained" color="error" onClick={toggleModal}>
