@@ -14,7 +14,7 @@ class SkillController {
     }
   }
 
-  static async findAll(req, res) {
+  static async findAllForUser(req, res) {
     try {
       const user = req.user;
       const skills = await Skill.findAll({
@@ -22,6 +22,15 @@ class SkillController {
           userId: user.id,
         },
       });
+      res.send(skills);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+  
+  static async findAll(req, res) {
+    try {
+      const skills = await Skill.findAll();
       res.send(skills);
     } catch (error) {
       res.status(500).send(error);
