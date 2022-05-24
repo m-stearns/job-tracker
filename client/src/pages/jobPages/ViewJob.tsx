@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { StatusBar } from './StatusBar';
 import type { JobPageData, Skill, Contact } from '../../types';
 import { DeleteModal } from '../../common/DeleteModal';
-import { fetchJob } from '../../repository';
+import { fetchJob, deleteJob } from '../../repository';
 
 export const ViewJob = () => {
   const [jobPageData, setJobPageData] = useState<JobPageData | undefined>(undefined);
@@ -92,9 +92,8 @@ export const ViewJob = () => {
     handleGetJob(jobId);
   }, []);
 
-  const deleteJob = useCallback(() => {
-    // TODO: Call delete job API
-    console.log(`Simulating delete job ${jobId}`);
+  const deleteJobCallback = useCallback(() => {
+    deleteJob(jobId);
     navigate('/');
   }, [jobId]);
 
@@ -182,7 +181,7 @@ export const ViewJob = () => {
             open={modalIsOpen}
             headingText="Are you sure?"
             message={`Are you sure you want to delete ${jobPageData.title} at ${jobPageData.company}?  This is permenant.`}
-            deleteById={deleteJob}
+            deleteById={deleteJobCallback}
             closeModal={toggleModal}
           />
         </Stack>
