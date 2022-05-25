@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import type { JobPageData, UserData, SkillStats } from '../types';
+import type { JobPageData, UserData, SkillStats, Contact } from '../types';
 
 const headers: { [key: string]: string } = {
   'content-type': 'application/json',
@@ -106,8 +106,75 @@ export const fetchJob = async (jobId: string) => {
 
 export const deleteJob = async (jobId: string) => {
   return apiClient.delete(`/jobs/${jobId}`);
+
+export const fetchSkillsByUser = async () => {
+  return apiClient.get('/skills');
 };
 
 export const fetchSkillsStats = async () => {
   return apiClient.get<SkillStats>('/users/skills/stats');
+};
+// Contacts
+export const createContact = async ({
+  contactName,
+  email,
+  phoneNo,
+  company,
+  jobId,
+}: {
+  contactName: string;
+  email: string;
+  phoneNo: string;
+  company: string;
+  jobId: string | null;
+}) => {
+  return await apiClient.post('/contacts/create', {
+    contactName,
+    email,
+    phoneNo,
+    company,
+    jobId,
+  });
+};
+
+export const fetchContacts = async () => {
+  return apiClient.get<Contact[]>('/contacts');
+};
+
+export const getContact = async (id: string) => {
+  try {
+    //const result = parseInt(id);
+    return await apiClient.get<Contact>(`/contacts/${id}`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const editContact = async ({
+  contactName,
+  email,
+  phoneNo,
+  company,
+  id,
+}: {
+  contactName: string;
+  email: string;
+  phoneNo: string;
+  company: string;
+  id: string;
+}) => {
+  return await apiClient.put(`/contacts/edit/${id}`, {
+    contactName,
+    email,
+    phoneNo,
+    company,
+  });
+};
+
+export const deleteContact = async (id: string) => {
+  try {
+    return await apiClient.delete(`/contacts/${id}`);
+  } catch (error) {
+    console.log(error);
+  }
 };
