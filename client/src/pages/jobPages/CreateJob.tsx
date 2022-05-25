@@ -20,7 +20,7 @@ import {
 // import { createJob } from '../../repository';
 // import { useNavigate } from 'react-router-dom';
 import { SkillsUpdate } from '../../common/SkillsUpdate';
-import { Skill } from '../../types';
+import type { Skill, JobNewData } from '../../types';
 import { useJobsApi } from '../../common/JobsQueryProvider';
 
 export const CreateJob = () => {
@@ -98,11 +98,13 @@ export const CreateJob = () => {
         jobURL,
         jobStatus,
         isInternship,
-        contactName,
-        contactEmail,
-        contactPhoneNumber,
-        contactCompany,
-      };
+        contact: {
+          name: contactName,
+          email: contactEmail,
+          phone: contactPhoneNumber,
+          company: contactCompany,
+        },
+      } as unknown as JobNewData;
       addJob(jobRecord);
     } else {
       if (jobTitle.length === 0) setTitleError(true);
