@@ -262,6 +262,20 @@ class JobController {
       res.status(500).send(error);
     }
   }
+
+  static async delete(req, res) {
+    try {
+      const jobId = req.params.jobId;
+      await Job.destroy({
+        where: {
+          id: jobId,
+        },
+      });
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
 } // end JobController
 
 module.exports = { JobController };
