@@ -6,6 +6,7 @@ import { StatusBar } from './StatusBar';
 import type { JobPageData, Skill, Contact } from '../../types';
 import { DeleteModal } from '../../common/DeleteModal';
 import { fetchJob, deleteJob } from '../../repository';
+import { useJobsApi } from '../../common/JobsQueryProvider';
 
 export const ViewJob = () => {
   const [jobPageData, setJobPageData] = useState<JobPageData | undefined>(undefined);
@@ -13,6 +14,8 @@ export const ViewJob = () => {
 
   const { jobId } = useParams() as { jobId: string };
   const navigate = useNavigate();
+
+  const { invalidateJobCache } = useJobsApi();
 
   const toggleModal = useCallback(() => {
     setModalIsOpen(!modalIsOpen);
@@ -94,6 +97,7 @@ export const ViewJob = () => {
 
   const deleteJobCallback = useCallback(() => {
     deleteJob(jobId);
+    invalidateJobCache();
     navigate('/');
   }, [jobId]);
 
