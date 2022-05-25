@@ -39,7 +39,7 @@ export const EditJob = () => {
       id: '-1',
       name: '',
       email: '',
-      phone: '',
+      phoneNo: '',
       company: '',
     },
   };
@@ -113,7 +113,7 @@ const EditScreen: React.FC<{ data: JobPageData }> = ({ data }) => {
   // Contact dependencies
   const [contactName, setContactName] = useState<string>(data.contact.name);
   const [contactEmail, setContactEmail] = useState<string>(data.contact.email);
-  const [contactPhone, setContactPhone] = useState<string>(data.contact.phone);
+  const [contactPhone, setContactPhone] = useState<string>(data.contact.phoneNo);
   const [contactCompany, setContactCompany] = useState<string>(data.contact.company);
 
   const [isTitleError, setTitleError] = useState<boolean>(false);
@@ -178,7 +178,7 @@ const EditScreen: React.FC<{ data: JobPageData }> = ({ data }) => {
           id: data.contact.id,
           name: contactName,
           email: contactEmail,
-          phone: contactPhone,
+          phoneNo: contactPhone,
           company: contactCompany,
         },
       };
