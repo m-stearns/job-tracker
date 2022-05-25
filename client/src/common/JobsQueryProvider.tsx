@@ -2,7 +2,7 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from 'react-query';
 import type { UseMutateFunction } from 'react-query';
 import { createJob, fetchAllJobs, updateJob } from '../repository';
-import { JobPageData } from '../types';
+import type { JobPageData, JobNewData } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
@@ -16,14 +16,7 @@ export interface CachedJobsContext {
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     any,
     unknown,
-    {
-      jobTitle: string;
-      companyName: string;
-      jobDesc: string;
-      jobURL: string;
-      jobStatus: string;
-      isInternship: boolean;
-    },
+    Partial<JobNewData>,
     unknown
   >;
   editJobError: boolean;
@@ -33,7 +26,7 @@ export interface CachedJobsContext {
     unknown,
     {
       jobId: string;
-      newJobData: Partial<JobPageData>;
+      newJobData: Partial<JobNewData>;
     },
     unknown
   >;

@@ -1,95 +1,127 @@
-import { useState, useEffect } from 'react';
 import {
-  Typography,
-  Checkbox,
   Container,
+  Paper,
   Stack,
+  Typography,
   Box,
   Grid,
   TextField,
-  Select,
-  SelectChangeEvent,
-  MenuItem,
-  FormControl,
   FormControlLabel,
+  Checkbox,
+  FormControl,
   InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
   Button,
-  Paper,
 } from '@mui/material';
-
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { JobPageData, Skill } from '../../types';
+import { fetchJob } from '../../repository';
+import { createJobPageData, createContact, createSkills } from '../../common/JobPageData';
 import { SkillsUpdate } from '../../common/SkillsUpdate';
-import type { Skill, JobNewData } from '../../types';
 import { useJobsApi } from '../../common/JobsQueryProvider';
-import { fetchSkillsByUser } from '../../repository';
 
-export const CreateJob = () => {
-  const [skillsBank, setSkillsBank] = useState<Skill[]>([{ id: '-1', name: '' }]);
+export const EditJob = () => {
+  const { jobId } = useParams() as { jobId: string };
+
+  const initialData: JobPageData = {
+    id: '-1',
+    title: '',
+    company: '',
+    description: '',
+    status: '',
+    link: '',
+    internship: false,
+    skills: [],
+    contact: {
+      id: '-1',
+      name: '',
+      email: '',
+      phone: '',
+      company: '',
+    },
+  };
+  const [jobPageData, setJobPageData] = useState<JobPageData>(initialData);
   const [isPending, setIsPending] = useState<boolean>(true);
   const [error, setError] = useState(null);
 
-  const handleFetchSkills = async () => {
-    await fetchSkillsByUser()
+  const handleFetchJobById = async (jobId: string) => {
+    await fetchJob(jobId)
       .then((res) => {
         return res.data;
       })
-      .then((skillsData) => {
-        const skills: Skill[] = [];
-        for (let i = 0; i < skillsData.length; i++) {
-          const newSkill: Skill = {
-            id: skillsData[i].id,
-            name: skillsData[i].name,
-          };
-          skills.push(newSkill);
-        }
-        return skills;
-      })
-      .then((skills) => {
-        setSkillsBank(skills);
+      .then((data) => {
+        const skills = createSkills(data.skills);
+        const contact = createContact(data.contacts);
+        const jobPageData = createJobPageData(data, skills, contact);
+        setJobPageData(jobPageData);
         setIsPending(false);
         setError(null);
       })
       .catch((err) => {
+        console.log(`err = ${err}`);
         setIsPending(false);
         setError(err.message);
       });
   };
 
   useEffect(() => {
-    handleFetchSkills();
+    handleFetchJobById(jobId);
   }, []);
 
   return (
     <Container maxWidth="lg">
-      {error && <div>{error}</div>}
-      {isPending && <div>Loading...</div>}
-      {!isPending && skillsBank && <CreateJobForm skillsData={skillsBank} />}
+      {error && <ErrorScreen />}
+      {isPending && <Loading />}
+      {!isPending && jobPageData && <EditScreen data={jobPageData} />}
     </Container>
   );
 };
 
-const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React.ReactElement => {
-  const [jobTitle, setJobTitle] = useState<string>('');
-  const [companyName, setCompanyName] = useState<string>('');
-  const [jobDesc, setJobDesc] = useState<string>('');
-  const [jobURL, setJobURL] = useState<string>('');
-  const [isInternship, setIsInternship] = useState<boolean>(false);
-  const [jobStatus, setJobStatus] = useState<string>('Applied');
+const Loading = () => (
+  <Paper elevation={10} style={{ padding: '32px', margin: '16px auto' }}>
+    <Stack spacing={6} justifyContent="center" alignItems="center">
+      <Typography sx={{ fontStyle: 'italic', pt: '8px' }}>Loading...</Typography>
+    </Stack>
+  </Paper>
+);
 
-  const [contactName, setContactName] = useState<string>('');
-  const [contactEmail, setContactEmail] = useState<string>('');
-  const [contactPhoneNumber, setContactPhoneNumber] = useState<string>('');
-  const [contactCompany, setContactCompany] = useState<string>('');
+const ErrorScreen = () => (
+  <Paper elevation={10} style={{ padding: '32px', margin: '16px auto' }}>
+    <Stack spacing={6} justifyContent="center" alignItems="center">
+      <Typography sx={{ fontStyle: 'italic', pt: '8px' }}>Error occurred!</Typography>
+    </Stack>
+  </Paper>
+);
+
+const EditScreen: React.FC<{ data: JobPageData }> = ({ data }) => {
+  // Job record dependencies
+  const [jobTitle, setJobTitle] = useState<string>(data.title);
+  const [companyName, setCompanyName] = useState<string>(data.company);
+  const [jobDesc, setJobDesc] = useState<string>(data.description);
+  const [jobURL, setJobURL] = useState<string>(data.link);
+  const [isInternship, setInternship] = useState<boolean>(data.internship);
+  const [jobStatus, setJobStatus] = useState<string>(data.status);
+
+  // SkillsUpdate.tsx dependencies
+  const [skillsBank] = useState<Skill[]>([{ id: '100', name: 'docker' }]);
+  const [userChosenExistingSkills, setUserChosenExistingSkills] = useState<Skill[]>(data.skills);
+  const [userCreatedSkills, setUserCreatedSkills] = useState<string[]>([]);
+
+  // Contact dependencies
+  const [contactName, setContactName] = useState<string>(data.contact.name);
+  const [contactEmail, setContactEmail] = useState<string>(data.contact.email);
+  const [contactPhone, setContactPhone] = useState<string>(data.contact.phone);
+  const [contactCompany, setContactCompany] = useState<string>(data.contact.company);
 
   const [isTitleError, setTitleError] = useState<boolean>(false);
   const [isCompanyError, setCompanyError] = useState<boolean>(false);
   const [isDescriptionError, setDescriptionError] = useState<boolean>(false);
   const [isUrlError, setUrlError] = useState<boolean>(false);
 
-  const [skillsBank] = useState<Skill[]>(skillsData);
-  const [userChosenExistingSkills, setUserChosenExistingSkills] = useState<Skill[]>([]);
-  const [userChosenNewSkills, setUserChosenNewSkills] = useState<string[]>([]);
-
-  const { addJob } = useJobsApi();
+  const { editJob } = useJobsApi();
 
   const handleJobTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setJobTitle(event.target.value);
@@ -124,31 +156,38 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
   };
 
   const handleContactPhoneNoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setContactPhoneNumber(event.target.value);
+    setContactPhone(event.target.value);
   };
 
   const handleContactCompanyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setContactCompany(event.target.value);
   };
 
-  const handleCreateJob = () => {
-    // Check required fields are filled out
+  const handleEditJobPageData = () => {
     if ([jobTitle, companyName, jobDesc, jobURL].every((field) => field.length > 0)) {
-      const jobRecord = {
-        jobTitle,
-        companyName,
-        jobDesc,
-        jobURL,
-        jobStatus,
-        isInternship,
+      const editedJobData: JobPageData = {
+        id: data.id,
+        title: jobTitle,
+        company: companyName,
+        description: jobDesc,
+        status: jobStatus,
+        link: jobURL,
+        internship: isInternship,
+        skills: [],
         contact: {
+          id: data.contact.id,
           name: contactName,
           email: contactEmail,
-          phone: contactPhoneNumber,
+          phone: contactPhone,
           company: contactCompany,
         },
-      } as unknown as JobNewData;
-      addJob(jobRecord);
+      };
+      const editJobRecord = {
+        jobId: data.id,
+        newJobData: editedJobData,
+      };
+      console.log(editJobRecord);
+      editJob(editJobRecord);
     } else {
       if (jobTitle.length === 0) setTitleError(true);
       if (companyName.length === 0) setCompanyError(true);
@@ -160,7 +199,7 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
   return (
     <Paper elevation={10} style={{ padding: '16px', margin: '16px auto' }}>
       <Stack spacing={2} justifyContent="center" alignItems="center">
-        <Typography component="h1">Create Job Application</Typography>
+        <Typography component="h1">Edit Job Application</Typography>
         <Box component="form" noValidate width="400px">
           <Grid container spacing={2} alignItems="center" justifyContent="center">
             <Grid item xs={12}>
@@ -170,13 +209,13 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
                 variant="standard"
                 fullWidth
                 required
-                autoFocus
                 type="text"
                 error={isTitleError}
+                value={jobTitle}
                 onChange={handleJobTitleChange}
               />
             </Grid>
-            {/** end of jobTitle item */}
+            {/** end of jobtitle item */}
             <Grid item xs={12}>
               <TextField
                 id="companyname"
@@ -186,6 +225,7 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
                 required
                 type="text"
                 error={isCompanyError}
+                value={companyName}
                 onChange={handleCompanyNameChange}
               />
             </Grid>
@@ -197,9 +237,9 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
                 variant="standard"
                 fullWidth
                 required
-                multiline
                 type="text"
                 error={isDescriptionError}
+                value={jobDesc}
                 onChange={handleJobDescChange}
               />
             </Grid>
@@ -213,18 +253,19 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
                 required
                 type="text"
                 error={isUrlError}
+                value={jobURL}
                 onChange={handleJobURLChange}
               />
             </Grid>
             {/** end of joburl item */}
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox checked={isInternship} onChange={() => setIsInternship(!isInternship)} />}
+                control={<Checkbox checked={isInternship} onChange={() => setInternship(!isInternship)} />}
                 label="This position is an internship"
               />
             </Grid>
             {/** end of internship item */}
-            <Grid item xs={12} style={{ marginBottom: '48px' }}>
+            <Grid item xs={12} style={{ marginBottom: '24px' }}>
               <FormControl fullWidth>
                 <InputLabel id="status-label">Status</InputLabel>
                 <Select
@@ -246,17 +287,17 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
               </FormControl>
             </Grid>
             {/** end of status item */}
-            <Typography component="h1">Add Skills</Typography>
+            <Typography component="h1">Edit Skills</Typography>
             {/** TODO - Need to grab values from Skills here */}
             <SkillsUpdate
               skillsBankData={skillsBank}
               userChosenExistingSkills={userChosenExistingSkills}
               setUserChosenExistingSkills={setUserChosenExistingSkills}
-              userCreatedSkills={userChosenNewSkills}
-              setUserCreatedSkills={setUserChosenNewSkills}
+              userCreatedSkills={userCreatedSkills}
+              setUserCreatedSkills={setUserCreatedSkills}
             />
-            {/** end of add skills item */}
-            <Typography component="h1">Add Contact (optional)</Typography>
+            {/** end of edit skills item */}
+            <Typography component="h1">Edit Contact</Typography>
             <Grid item xs={12}>
               <TextField
                 id="contactname"
@@ -264,6 +305,7 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
                 variant="standard"
                 fullWidth
                 type="text"
+                value={contactName}
                 onChange={handleContactNameChange}
               />
             </Grid>
@@ -275,6 +317,7 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
                 variant="standard"
                 fullWidth
                 type="text"
+                value={contactEmail}
                 onChange={handleContactEmailChange}
               />
             </Grid>
@@ -286,6 +329,7 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
                 variant="standard"
                 fullWidth
                 type="text"
+                value={contactPhone}
                 onChange={handleContactPhoneNoChange}
               />
             </Grid>
@@ -297,21 +341,20 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
                 variant="standard"
                 fullWidth
                 type="text"
+                value={contactCompany}
                 onChange={handleContactCompanyChange}
               />
             </Grid>
-            {/** end of contact company item */}
-
-            {/** start form buttons */}
-            <Grid item xs={6}>
-              <Button variant="outlined">Cancel</Button>
+            <Grid item xs={4}>
+              <Link to={`/jobs/view/${data.id}`}>
+                <Button variant="outlined">Cancel</Button>
+              </Link>
             </Grid>
-            <Grid item xs={6}>
-              <Button variant="contained" onClick={handleCreateJob}>
+            <Grid item xs={4}>
+              <Button variant="contained" onClick={handleEditJobPageData}>
                 Submit
               </Button>
             </Grid>
-            {/** end form buttons */}
           </Grid>
           {/** end of container */}
         </Box>
