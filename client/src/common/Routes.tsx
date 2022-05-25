@@ -4,10 +4,8 @@ import type React from 'react';
 import { Login } from '../pages/Login';
 import { Signup } from '../pages/Signup';
 import { Home, CreateJob, ViewJob, EditJob } from '../pages/jobPages';
-import { CreateContact } from '../pages/CreateContact';
-import { ContactsHome } from '../pages/ContactsHome';
-import { ContactsView } from '../pages/ContactsView';
-import { ContactsEdit } from '../pages/ContactsEdit';
+import { CreateContact, ContactsHome, ContactsView, ContactsEdit } from '../pages/contactPages';
+
 import { Skills } from '../pages/Skills';
 import { useAuth } from './AuthContext';
 

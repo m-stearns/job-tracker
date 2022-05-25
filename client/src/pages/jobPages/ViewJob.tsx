@@ -5,7 +5,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { StatusBar } from './StatusBar';
 import type { JobPageData, Skill, Contact } from '../../types';
 import { DeleteModal } from '../../common/DeleteModal';
-import { fetchJob } from '../../repository';
+import { fetchJob, deleteJob } from '../../repository';
+import { useJobsApi } from '../../common/JobsQueryProvider';
 
 export const ViewJob = () => {
   const [jobPageData, setJobPageData] = useState<JobPageData | undefined>(undefined);
@@ -13,6 +14,8 @@ export const ViewJob = () => {
 
   const { jobId } = useParams() as { jobId: string };
   const navigate = useNavigate();
+
+  const { invalidateJobCache } = useJobsApi();
 
   const toggleModal = useCallback(() => {
     setModalIsOpen(!modalIsOpen);
@@ -45,13 +48,13 @@ export const ViewJob = () => {
       id: '-1',
       name: 'n/a',
       email: 'n/a',
-      phone: 'n/a',
+      phoneNo: 'n/a',
       company: 'n/a',
     };
     if (contactsData.length > 0) {
       contact.name = contactsData[0]['name'];
       contact.email = contactsData[0]['email'];
-      contact.phone = contactsData[0]['phoneNo'];
+      contact.phoneNo = contactsData[0]['phoneNo'];
       contact.company = contactsData[0]['company'];
     }
     return contact;
@@ -92,9 +95,9 @@ export const ViewJob = () => {
     handleGetJob(jobId);
   }, []);
 
-  const deleteJob = useCallback(() => {
-    // TODO: Call delete job API
-    console.log(`Simulating delete job ${jobId}`);
+  const deleteJobCallback = useCallback(() => {
+    deleteJob(jobId);
+    invalidateJobCache();
     navigate('/');
   }, [jobId]);
 
@@ -161,7 +164,8 @@ export const ViewJob = () => {
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Phone Number
               </Typography>
-              <Typography component="dd">{jobPageData.contact.phone}</Typography>
+
+              <Typography component="dd">{jobPageData.contact.phoneNo}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Company
               </Typography>
@@ -187,7 +191,7 @@ export const ViewJob = () => {
             open={modalIsOpen}
             headingText="Are you sure?"
             message={`Are you sure you want to delete ${jobPageData.title} at ${jobPageData.company}?  This is permenant.`}
-            deleteById={deleteJob}
+            deleteById={deleteJobCallback}
             closeModal={toggleModal}
           />
         </Stack>

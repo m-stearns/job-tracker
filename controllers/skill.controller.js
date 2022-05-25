@@ -14,7 +14,7 @@ class SkillController {
     }
   }
 
-  static async findAll(req, res) {
+  static async findAllForUser(req, res) {
     try {
       const user = req.user;
       const skills = await Skill.findAll({

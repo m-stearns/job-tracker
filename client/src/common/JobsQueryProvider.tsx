@@ -4,6 +4,7 @@ import type { UseMutateFunction } from 'react-query';
 import { createJob, fetchAllJobs, updateJob } from '../repository';
 import type { JobPageData, JobNewData } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
 export interface CachedJobsContext {
   fetchAllJobsHasError: boolean;
@@ -47,6 +48,7 @@ export const JobsQueryProvider: React.FunctionComponent<{ children: React.ReactN
 export const CachedJobsProvider: React.FunctionComponent<{ children: React.ReactNode }> = ({ children }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Queries
   const {
@@ -56,6 +58,10 @@ export const CachedJobsProvider: React.FunctionComponent<{ children: React.React
     data,
   } = useQuery<JobPageData[], Error>('jobsData', fetchAllJobs, {
     cacheTime: Infinity,
+    enabled: !!user,
+    retry: 5,
+    // This applies exponential backoff on retry attempts
+    retryDelay: (attempt) => Math.min(attempt > 1 ? 2 ** attempt * 1000 : 1000, 30 * 1000),
   });
 
   // Mutations
