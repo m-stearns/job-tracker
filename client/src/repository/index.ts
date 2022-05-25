@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import type { JobRowData, UserData, JobData, Contact } from '../types';
+import type { JobPageData, UserData, SkillStats, Contact } from '../types';
+
 
 const headers: { [key: string]: string } = {
   'content-type': 'application/json',
@@ -78,7 +79,7 @@ export const createJob = async ({
   jobStatus: string;
   isInternship: boolean;
 }) => {
-  return await apiClient.post('/jobs', {
+  const response = await apiClient.post('/jobs', {
     jobTitle,
     companyName,
     jobDesc,
@@ -86,14 +87,26 @@ export const createJob = async ({
     jobStatus,
     isInternship,
   });
+  return response;
 };
 
-export const fetchJobs = async () => {
-  return apiClient.get<JobRowData[]>('/jobs');
+export const fetchAllJobs = async () => {
+  console.log('fetching');
+  const response = await apiClient.get<JobPageData[]>('/jobs');
+  return response.data;
 };
 
-export const editJob = async (jobId: string, newJobData: Partial<JobData>) => {
-  return apiClient.put(`/jobs/edit/${jobId}`, { newJobData });
+export const updateJob = async ({ jobId, newJobData }: { jobId: string; newJobData: Partial<JobPageData> }) => {
+  const response = await apiClient.put(`/jobs/edit/${jobId}`, { newJobData });
+  return response;
+};
+
+export const fetchJob = async (jobId: string) => {
+  return apiClient.get(`/jobs/${jobId}`);
+};
+
+export const fetchSkillsStats = async () => {
+  return apiClient.get<SkillStats>('/users/skills/stats');
 };
 // Contacts
 export const createContact = async ({

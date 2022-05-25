@@ -16,8 +16,12 @@ import {
   Button,
   Paper,
 } from '@mui/material';
+
 import { createJob } from '../../repository';
 import { useNavigate } from 'react-router-dom';
+import { SkillsUpdate } from '../../common/SkillsUpdate';
+import { Skill } from '../../types';
+import { useJobsApi } from '../../common/JobsQueryProvider';
 
 export const CreateJob = () => {
   const [jobTitle, setJobTitle] = useState<string>('');
@@ -34,8 +38,15 @@ export const CreateJob = () => {
   const [isCompanyError, setCompanyError] = useState<boolean>(false);
   const [isDescriptionError, setDescriptionError] = useState<boolean>(false);
   const [isUrlError, setUrlError] = useState<boolean>(false);
+  const [userChosenExistingSkills, setUserChosenExistingSkills] = useState<Skill[]>([]);
+  const [userChosenNewSkills, setUserChosenNewSkills] = useState<string[]>([]);
+  const tempSkillsData = [
+    { id: '1', name: 'python' },
+    { id: '2', name: 'react' },
+  ];
+  const [existingSkillsData] = useState<Skill[]>(tempSkillsData);
 
-  const navigate = useNavigate();
+  const { addJob } = useJobsApi();
 
   const handleJobTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setJobTitle(event.target.value);
@@ -77,7 +88,7 @@ export const CreateJob = () => {
     setContactCompany(event.target.value);
   };
 
-  const handleCreateJob = async () => {
+  const handleCreateJob = () => {
     // Check required fields are filled out
     if ([jobTitle, companyName, jobDesc, jobURL].every((field) => field.length > 0)) {
       const jobRecord = {
@@ -92,15 +103,7 @@ export const CreateJob = () => {
         contactPhoneNumber,
         contactCompany,
       };
-      // TODO - implement fetch here with HTTP POST, Content-Type application/json
-      await createJob(jobRecord)
-        .then(() => {
-          console.log('Job created successfully');
-          navigate('/');
-        })
-        .catch((err: Error) => {
-          console.log('error creating job: ', err);
-        });
+      addJob(jobRecord);
     } else {
       if (jobTitle.length === 0) setTitleError(true);
       if (companyName.length === 0) setCompanyError(true);
@@ -177,7 +180,7 @@ export const CreateJob = () => {
                 />
               </Grid>
               {/** end of internship item */}
-              <Grid item xs={12} style={{ marginBottom: '24px' }}>
+              <Grid item xs={12} style={{ marginBottom: '48px' }}>
                 <FormControl fullWidth>
                   <InputLabel id="status-label">Status</InputLabel>
                   <Select
@@ -201,11 +204,13 @@ export const CreateJob = () => {
               {/** end of status item */}
               <Typography component="h1">Add Skills</Typography>
               {/** TODO - Need to grab values from Skills here */}
-              <Grid item xs={12} style={{ marginBottom: '24px' }}>
-                <Button color="primary" sx={{ borderRadius: 28 }} variant="contained">
-                  <Typography variant="body2">+Add Skill</Typography>
-                </Button>
-              </Grid>
+              <SkillsUpdate
+                skillsBankData={existingSkillsData}
+                userChosenExistingSkills={userChosenExistingSkills}
+                setUserChosenExistingSkills={setUserChosenExistingSkills}
+                userCreatedSkills={userChosenNewSkills}
+                setUserCreatedSkills={setUserChosenNewSkills}
+              />
               {/** end of add skills item */}
               <Typography component="h1">Add Contact (optional)</Typography>
               <Grid item xs={12}>

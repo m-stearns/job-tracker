@@ -5,6 +5,7 @@ import { Login } from '../pages/Login';
 import { Signup } from '../pages/Signup';
 import { Home, CreateJob, ViewJob } from '../pages/jobPages';
 import { CreateContact, ContactsHome, ContactsView, ContactsEdit } from '../pages/contactPages';
+import { Skills } from '../pages/Skills';
 import { useAuth } from './AuthContext';
 
 export const PageRoutes = () => {
@@ -80,6 +81,14 @@ export const PageRoutes = () => {
         element={
           <PrivateRoute>
             <ContactsEdit />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/skills"
+        element={
+          <PrivateRoute>
+            <Skills />
           </PrivateRoute>
         }
       />

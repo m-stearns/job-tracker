@@ -12,48 +12,19 @@ import {
   Typography,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { fetchJobs } from '../../repository';
 import { useNavigate, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import type { JobRowData } from '../../types';
+import { useJobsApi } from '../../common/JobsQueryProvider';
 
 export const Home = () => {
-  const [jobsData, setJobsData] = useState<JobRowData[]>([]);
-  const [isPending, setIsPending] = useState(true);
-  const [error, setError] = useState(null);
-
-  const handleGetJobs = async () => {
-    await fetchJobs()
-      .then((res) => {
-        return res.data;
-      })
-      .then((data) => {
-        setJobsData(data);
-        setIsPending(false);
-        setError(null);
-      })
-      .catch((err) => {
-        console.log('Error: ', err);
-        setIsPending(false);
-        setError(err.message);
-      });
-  };
-  useEffect(() => {
-    handleGetJobs().catch((err) => {
-      console.log('Error', err);
-      setIsPending(false);
-      setError(err.message);
-    });
-    setIsPending(false);
-    setError(null);
-  }, []);
+  const { jobsData, fetchAllJobsHasError, fetchAllJobsError, fetchAllJobsLoading } = useJobsApi();
 
   return (
     <Container maxWidth="lg">
-      {error && <div>{error}</div>}
-      {isPending && <Loading />}
-      {!isPending && jobsData.length > 0 && <DataTable data={jobsData} />}
-      {!isPending && jobsData.length === 0 && <NoContent />}
+      {fetchAllJobsHasError && <div>{fetchAllJobsError?.message ?? 'unknown error'}</div>}
+      {fetchAllJobsLoading && <Loading />}
+      {!fetchAllJobsLoading && jobsData.length > 0 && <DataTable data={jobsData} />}
+      {!fetchAllJobsLoading && jobsData.length === 0 && <NoContent />}
     </Container>
   );
 };
@@ -128,8 +99,18 @@ const DataTable: React.FC<{ data: JobRowData[] }> = ({ data }): React.ReactEleme
                   </TableCell>
                   <TableCell align="right">{row.company}</TableCell>
                   <TableCell align="right">{row.status}</TableCell>
-                  <TableCell align="right">
-                    <a href={row.link}>{row.link}</a>
+                  <TableCell
+                    align="right"
+                    onClick={(e) => e.stopPropagation()}
+                    sx={{
+                      '&:hover': {
+                        cursor: 'default',
+                      },
+                    }}
+                  >
+                    <a href={row.link} target="_blank" rel="noreferrer">
+                      {row.link}
+                    </a>
                   </TableCell>
                 </TableRow>
               ))}
