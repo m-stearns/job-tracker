@@ -107,7 +107,7 @@ export const createContact = async ({
   email: string;
   phoneNo: string;
   company: string;
-  jobId: string;
+  jobId: string | null;
 }) => {
   return await apiClient.post('/contacts/create', {
     contactName,
@@ -136,14 +136,12 @@ export const editContact = async ({
   email,
   phoneNo,
   company,
-  jobId,
   id,
 }: {
   contactName: string;
   email: string;
   phoneNo: string;
   company: string;
-  jobId: string;
   id: string;
 }) => {
   return await apiClient.put(`/contacts/edit/${id}`, {
@@ -151,7 +149,6 @@ export const editContact = async ({
     email,
     phoneNo,
     company,
-    jobId,
   });
 };
 

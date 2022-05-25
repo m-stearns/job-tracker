@@ -1,22 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Typography,
-  Container,
-  Stack,
-  Box,
-  Grid,
-  TextField,
-  Button,
-  Paper,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
-} from '@mui/material';
+import { Typography, Container, Stack, Box, Grid, TextField, Button, Paper } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createContact, editContact, fetchJobs, getContact } from '../repository';
-import type { JobRowData } from '../types';
+import { createContact, editContact, getContact } from '../repository';
 
 interface ContactsProps {
   title: string;
@@ -29,9 +15,6 @@ export const ContactsUpdate = (props: ContactsProps) => {
   const [ContactEmail, setContactEmail] = useState<string>('');
   const [ContactPhoneNumber, setContactPhoneNumber] = useState<string>('');
   const [ContactCompany, setContactCompany] = useState<string>('');
-  const [jobsData, setJobsData] = useState<JobRowData[]>([]);
-  const [jobId, setJobId] = useState<string>('');
-  const [selectName, setSelectName] = useState<string>('');
 
   let route: string;
 
@@ -59,11 +42,6 @@ export const ContactsUpdate = (props: ContactsProps) => {
     setContactCompany(event.target.value);
   };
 
-  const handleJobIdChange = (job: JobRowData) => {
-    setJobId(job.id);
-    setSelectName(job.title);
-  };
-
   const handleCreateContact = async () => {
     if (props.title == 'Create Contact') {
       const contactRecord = {
@@ -71,7 +49,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
         email: ContactEmail,
         phoneNo: ContactPhoneNumber,
         company: ContactCompany,
-        jobId,
+        jobId: null,
       };
       await createContact(contactRecord)
         .then(() => {
@@ -88,7 +66,6 @@ export const ContactsUpdate = (props: ContactsProps) => {
         email: ContactEmail,
         phoneNo: ContactPhoneNumber,
         company: ContactCompany,
-        jobId,
         id: params.id as string,
       };
       await editContact(contactRecord)
@@ -103,12 +80,6 @@ export const ContactsUpdate = (props: ContactsProps) => {
     }
   };
 
-  const handleGetJobs = async () => {
-    await fetchJobs().then((res) => {
-      setJobsData(res.data);
-    });
-  };
-
   const handleGetContact = async () => {
     await getContact(params.id as string).then((res) => {
       if (res != undefined) {
@@ -119,10 +90,6 @@ export const ContactsUpdate = (props: ContactsProps) => {
       }
     });
   };
-
-  useEffect(() => {
-    handleGetJobs();
-  }, []);
 
   useEffect(() => {
     if (props.title == 'Edit Contact') {
@@ -180,19 +147,6 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   onChange={handleContactCompanyChange}
                   value={ContactCompany}
                 />
-              </Grid>
-
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel>Job</InputLabel>
-                  <Select value={selectName}>
-                    {jobsData.map((job) => (
-                      <MenuItem key={job.id} value={job.title} onClick={() => handleJobIdChange(job)}>
-                        {job.title}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
               </Grid>
 
               <Grid item xs={12} container spacing={20} alignItems="center" justifyContent="left">
