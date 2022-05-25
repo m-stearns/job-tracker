@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Container, Stack, Box, Grid, TextField, Button, Paper } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { createContact, editContact, getContact } from '../repository';
 
 interface ContactsProps {
   title: string;
@@ -8,10 +10,21 @@ interface ContactsProps {
 }
 
 export const ContactsUpdate = (props: ContactsProps) => {
-  const [contactName, setContactName] = useState<string>('');
-  const [contactEmail, setContactEmail] = useState<string>('');
-  const [contactPhoneNumber, setContactPhoneNumber] = useState<string>('');
-  const [contactCompany, setContactCompany] = useState<string>('');
+  const params = useParams();
+  const [ContactName, setContactName] = useState<string>('');
+  const [ContactEmail, setContactEmail] = useState<string>('');
+  const [ContactPhoneNumber, setContactPhoneNumber] = useState<string>('');
+  const [ContactCompany, setContactCompany] = useState<string>('');
+
+  let route: string;
+
+  if (props.title == 'Create Contact') {
+    route = '/contacts';
+  } else {
+    route = `/contacts/view/${params.id}`;
+  }
+
+  const navigate = useNavigate();
 
   const handleContactNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setContactName(event.target.value);
@@ -29,15 +42,61 @@ export const ContactsUpdate = (props: ContactsProps) => {
     setContactCompany(event.target.value);
   };
 
-  const handleCreateContact = () => {
-    const contactRecord = {
-      contactName,
-      contactEmail,
-      contactPhoneNumber,
-      contactCompany,
-    };
-    console.log(contactRecord);
+  const handleCreateContact = async () => {
+    if (props.title == 'Create Contact') {
+      const contactRecord = {
+        contactName: ContactName,
+        email: ContactEmail,
+        phoneNo: ContactPhoneNumber,
+        company: ContactCompany,
+        jobId: null,
+      };
+      await createContact(contactRecord)
+        .then(() => {
+          console.log('Contact created');
+          console.log(contactRecord);
+          navigate('/contacts');
+        })
+        .catch((err: Error) => {
+          console.log('error creating contact: ', err);
+        });
+    } else {
+      const contactRecord = {
+        contactName: ContactName,
+        email: ContactEmail,
+        phoneNo: ContactPhoneNumber,
+        company: ContactCompany,
+        id: params.id as string,
+      };
+      await editContact(contactRecord)
+        .then(() => {
+          console.log('Contact created');
+          console.log(contactRecord);
+          navigate('/contacts');
+        })
+        .catch((err: Error) => {
+          console.log('error creating contact: ', err);
+        });
+    }
   };
+
+  const handleGetContact = async () => {
+    await getContact(params.id as string).then((res) => {
+      if (res != undefined) {
+        setContactName(res.data.name);
+        setContactEmail(res.data.email);
+        setContactPhoneNumber(res.data.phoneNo);
+        setContactCompany(res.data.company);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (props.title == 'Edit Contact') {
+      handleGetContact();
+    }
+  }, []);
+
   return (
     <Container maxWidth="lg">
       <Paper elevation={10} style={{ padding: '16px', margin: '16px auto' }}>
@@ -53,6 +112,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   fullWidth
                   type="text"
                   onChange={handleContactNameChange}
+                  value={ContactName}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -63,6 +123,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   fullWidth
                   type="text"
                   onChange={handleContactEmailChange}
+                  value={ContactEmail}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -73,6 +134,7 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   fullWidth
                   type="text"
                   onChange={handleContactPhoneNoChange}
+                  value={ContactPhoneNumber}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -83,18 +145,21 @@ export const ContactsUpdate = (props: ContactsProps) => {
                   fullWidth
                   type="text"
                   onChange={handleContactCompanyChange}
+                  value={ContactCompany}
                 />
               </Grid>
 
-              <Grid item xs={4}>
-                <Link to={props.route} style={{ textDecoration: 'none' }}>
-                  <Button variant="outlined">Back</Button>
-                </Link>
-              </Grid>
-              <Grid item xs={4}>
-                <Button variant="contained" onClick={handleCreateContact}>
-                  Submit
-                </Button>
+              <Grid item xs={12} container spacing={20} alignItems="center" justifyContent="left">
+                <Grid item xs={4}>
+                  <Link to={route} style={{ textDecoration: 'none' }}>
+                    <Button variant="outlined">Back</Button>
+                  </Link>
+                </Grid>
+                <Grid item xs={4}>
+                  <Button variant="contained" onClick={handleCreateContact}>
+                    Submit
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </Box>
