@@ -1,7 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 import type { JobPageData, UserData, SkillStats, Contact } from '../types';
 
-
 const headers: { [key: string]: string } = {
   'content-type': 'application/json',
 };

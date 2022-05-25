@@ -45,13 +45,13 @@ export const ViewJob = () => {
       id: '-1',
       name: 'n/a',
       email: 'n/a',
-      phone: 'n/a',
+      phoneNo: 'n/a',
       company: 'n/a',
     };
     if (contactsData.length > 0) {
       contact.name = contactsData[0]['name'];
       contact.email = contactsData[0]['email'];
-      contact.phone = contactsData[0]['phoneNo'];
+      contact.phoneNo = contactsData[0]['phoneNo'];
       contact.company = contactsData[0]['company'];
     }
     return contact;
@@ -162,7 +162,7 @@ export const ViewJob = () => {
                 Phone Number
               </Typography>
 
-              <Typography component="dd">{jobData.contact.phoneNo}</Typography>
+              <Typography component="dd">{jobPageData.contact.phoneNo}</Typography>
               <Typography component="dt" sx={{ fontWeight: 'bold' }}>
                 Company
               </Typography>
