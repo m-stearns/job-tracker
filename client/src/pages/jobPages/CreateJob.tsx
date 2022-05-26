@@ -23,7 +23,7 @@ import { useJobsApi } from '../../common/JobsQueryProvider';
 import { fetchSkillsByUser } from '../../repository';
 
 export const CreateJob = () => {
-  const [skillsBank, setSkillsBank] = useState<Skill[]>([{ id: '-1', name: '' }]);
+  const [skillsBank, setSkillsBank] = useState<Skill[]>([]);
   const [isPending, setIsPending] = useState<boolean>(true);
   const [error, setError] = useState(null);
 
@@ -135,12 +135,14 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
     // Check required fields are filled out
     if ([jobTitle, companyName, jobDesc, jobURL].every((field) => field.length > 0)) {
       const jobRecord = {
-        jobTitle,
-        companyName,
-        jobDesc,
-        jobURL,
-        jobStatus,
-        isInternship,
+        title: jobTitle,
+        company: companyName,
+        description: jobDesc,
+        link: jobURL,
+        status: jobStatus,
+        internship: isInternship,
+        newSkills: userChosenNewSkills,
+        existingSkills: userChosenExistingSkills,
         contact: {
           name: contactName,
           email: contactEmail,
