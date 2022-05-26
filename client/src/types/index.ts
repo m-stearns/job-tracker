@@ -40,7 +40,7 @@ export interface JobPageData extends JobRowData {
   contact: Contact | undefined;
 }
 
-interface UserSkillStat {
+export interface UserSkillStat {
   id: string;
   name: string;
   comfortLevel: number;

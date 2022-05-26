@@ -69,6 +69,29 @@ class SkillController {
     }
   }
 
+  static async update(req, res) {
+    try {
+      const user = req.user;
+      const userSkill = await UserSkills.findOne({
+        where: {
+          userId: user.id,
+          skillId: req.params.id,
+        },
+      });
+
+      if (!userSkill) {
+        return res.status(400).send({ error: "Skill does not exist" });
+      }
+
+      await userSkill.update({
+        comfortLevel: req.body.comfortLevel,
+      });
+      res.send("Skill updated");
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+
   static destroy(req, res) {
     try {
       const skillId = req.params.id;

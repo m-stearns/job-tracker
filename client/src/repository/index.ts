@@ -191,3 +191,7 @@ export const createUserSkill = async ({
 export const deleteUserSkill = async (id: string) => {
   return await apiClient.delete(`/skills/${id}`);
 };
+
+export const updateUserSkill = async ({ id, comfortLevel }: { id: string; comfortLevel: number }) => {
+  return await apiClient.put(`/skills/${id}`, { comfortLevel });
+};

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchSkillsStats, fetchSkillsByUser, createUserSkill, deleteUserSkill } from '../repository';
+import { fetchSkillsStats, fetchSkillsByUser, createUserSkill, deleteUserSkill, updateUserSkill } from '../repository';
 import {
   Container,
   Typography,
@@ -19,7 +19,96 @@ import {
   InputLabel,
   Paper,
 } from '@mui/material';
-import { SkillStats, Skill } from '../types';
+import { SkillStats, Skill, UserSkillStat } from '../types';
+
+const EditComfortLevelModal = ({
+  open,
+  onClose,
+  onNewSkillSuccess,
+  currentSkill,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onNewSkillSuccess: () => void;
+  currentSkill: UserSkillStat;
+}) => {
+  const [newComfortLevel, setNewComfortLevel] = useState<number>(0);
+  const [success, setSuccess] = useState<boolean>(false);
+
+  const handleSubmit = async () => {
+    await updateUserSkill({ id: currentSkill.id, comfortLevel: newComfortLevel });
+    onNewSkillSuccess();
+    setSuccess(true);
+    setTimeout(() => {
+      setSuccess(false);
+    }, 2000);
+  };
+
+  useEffect(() => {
+    setNewComfortLevel(currentSkill.comfortLevel);
+  }, [currentSkill]);
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <>
+        <Paper
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '50%',
+            padding: '2rem 1rem',
+            minHeight: '10rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Typography variant="h5">Edit comfort level for {currentSkill.name}</Typography>
+          {success && (
+            <Typography variant="h6" color="primary">
+              Successfully updated comfort level
+            </Typography>
+          )}
+          <FormControl>
+            <InputLabel>Comfort level</InputLabel>
+            <Select value={newComfortLevel} onChange={(e) => setNewComfortLevel(Number(e.target.value))}>
+              <MenuItem value={0}>
+                <span role="img" aria-label="1">
+                  ⭐
+                </span>
+              </MenuItem>
+              <MenuItem value={1}>
+                <span role="img" aria-label="2">
+                  ⭐ ⭐
+                </span>
+              </MenuItem>
+              <MenuItem value={2}>
+                <span role="img" aria-label="3">
+                  ⭐ ⭐ ⭐
+                </span>
+              </MenuItem>
+              <MenuItem value={3}>
+                <span role="img" aria-label="4">
+                  ⭐ ⭐ ⭐ ⭐
+                </span>
+              </MenuItem>
+              <MenuItem value={4}>
+                <span role="img" aria-label="5">
+                  ⭐ ⭐ ⭐ ⭐ ⭐
+                </span>
+              </MenuItem>
+            </Select>
+          </FormControl>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
+            Save
+          </Button>
+        </Paper>
+      </>
+    </Modal>
+  );
+};
 
 const AddSkillModal = ({
   isOpen,
@@ -246,6 +335,8 @@ export const Skills = () => {
   const [skillsStats, setSkillsStats] = useState<SkillStats | null>(null);
   const [isAddSkillModalOpen, setIsAddSkillModalOpen] = useState(false);
   const [hasAddedSkill, setHasAddedSkill] = useState(false);
+  const [isEditComfortLevelModalOpen, setIsEditComfortLevelModalOpen] = useState(false);
+  const [currentSkill, setCurrentSkill] = useState<UserSkillStat | null>(null);
 
   const fetchData = async () => {
     const { data } = await fetchSkillsStats();
@@ -313,16 +404,30 @@ export const Skills = () => {
           <TableCell align="right">{stat.appearsInPercentageOfJobs}%</TableCell>
           {/* @ts-expect-error todo maybe never */}
           {stat.comfortLevel != undefined ? (
-            <TableCell align="right">
-              <Button
-                variant="contained"
-                color="primary"
-                /* @ts-expect-error todo maybe never */
-                onClick={() => handleDeleteSkill(stat.id)}
-              >
-                Delete
-              </Button>
-            </TableCell>
+            <>
+              <TableCell align="right">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    setCurrentSkill(stat as any);
+                    setIsEditComfortLevelModalOpen(true);
+                  }}
+                >
+                  Edit
+                </Button>
+              </TableCell>
+              <TableCell align="right">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  /* @ts-expect-error todo maybe never */
+                  onClick={() => handleDeleteSkill(stat.id)}
+                >
+                  Delete
+                </Button>
+              </TableCell>
+            </>
           ) : null}
         </TableRow>
       );
@@ -361,6 +466,7 @@ export const Skills = () => {
                   <TableCell align="right">Comfort Level</TableCell>
                   <TableCell align="right">Appears in # of Jobs</TableCell>
                   <TableCell align="right">Appears in % of Jobs</TableCell>
+                  <TableCell align="right">Edit</TableCell>
                   <TableCell align="right">Delete</TableCell>
                 </TableRow>
               </TableHead>
@@ -407,6 +513,19 @@ export const Skills = () => {
           setHasAddedSkill(true);
         }}
       />
+      {currentSkill ? (
+        <EditComfortLevelModal
+          open={isEditComfortLevelModalOpen}
+          onClose={() => {
+            onNewSkillSuccess();
+            setIsEditComfortLevelModalOpen(false);
+          }}
+          currentSkill={currentSkill}
+          onNewSkillSuccess={() => {
+            setHasAddedSkill(true);
+          }}
+        />
+      ) : null}
     </Container>
   );
 };
