@@ -1,16 +1,57 @@
-const { Skill } = require("../models");
+const { Skill, UserSkills, sequelize } = require("../models");
 
 class SkillController {
   static async create(req, res) {
+    const t = await sequelize.transaction();
     try {
-      const skillData = {
-        name: req.body.skillName,
-        userId: req.user.id,
-      };
-      const newSkill = await Skill.create(skillData);
-      res.send(newSkill);
+      const existingSkill = req.body.existingSkill;
+      const newSkill = req.body.newSkill;
+      const user = req.user;
+
+      if (existingSkill) {
+        const skill = await Skill.findOne({
+          where: {
+            id: existingSkill,
+            userId: user.id,
+          },
+        });
+
+        if (!skill) {
+          return res.status(400).send({ error: "Skill does not exist" });
+        }
+
+        await UserSkills.create(
+          {
+            userId: user.id,
+            skillId: existingSkill,
+            comfortLevel: req.body.comfortLevel,
+          },
+          { transaction: t }
+        );
+      } else if (newSkill) {
+        const skill = await Skill.create(
+          {
+            name: newSkill,
+            userId: user.id,
+          },
+          { transaction: t }
+        );
+        await UserSkills.create(
+          {
+            userId: user.id,
+            skillId: skill.id,
+            comfortLevel: req.body.comfortLevel,
+          },
+          { transaction: t }
+        );
+      }
+
+      await t.commit();
+      res.status(200).send("Skill added");
     } catch (error) {
-      res.status(400).send({ error });
+      await t.rollback();
+      console.error(error);
+      res.status(500).send({ error });
     }
   }
 
