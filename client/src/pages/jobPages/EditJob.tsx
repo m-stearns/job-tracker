@@ -17,8 +17,8 @@ import {
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { JobPageData, Skill } from '../../types';
-import { fetchJob } from '../../repository';
+import { JobPageData, JobNewData, Skill } from '../../types';
+import { fetchJob, fetchSkillsByUser } from '../../repository';
 import { createJobPageData, createContact, createSkills } from '../../common/JobPageData';
 import { SkillsUpdate } from '../../common/SkillsUpdate';
 import { useJobsApi } from '../../common/JobsQueryProvider';
@@ -47,6 +47,10 @@ export const EditJob = () => {
   const [isPending, setIsPending] = useState<boolean>(true);
   const [error, setError] = useState(null);
 
+  const [skillsBankForUser, setSkillsBankForUser] = useState<Skill[]>([]);
+  const [skillsBankPending, setSkillsBankPending] = useState<boolean>(true);
+  const [skillsBankError, setSkillsBankError] = useState(null);
+
   const handleFetchJobById = async (jobId: string) => {
     await fetchJob(jobId)
       .then((res) => {
@@ -67,15 +71,36 @@ export const EditJob = () => {
       });
   };
 
+  const handleFetchSkillsByUser = async () => {
+    await fetchSkillsByUser()
+      .then((res) => {
+        return res.data;
+      })
+      .then((data) => {
+        console.log(data);
+        setSkillsBankForUser(data);
+        setSkillsBankPending(false);
+        setSkillsBankError(null);
+      })
+      .catch((err) => {
+        console.log(`error = ${err}`);
+        setSkillsBankPending(false);
+        setSkillsBankError(err.message);
+      });
+  };
+
   useEffect(() => {
     handleFetchJobById(jobId);
+    handleFetchSkillsByUser();
   }, []);
 
   return (
     <Container maxWidth="lg">
-      {error && <ErrorScreen />}
-      {isPending && <Loading />}
-      {!isPending && jobPageData && <EditScreen data={jobPageData} />}
+      {(error || skillsBankError) && <ErrorScreen />}
+      {(isPending || skillsBankPending) && <Loading />}
+      {!isPending && !skillsBankPending && jobPageData && skillsBankForUser && (
+        <EditScreen data={jobPageData} skillsBankForUser={skillsBankForUser} />
+      )}
     </Container>
   );
 };
@@ -96,7 +121,7 @@ const ErrorScreen = () => (
   </Paper>
 );
 
-const EditScreen: React.FC<{ data: JobPageData }> = ({ data }) => {
+const EditScreen: React.FC<{ data: JobPageData; skillsBankForUser: Skill[] }> = ({ data, skillsBankForUser }) => {
   // Job record dependencies
   const [jobTitle, setJobTitle] = useState<string>(data.title);
   const [companyName, setCompanyName] = useState<string>(data.company);
@@ -106,11 +131,12 @@ const EditScreen: React.FC<{ data: JobPageData }> = ({ data }) => {
   const [jobStatus, setJobStatus] = useState<string>(data.status);
 
   // SkillsUpdate.tsx dependencies
-  const [skillsBank] = useState<Skill[]>([{ id: '100', name: 'docker' }]);
+  const [skillsBank] = useState<Skill[]>(skillsBankForUser);
   const [userChosenExistingSkills, setUserChosenExistingSkills] = useState<Skill[]>(data.skills);
   const [userCreatedSkills, setUserCreatedSkills] = useState<string[]>([]);
 
   // Contact dependencies
+  const [contactId] = useState<string>(data.contact.id);
   const [contactName, setContactName] = useState<string>(data.contact.name);
   const [contactEmail, setContactEmail] = useState<string>(data.contact.email);
   const [contactPhone, setContactPhone] = useState<string>(data.contact.phoneNo);
@@ -165,7 +191,7 @@ const EditScreen: React.FC<{ data: JobPageData }> = ({ data }) => {
 
   const handleEditJobPageData = () => {
     if ([jobTitle, companyName, jobDesc, jobURL].every((field) => field.length > 0)) {
-      const editedJobData: JobPageData = {
+      const editedJobData: JobNewData = {
         id: data.id,
         title: jobTitle,
         company: companyName,
@@ -173,9 +199,10 @@ const EditScreen: React.FC<{ data: JobPageData }> = ({ data }) => {
         status: jobStatus,
         link: jobURL,
         internship: isInternship,
-        skills: [],
+        newSkills: userCreatedSkills,
+        existingSkills: userChosenExistingSkills,
         contact: {
-          id: data.contact.id,
+          id: contactId,
           name: contactName,
           email: contactEmail,
           phoneNo: contactPhone,
@@ -186,7 +213,6 @@ const EditScreen: React.FC<{ data: JobPageData }> = ({ data }) => {
         jobId: data.id,
         newJobData: editedJobData,
       };
-      console.log(editJobRecord);
       editJob(editJobRecord);
     } else {
       if (jobTitle.length === 0) setTitleError(true);
