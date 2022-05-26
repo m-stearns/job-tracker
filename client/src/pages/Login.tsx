@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Avatar, Button, Container, Link, Paper, Stack, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAuth } from '../common/AuthContext';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { doesObjectContainKey } from '../types/typeGuards';
 
 const emailPattern = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
@@ -11,6 +12,7 @@ export const Login = () => {
   const [password, setPassword] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, loginUser } = useAuth();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +37,9 @@ export const Login = () => {
   };
 
   if (user) {
+    if (doesObjectContainKey(location.state, 'from') && typeof location.state.from === 'string') {
+      return <Navigate to={location.state.from} />;
+    }
     return <Navigate to="/" />;
   }
 

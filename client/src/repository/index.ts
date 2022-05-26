@@ -69,7 +69,6 @@ export const createJob = async (jobData: Partial<JobNewData>) => {
 };
 
 export const fetchAllJobs = async () => {
-  console.log('fetching');
   const response = await apiClient.get<JobPageData[]>('/jobs');
   return response.data;
 };
@@ -85,7 +84,7 @@ export const fetchJob = async (jobId: string) => {
 
 export const deleteJob = async (jobId: string) => {
   return apiClient.delete(`/jobs/${jobId}`);
-}
+};
 
 export const fetchSkillsByUser = async () => {
   return apiClient.get('/skills');
