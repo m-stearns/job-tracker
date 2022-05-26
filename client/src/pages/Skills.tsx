@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchSkillsStats, fetchSkillsByUser, createUserSkill } from '../repository';
+import { fetchSkillsStats, fetchSkillsByUser, createUserSkill, deleteUserSkill } from '../repository';
 import {
   Container,
   Typography,
@@ -278,6 +278,17 @@ export const Skills = () => {
     );
   };
 
+  const handleDeleteSkill = async (skillId: number) => {
+    try {
+      await deleteUserSkill(skillId as any);
+      setIsFetching(true);
+      fetchData();
+      setIsFetching(false);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
   const renderSkillRow = (stats: SkillStats['userSkillsStats'] | SkillStats['otherJobSkillsStats']) => {
     if (!stats || !stats.length) {
       return (
@@ -300,6 +311,19 @@ export const Skills = () => {
           ) : null}
           <TableCell align="right">{stat.count}</TableCell>
           <TableCell align="right">{stat.appearsInPercentageOfJobs}%</TableCell>
+          {/* @ts-expect-error todo maybe never */}
+          {stat.comfortLevel != undefined ? (
+            <TableCell align="right">
+              <Button
+                variant="contained"
+                color="primary"
+                /* @ts-expect-error todo maybe never */
+                onClick={() => handleDeleteSkill(stat.id)}
+              >
+                Delete
+              </Button>
+            </TableCell>
+          ) : null}
         </TableRow>
       );
     });
@@ -337,6 +361,7 @@ export const Skills = () => {
                   <TableCell align="right">Comfort Level</TableCell>
                   <TableCell align="right">Appears in # of Jobs</TableCell>
                   <TableCell align="right">Appears in % of Jobs</TableCell>
+                  <TableCell align="right">Delete</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>{renderSkillRow(skillsStats.userSkillsStats)}</TableBody>

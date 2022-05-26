@@ -187,3 +187,7 @@ export const createUserSkill = async ({
 }) => {
   return await apiClient.post('/skills', { existingSkill, newSkill, comfortLevel });
 };
+
+export const deleteUserSkill = async (id: string) => {
+  return await apiClient.delete(`/skills/${id}`);
+};

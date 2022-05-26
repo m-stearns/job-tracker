@@ -73,18 +73,16 @@ class SkillController {
     try {
       const skillId = req.params.id;
       const user = req.user;
-      const skill = Skill.findOne({
+      const skill = Skill.destroy({
         where: {
           id: skillId,
           userId: user.id,
         },
       });
-      if (!skill) {
-        res.status(404).send("Skill not found");
-      }
-      skill.destroy();
+
       res.status(200).send("Skill deleted");
     } catch (error) {
+      console.error(error);
       res.status(500).send(error);
     }
   }
