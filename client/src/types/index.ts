@@ -40,8 +40,8 @@ export interface JobPageData extends JobRowData {
   contact: Contact;
 }
 
-export interface JobNewData extends Omit<JobRowData, 'skills'> {
-  newSkills: Skill[];
+export interface JobNewData extends Omit<JobPageData, 'skills'> {
+  newSkills: string[];
   existingSkills: Skill[];
 }
 
