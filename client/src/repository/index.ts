@@ -175,3 +175,15 @@ export const deleteContact = async (id: string) => {
     console.log(error);
   }
 };
+
+export const createUserSkill = async ({
+  existingSkill,
+  newSkill,
+  comfortLevel,
+}: {
+  existingSkill?: string;
+  newSkill?: string;
+  comfortLevel: number;
+}) => {
+  return await apiClient.post('/skills', { existingSkill, newSkill, comfortLevel });
+};
