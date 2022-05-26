@@ -96,9 +96,9 @@ class SkillController {
     try {
       const skillId = req.params.id;
       const user = req.user;
-      const skill = Skill.destroy({
+      UserSkills.destroy({
         where: {
-          id: skillId,
+          skillId: skillId,
           userId: user.id,
         },
       });
