@@ -1,6 +1,5 @@
-import { AppBar, Toolbar, Button, ButtonGroup } from '@mui/material';
+import { AppBar, Toolbar, Button, ButtonGroup, Typography } from '@mui/material';
 import { useAuth } from './AuthContext';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
@@ -15,38 +14,28 @@ export const Navbar = () => {
     <AppBar position="static" elevation={0} color="primary">
       <Toolbar>
         <ButtonGroup variant="contained" color="inherit">
-          <Button>
-            <Link to="/" style={{ textDecoration: 'none' }}>
-              Home
-            </Link>
+          <Button onClick={() => navigate('/')}>
+            <Typography color="secondary">Home</Typography>
           </Button>
           {user ? (
             <>
-              <Button>
-                <Link to="/contacts" style={{ textDecoration: 'none' }}>
-                  Contacts
-                </Link>
+              <Button onClick={() => navigate('/contacts')}>
+                <Typography color="secondary">CONTACTS</Typography>
               </Button>
-              <Button>
-                <Link to="/skills" style={{ textDecoration: 'none' }}>
-                  Skills
-                </Link>
+              <Button onClick={() => navigate('/skills')}>
+                <Typography color="secondary">SKILLS</Typography>
               </Button>
               <Button onClick={handleLogout} style={{ textDecoration: 'none' }}>
-                Logout
+                <Typography color="secondary">Logout</Typography>
               </Button>
             </>
           ) : (
             <>
-              <Button>
-                <Link to="/login" style={{ textDecoration: 'none' }}>
-                  Login
-                </Link>
+              <Button onClick={() => navigate('/login')}>
+                <Typography color="secondary">Login</Typography>
               </Button>
-              <Button>
-                <Link to="/signup" style={{ textDecoration: 'none' }}>
-                  Signup
-                </Link>
+              <Button onClick={() => navigate('/signup')}>
+                <Typography color="secondary">Signup</Typography>
               </Button>
             </>
           )}

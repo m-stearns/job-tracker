@@ -21,6 +21,7 @@ import { SkillsUpdate } from '../../common/SkillsUpdate';
 import type { Skill, JobNewData } from '../../types';
 import { useJobsApi } from '../../common/JobsQueryProvider';
 import { fetchSkillsByUser } from '../../repository';
+import { useNavigate } from 'react-router-dom';
 
 export const CreateJob = () => {
   const [skillsBank, setSkillsBank] = useState<Skill[]>([{ id: '-1', name: '' }]);
@@ -68,6 +69,7 @@ export const CreateJob = () => {
 };
 
 const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React.ReactElement => {
+  const navigate = useNavigate();
   const [jobTitle, setJobTitle] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
   const [jobDesc, setJobDesc] = useState<string>('');
@@ -304,7 +306,9 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
 
             {/** start form buttons */}
             <Grid item xs={6}>
-              <Button variant="outlined">Cancel</Button>
+              <Button variant="outlined" onClick={() => navigate('/')}>
+                Cancel
+              </Button>
             </Grid>
             <Grid item xs={6}>
               <Button variant="contained" onClick={handleCreateJob}>
