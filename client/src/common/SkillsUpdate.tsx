@@ -30,7 +30,7 @@ export const SkillsUpdate: React.FC<{
   const [skillsBank] = useState<Skill[]>(skillsBankData);
 
   const [existingSkillName, setExistingSkillName] = useState<string>('');
-  const [existingSkillId, setExistingSkillId] = useState<string>('-1');
+  const [existingSkillId, setExistingSkillId] = useState<string>('');
   const [userCreatedSkillName, setUserCreatedSkillName] = useState<string>('');
 
   // toggles on/off the field to add brand new skills
@@ -39,7 +39,7 @@ export const SkillsUpdate: React.FC<{
   const handleAddNewSkill = (chosenNewSkillName: string) => {
     let addSkill = true;
     for (let i = 0; i < userChosenExistingSkills.length; i++) {
-      if (chosenNewSkillName.toLowerCase() === userChosenExistingSkills[0].name.toLowerCase()) {
+      if (chosenNewSkillName.toLowerCase() === userChosenExistingSkills[i].name.toLowerCase()) {
         addSkill = false;
         break;
       }
@@ -63,7 +63,7 @@ export const SkillsUpdate: React.FC<{
     };
     let addSkill = true;
     for (let i = 0; i < userChosenExistingSkills.length; i++) {
-      if (chosenExistingSkill.id === userChosenExistingSkills[i].id) {
+      if (parseInt(chosenExistingSkill.id) === parseInt(userChosenExistingSkills[i].id)) {
         addSkill = false;
         break;
       }
@@ -83,7 +83,7 @@ export const SkillsUpdate: React.FC<{
   const handleChipDeleteExistingSkill = (skillToDelete: Skill) => {
     let index = -1;
     for (let i = 0; i < userChosenExistingSkills.length; i++) {
-      if (skillToDelete.id == userChosenExistingSkills[i].id) {
+      if (parseInt(skillToDelete.id) == parseInt(userChosenExistingSkills[i].id)) {
         index = i;
         break;
       }
