@@ -69,7 +69,6 @@ export const createJob = async (jobData: Partial<JobNewData>) => {
 };
 
 export const fetchAllJobs = async () => {
-  console.log('fetching');
   const response = await apiClient.get<JobPageData[]>('/jobs');
   return response.data;
 };

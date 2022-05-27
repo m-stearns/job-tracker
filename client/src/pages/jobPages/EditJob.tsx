@@ -16,9 +16,11 @@ import {
   Button,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { JobPageData, JobNewData, Skill } from '../../types';
 import { fetchJob, fetchSkillsByUser } from '../../repository';
+
 import { createJobPageData, createContact, createSkills } from '../../common/JobPageData';
 import { SkillsUpdate } from '../../common/SkillsUpdate';
 import { useJobsApi } from '../../common/JobsQueryProvider';
@@ -122,6 +124,7 @@ const ErrorScreen = () => (
 );
 
 const EditScreen: React.FC<{ data: JobPageData; skillsBankForUser: Skill[] }> = ({ data, skillsBankForUser }) => {
+  const navigate = useNavigate();
   // Job record dependencies
   const [jobTitle, setJobTitle] = useState<string>(data.title);
   const [companyName, setCompanyName] = useState<string>(data.company);
@@ -372,9 +375,13 @@ const EditScreen: React.FC<{ data: JobPageData; skillsBankForUser: Skill[] }> = 
               />
             </Grid>
             <Grid item xs={4}>
-              <Link to={`/jobs/view/${data.id}`}>
-                <Button variant="outlined">Cancel</Button>
-              </Link>
+              <Button
+                variant="outlined"
+                style={{ textDecoration: 'none' }}
+                onClick={() => navigate(`/jobs/view/${data.id}`)}
+              >
+                Cancel
+              </Button>
             </Grid>
             <Grid item xs={4}>
               <Button variant="contained" onClick={handleEditJobPageData}>
