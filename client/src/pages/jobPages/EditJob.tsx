@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { JobPageData, JobNewData, Skill } from '../../types';
 import { fetchJob, fetchSkillsByUser } from '../../repository';
 
