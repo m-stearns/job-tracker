@@ -134,23 +134,37 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
   const handleCreateJob = () => {
     // Check required fields are filled out
     if ([jobTitle, companyName, jobURL].every((field) => field.length > 0)) {
-      const jobRecord = {
-        title: jobTitle,
-        company: companyName,
-        description: jobDesc ? jobDesc : '',
-        link: jobURL,
-        status: jobStatus,
-        internship: isInternship,
-        newSkills: userChosenNewSkills,
-        existingSkills: userChosenExistingSkills,
-        contact: {
-          name: contactName,
-          email: contactEmail,
-          phone: contactPhoneNumber,
-          company: contactCompany,
-        },
-      } as unknown as JobNewData;
-      addJob(jobRecord);
+      if ([contactName, contactEmail, contactPhoneNumber, contactCompany].every((field) => field.length > 0)) {
+        const jobRecord = {
+          title: jobTitle,
+          company: companyName,
+          description: jobDesc ? jobDesc : '',
+          link: jobURL,
+          status: jobStatus,
+          internship: isInternship,
+          newSkills: userChosenNewSkills,
+          existingSkills: userChosenExistingSkills,
+          contact: {
+            name: contactName,
+            email: contactEmail,
+            phone: contactPhoneNumber,
+            company: contactCompany,
+          },
+        } as unknown as JobNewData;
+        addJob(jobRecord);
+      } else {
+        const jobRecord = {
+          title: jobTitle,
+          company: companyName,
+          description: jobDesc ? jobDesc : '',
+          link: jobURL,
+          status: jobStatus,
+          internship: isInternship,
+          newSkills: userChosenNewSkills,
+          existingSkills: userChosenExistingSkills,
+        } as unknown as JobNewData;
+        addJob(jobRecord);
+      }
     } else {
       if (jobTitle.length === 0) setTitleError(true);
       if (companyName.length === 0) setCompanyError(true);
