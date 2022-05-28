@@ -192,29 +192,48 @@ const EditScreen: React.FC<{ data: JobPageData; skillsBankForUser: Skill[] }> = 
 
   const handleEditJobPageData = () => {
     if ([jobTitle, companyName, jobURL].every((field) => field.length > 0)) {
-      const editedJobData: JobNewData = {
-        id: data.id,
-        title: jobTitle,
-        company: companyName,
-        description: jobDesc ? jobDesc : '',
-        status: jobStatus,
-        link: jobURL,
-        internship: isInternship,
-        newSkills: userCreatedSkills,
-        existingSkills: userChosenExistingSkills,
-        contact: {
-          id: contactId,
-          name: contactName,
-          email: contactEmail,
-          phoneNo: contactPhone,
-          company: contactCompany,
-        },
-      };
-      const editJobRecord = {
-        jobId: data.id,
-        newJobData: editedJobData,
-      };
-      editJob(editJobRecord);
+      if ([contactName, contactEmail, contactPhone, contactCompany].every((field) => field.length > 0)) {
+        const editedJobData: JobNewData = {
+          id: data.id,
+          title: jobTitle,
+          company: companyName,
+          description: jobDesc ? jobDesc : '',
+          status: jobStatus,
+          link: jobURL,
+          internship: isInternship,
+          newSkills: userCreatedSkills,
+          existingSkills: userChosenExistingSkills,
+          contact: {
+            id: contactId,
+            name: contactName,
+            email: contactEmail,
+            phoneNo: contactPhone,
+            company: contactCompany,
+          },
+        };
+        const editJobRecord = {
+          jobId: data.id,
+          newJobData: editedJobData,
+        };
+        editJob(editJobRecord);
+      } else {
+        const editedJobData: JobNewData = {
+          id: data.id,
+          title: jobTitle,
+          company: companyName,
+          description: jobDesc ? jobDesc : '',
+          status: jobStatus,
+          link: jobURL,
+          internship: isInternship,
+          newSkills: userCreatedSkills,
+          existingSkills: userChosenExistingSkills,
+        };
+        const editJobRecord = {
+          jobId: data.id,
+          newJobData: editedJobData,
+        };
+        editJob(editJobRecord);
+      }
     } else {
       if (jobTitle.length === 0) setTitleError(true);
       if (companyName.length === 0) setCompanyError(true);
