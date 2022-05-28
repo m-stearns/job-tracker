@@ -147,7 +147,7 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
           ? {
               name: contactName,
               email: contactEmail,
-              phone: contactPhoneNumber,
+              phoneNo: contactPhoneNumber,
               company: contactCompany,
             }
           : undefined,
