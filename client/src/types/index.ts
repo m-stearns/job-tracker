@@ -45,7 +45,7 @@ export interface JobNewData extends Omit<JobRowData, 'skills'> {
   existingSkills: Skill[];
 }
 
-interface UserSkillStat {
+export interface UserSkillStat {
   id: string;
   name: string;
   comfortLevel: number;
