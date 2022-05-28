@@ -73,7 +73,11 @@ const EditComfortLevelModal = ({
           )}
           <FormControl>
             <InputLabel>Comfort level</InputLabel>
-            <Select value={newComfortLevel} onChange={(e) => setNewComfortLevel(Number(e.target.value))}>
+            <Select
+              value={newComfortLevel}
+              label="Comfort level"
+              onChange={(e) => setNewComfortLevel(Number(e.target.value))}
+            >
               <MenuItem value={0}>
                 <span role="img" aria-label="1">
                   ⭐
@@ -227,6 +231,7 @@ const AddSkillModal = ({
             }}
           >
             <Stack
+              spacing={2}
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -238,6 +243,7 @@ const AddSkillModal = ({
                 <InputLabel id="skill-label">Skill</InputLabel>
                 <Select
                   labelId="skill-label"
+                  label="Skill"
                   id="skill-select"
                   disabled={newSkill.length > 0}
                   onChange={(e) => {
@@ -252,7 +258,7 @@ const AddSkillModal = ({
                       </MenuItem>
                     ))}
                 </Select>
-              </FormControl>{' '}
+              </FormControl>
             </Stack>
 
             <Stack
