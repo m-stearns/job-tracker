@@ -147,7 +147,6 @@ const EditScreen: React.FC<{ data: JobPageData; skillsBankForUser: Skill[] }> = 
 
   const [isTitleError, setTitleError] = useState<boolean>(false);
   const [isCompanyError, setCompanyError] = useState<boolean>(false);
-  const [isDescriptionError, setDescriptionError] = useState<boolean>(false);
   const [isUrlError, setUrlError] = useState<boolean>(false);
 
   const { editJob } = useJobsApi();
@@ -164,7 +163,6 @@ const EditScreen: React.FC<{ data: JobPageData; skillsBankForUser: Skill[] }> = 
 
   const handleJobDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setJobDesc(event.target.value);
-    setDescriptionError(false);
   };
 
   const handleJobURLChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -193,12 +191,12 @@ const EditScreen: React.FC<{ data: JobPageData; skillsBankForUser: Skill[] }> = 
   };
 
   const handleEditJobPageData = () => {
-    if ([jobTitle, companyName, jobDesc, jobURL].every((field) => field.length > 0)) {
+    if ([jobTitle, companyName, jobURL].every((field) => field.length > 0)) {
       const editedJobData: JobNewData = {
         id: data.id,
         title: jobTitle,
         company: companyName,
-        description: jobDesc,
+        description: jobDesc ? jobDesc : '',
         status: jobStatus,
         link: jobURL,
         internship: isInternship,
@@ -220,7 +218,7 @@ const EditScreen: React.FC<{ data: JobPageData; skillsBankForUser: Skill[] }> = 
     } else {
       if (jobTitle.length === 0) setTitleError(true);
       if (companyName.length === 0) setCompanyError(true);
-      if (jobDesc.length === 0) setDescriptionError(true);
+      // if (jobDesc.length === 0) setDescriptionError(true);
       if (jobURL.length === 0) setUrlError(true);
     }
   };
@@ -265,9 +263,7 @@ const EditScreen: React.FC<{ data: JobPageData; skillsBankForUser: Skill[] }> = 
                 label="Job Description"
                 variant="standard"
                 fullWidth
-                required
                 type="text"
-                error={isDescriptionError}
                 value={jobDesc}
                 onChange={handleJobDescChange}
               />

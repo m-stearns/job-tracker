@@ -84,7 +84,6 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
 
   const [isTitleError, setTitleError] = useState<boolean>(false);
   const [isCompanyError, setCompanyError] = useState<boolean>(false);
-  const [isDescriptionError, setDescriptionError] = useState<boolean>(false);
   const [isUrlError, setUrlError] = useState<boolean>(false);
 
   const [skillsBank] = useState<Skill[]>(skillsData);
@@ -105,7 +104,6 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
 
   const handleJobDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setJobDesc(event.target.value);
-    setDescriptionError(false);
   };
 
   const handleJobURLChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,11 +133,11 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
 
   const handleCreateJob = () => {
     // Check required fields are filled out
-    if ([jobTitle, companyName, jobDesc, jobURL].every((field) => field.length > 0)) {
+    if ([jobTitle, companyName, jobURL].every((field) => field.length > 0)) {
       const jobRecord = {
         title: jobTitle,
         company: companyName,
-        description: jobDesc,
+        description: jobDesc ? jobDesc : '',
         link: jobURL,
         status: jobStatus,
         internship: isInternship,
@@ -156,7 +154,6 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
     } else {
       if (jobTitle.length === 0) setTitleError(true);
       if (companyName.length === 0) setCompanyError(true);
-      if (jobDesc.length === 0) setDescriptionError(true);
       if (jobURL.length === 0) setUrlError(true);
     }
   };
@@ -200,10 +197,8 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
                 label="Job Description"
                 variant="standard"
                 fullWidth
-                required
                 multiline
                 type="text"
-                error={isDescriptionError}
                 onChange={handleJobDescChange}
               />
             </Grid>
