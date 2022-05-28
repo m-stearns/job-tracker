@@ -60,7 +60,12 @@ export const ContactsHome = () => {
                     hover={true}
                     key={row.name}
                     onClick={() => navigate(`/contacts/view/${row.id}`)}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    sx={{
+                      '&:hover': {
+                        cursor: 'pointer',
+                      },
+                      '&:last-child td, &:last-child th': { border: 0 },
+                    }}
                   >
                     <TableCell align="left">{row.name}</TableCell>
                     <TableCell align="left">{row.email}</TableCell>
