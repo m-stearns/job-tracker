@@ -26,10 +26,10 @@ export const createContact = (
 ) => {
   const contact: Contact = {
     id: '-1',
-    name: 'n/a',
-    email: 'n/a',
-    phoneNo: 'n/a',
-    company: 'n/a',
+    name: '',
+    email: '',
+    phoneNo: '',
+    company: '',
   };
   if (contactsData.length > 0) {
     contact.name = contactsData[0]['name'];
