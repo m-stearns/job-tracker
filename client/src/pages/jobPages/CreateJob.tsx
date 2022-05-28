@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 
 import { SkillsUpdate } from '../../common/SkillsUpdate';
-import type { Skill, JobNewData } from '../../types';
+import type { Skill } from '../../types';
 import { useJobsApi } from '../../common/JobsQueryProvider';
 import { fetchSkillsByUser } from '../../repository';
 import { useNavigate } from 'react-router-dom';
@@ -134,37 +134,25 @@ const CreateJobForm: React.FC<{ skillsData: Skill[] }> = ({ skillsData }): React
   const handleCreateJob = () => {
     // Check required fields are filled out
     if ([jobTitle, companyName, jobURL].every((field) => field.length > 0)) {
-      if ([contactName, contactEmail, contactPhoneNumber, contactCompany].every((field) => field.length > 0)) {
-        const jobRecord = {
-          title: jobTitle,
-          company: companyName,
-          description: jobDesc ? jobDesc : '',
-          link: jobURL,
-          status: jobStatus,
-          internship: isInternship,
-          newSkills: userChosenNewSkills,
-          existingSkills: userChosenExistingSkills,
-          contact: {
-            name: contactName,
-            email: contactEmail,
-            phone: contactPhoneNumber,
-            company: contactCompany,
-          },
-        } as unknown as JobNewData;
-        addJob(jobRecord);
-      } else {
-        const jobRecord = {
-          title: jobTitle,
-          company: companyName,
-          description: jobDesc ? jobDesc : '',
-          link: jobURL,
-          status: jobStatus,
-          internship: isInternship,
-          newSkills: userChosenNewSkills,
-          existingSkills: userChosenExistingSkills,
-        } as unknown as JobNewData;
-        addJob(jobRecord);
-      }
+      const jobRecord = {
+        title: jobTitle,
+        company: companyName,
+        description: jobDesc ? jobDesc : '',
+        link: jobURL,
+        status: jobStatus,
+        internship: isInternship,
+        newSkills: userChosenNewSkills,
+        existingSkills: userChosenExistingSkills,
+        contact: [contactName, contactEmail, contactPhoneNumber, contactCompany].every((field) => field.length > 0)
+          ? {
+              name: contactName,
+              email: contactEmail,
+              phone: contactPhoneNumber,
+              company: contactCompany,
+            }
+          : undefined,
+      };
+      addJob(jobRecord);
     } else {
       if (jobTitle.length === 0) setTitleError(true);
       if (companyName.length === 0) setCompanyError(true);
